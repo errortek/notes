@@ -57,6 +57,7 @@ class LabelEditDialog : DialogFragment() {
         val nameInput = binding.labelInput
         val nameInputLayout = binding.labelInputLayout
         val hiddenCheck = binding.labelHiddenChk
+        val colorInput = binding.colorSeekBar
 
         val dialog = MaterialAlertDialogBuilder(context)
             .setView(binding.root)
@@ -88,7 +89,11 @@ class LabelEditDialog : DialogFragment() {
             viewModel.onHiddenChanged(isChecked)
         }
 
-        // Cursor must be hidden when dialog is dimissed to prevent memory leak
+        colorInput.setOnColorChangeListener { _, color ->
+            viewModel.onColorChanged(color)
+        }
+
+        // Cursor must be hidden when dialog is dismissed to prevent memory leak
         // See [https://stackoverflow.com/questions/36842805/dialogfragment-leaking-memory]
         nameInput.isCursorVisible = true
         dialog.setOnDismissListener {
@@ -103,6 +108,7 @@ class LabelEditDialog : DialogFragment() {
             nameInput.setText(label.name)
             nameInput.setSelection(label.name.length)  // put cursor at the end
             hiddenCheck.isChecked = label.hidden
+            colorInput.color = label.color
         }
 
         viewModel.start(args.labelId)

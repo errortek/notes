@@ -16,6 +16,7 @@
 
 package com.maltaisn.notes.ui.edit.adapter
 
+import android.content.res.ColorStateList
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.format.DateUtils
@@ -293,6 +294,7 @@ class EditItemLabelsViewHolder(binding: ItemEditLabelsBinding, callback: EditAda
                     val view = layoutInflater.inflate(R.layout.view_edit_chip_label, chipGroup, false) as Chip
                     chipGroup.addView(view)
                     view.text = chip.name
+                    view.chipBackgroundColor = ColorStateList.valueOf(chip.color)
                     view.setOnClickListener(labelClickListener)
                 }
                 is Reminder -> {

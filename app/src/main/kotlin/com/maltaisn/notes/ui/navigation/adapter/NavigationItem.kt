@@ -18,6 +18,7 @@ package com.maltaisn.notes.ui.navigation.adapter
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.maltaisn.notes.model.entity.Label.Companion.NO_COLOR
 import com.maltaisn.notes.ui.navigation.NavigationDestination
 import com.maltaisn.notes.ui.navigation.adapter.NavigationAdapter.ViewType
 
@@ -40,6 +41,7 @@ data class NavigationDestinationItem(
     @StringRes val titleRes: Int = 0,   // can be 0 to fallback on title text
     val title: String = "",             // can be empty to fallback on title res
     val checked: Boolean = false,
+    val color: Int = NO_COLOR
 ) : NavigationItem() {
 
     override val type: ViewType
