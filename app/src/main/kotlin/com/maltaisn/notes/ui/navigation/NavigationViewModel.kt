@@ -116,6 +116,7 @@ class NavigationViewModel @AssistedInject constructor(
                 destination = HomeDestination.Labels(label),
                 iconRes = R.drawable.ic_label_outline,
                 title = label.name,
+                color = label.color,
             )
         }
         this += NavigationDestinationItem(

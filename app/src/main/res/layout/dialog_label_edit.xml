@@ -68,5 +68,12 @@
             android:textAlignment="viewStart"
             />
 
+        <com.rtugeek.android.colorseekbar.ColorSeekBar
+            android:id="@+id/colorSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:colorSeeds="@array/material_colors"
+            />
+
     </LinearLayout>
 </ScrollView>

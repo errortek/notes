@@ -18,4 +18,16 @@
 
     <attr name="toolbarStyle" format="reference" />
 
+    <declare-styleable name="ColorSeekBar">
+        <attr name="colorSeeds" format="reference" />
+        <attr name="barBarHeight" format="dimension" />
+        <attr name="barProgress" format="integer" />
+        <attr name="barRadius" format="dimension" />
+        <attr name="barMaxProgress" format="integer" />
+        <attr name="barVertical" format="boolean" />
+        <attr name="barShowThumb" format="boolean" />
+        <attr name="barBorderColor" format="color" />
+        <attr name="barBorderSize" format="dimension" />
+    </declare-styleable>
+
 </resources>

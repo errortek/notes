@@ -128,6 +128,7 @@ dependencies {
     implementation "com.maltaisn:recurpicker:$recurpickerVersion"
     implementation "com.mikepenz:aboutlibraries:$aboutLibrariesVersion"
     implementation "com.mikepenz:aboutlibraries-core:$aboutLibrariesVersion"
+    implementation 'com.github.rtugeek:colorseekbar:2.0.3'
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"

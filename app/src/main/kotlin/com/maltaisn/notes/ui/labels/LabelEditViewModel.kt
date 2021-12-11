@@ -16,13 +16,10 @@
 
 package com.maltaisn.notes.ui.labels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.maltaisn.notes.model.LabelsRepository
 import com.maltaisn.notes.model.entity.Label
+import com.maltaisn.notes.model.entity.Label.Companion.NO_COLOR
 import com.maltaisn.notes.ui.AssistedSavedStateViewModelFactory
 import com.maltaisn.notes.ui.Event
 import com.maltaisn.notes.ui.send
@@ -57,10 +54,16 @@ class LabelEditViewModel @AssistedInject constructor(
             savedStateHandle[KEY_HIDDEN] = value
         }
 
+    private var color = savedStateHandle[KEY_COLOR] ?: NO_COLOR
+        set(value) {
+            field = value
+            savedStateHandle[KEY_COLOR] = value
+        }
+
     fun start(labelId: Long) {
         this.labelId = labelId
         if (KEY_NAME in savedStateHandle) {
-            _setLabelEvent.send(Label(labelId, labelName, hidden))
+            _setLabelEvent.send(Label(labelId, labelName, hidden, color))
             updateError()
         } else {
             viewModelScope.launch {
@@ -69,11 +72,13 @@ class LabelEditViewModel @AssistedInject constructor(
                     // Edit label, set name initially
                     labelName = label.name
                     hidden = label.hidden
+                    color = label.color
                     _setLabelEvent.send(label)
                 } else {
                     labelName = ""
                     hidden = false
-                    _setLabelEvent.send(Label(Label.NO_ID, "", false))
+                    color = NO_COLOR
+                    _setLabelEvent.send(Label(Label.NO_ID, "", false, NO_COLOR))
                 }
                 updateError()
             }
@@ -89,13 +94,17 @@ class LabelEditViewModel @AssistedInject constructor(
         this.hidden = hidden
     }
 
+    fun onColorChanged(color: Int) {
+        this.color = color
+    }
+
     fun addLabel() {
         viewModelScope.launch {
             if (labelId == Label.NO_ID) {
-                labelsRepository.insertLabel(Label(Label.NO_ID, labelName, hidden))
+                labelsRepository.insertLabel(Label(Label.NO_ID, labelName, hidden, color))
             } else {
                 // Must use update, using insert will remove the label references despite being update on conflict.
-                labelsRepository.updateLabel(Label(labelId, labelName, hidden))
+                labelsRepository.updateLabel(Label(labelId, labelName, hidden, color))
             }
         }
     }
@@ -131,5 +140,6 @@ class LabelEditViewModel @AssistedInject constructor(
     companion object {
         private const val KEY_NAME = "name"
         private const val KEY_HIDDEN = "hidden"
+        private const val KEY_COLOR = "color"
     }
 }

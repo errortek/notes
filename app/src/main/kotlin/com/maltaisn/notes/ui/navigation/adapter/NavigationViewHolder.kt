@@ -34,6 +34,7 @@ class NavigationItemViewHolder(val binding: ItemNavigationItemBinding) :
 
     fun bind(item: NavigationDestinationItem, callback: NavigationAdapter.Callback) {
         binding.itemImv.setImageResource(item.iconRes)
+        binding.itemImv.setColorFilter(item.color)
         if (item.titleRes != 0) {
             binding.itemTxv.setText(item.titleRes)
         } else {
