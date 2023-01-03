@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import com.maltaisn.notes.model.entity.Label
 import com.maltaisn.notes.model.entity.NoteStatus
 import com.maltaisn.notes.model.entity.NoteWithLabels
 import com.maltaisn.notes.model.entity.PinnedStatus
+import com.maltaisn.notes.setToStartOfDay
 import com.maltaisn.notes.sync.R
 import com.maltaisn.notes.ui.AssistedSavedStateViewModelFactory
 import com.maltaisn.notes.ui.Event
@@ -43,10 +44,10 @@ import com.maltaisn.notes.ui.note.adapter.NoteAdapter
 import com.maltaisn.notes.ui.note.adapter.NoteItem
 import com.maltaisn.notes.ui.note.adapter.NoteListItem
 import com.maltaisn.notes.ui.send
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import debugCheck
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
@@ -65,6 +66,7 @@ class HomeViewModel @AssistedInject constructor(
         private set
 
     private var batteryRestricted = false
+    private var notificationsRestricted = false
 
     private val _fabShown = MutableLiveData<Boolean>()
     val fabShown: LiveData<Boolean>
@@ -139,6 +141,11 @@ class HomeViewModel @AssistedInject constructor(
         updateNoteList()
     }
 
+    override fun onListLayoutModeChanged() {
+        // Updating the list layout mode doesn't trigger the database flow => Update manually.
+        updateNoteList()
+    }
+
     /** When user clicks on empty trash. */
     fun emptyTrashPre() {
         if (listItems.isNotEmpty()) {
@@ -153,8 +160,14 @@ class HomeViewModel @AssistedInject constructor(
         }
     }
 
-    fun notifyBatteryRestricted() {
-        batteryRestricted = true
+    /** Update restrictions status so that appropriate warnings may be shown to user. */
+    fun updateRestrictions(battery: Boolean, notifications: Boolean) {
+        val updateList = battery != batteryRestricted || notifications != notificationsRestricted
+        batteryRestricted = battery
+        notificationsRestricted = notifications
+        if (updateList) {
+            updateNoteList()
+        }
     }
 
     fun doExtraAction() {
@@ -173,7 +186,6 @@ class HomeViewModel @AssistedInject constructor(
             is HomeDestination.Status -> destination.status == NoteStatus.ACTIVE
             is HomeDestination.Labels -> true
             is HomeDestination.Reminders -> true
-            else -> error("Unknown destination")
         } && selectedNotes.isEmpty()
     }
 
@@ -206,14 +218,20 @@ class HomeViewModel @AssistedInject constructor(
         changeListItems { it.removeAt(pos) }
     }
 
-    override val isNoteSwipeEnabled: Boolean
-        get() = currentDestination == HomeDestination.Status(NoteStatus.ACTIVE) &&
-                selectedNotes.isEmpty() && prefs.swipeAction != SwipeAction.NONE
+    override fun getNoteSwipeAction(direction: NoteAdapter.SwipeDirection): SwipeAction {
+        return if (currentDestination == HomeDestination.Status(NoteStatus.ACTIVE) && selectedNotes.isEmpty()) {
+            when (direction) {
+                NoteAdapter.SwipeDirection.LEFT -> prefs.swipeActionLeft
+                NoteAdapter.SwipeDirection.RIGHT -> prefs.swipeActionRight
+            }
+        } else {
+            SwipeAction.NONE
+        }
+    }
 
-    override fun onNoteSwiped(pos: Int) {
-        // Archive note
+    override fun onNoteSwiped(pos: Int, direction: NoteAdapter.SwipeDirection) {
         val note = (noteItems.value!![pos] as NoteItem).note
-        changeNotesStatus(setOf(note), when (prefs.swipeAction) {
+        changeNotesStatus(setOf(note), when (getNoteSwipeAction(direction)) {
             SwipeAction.ARCHIVE -> NoteStatus.ARCHIVED
             SwipeAction.DELETE -> NoteStatus.DELETED
             SwipeAction.NONE -> return  // should not happen
@@ -308,21 +326,22 @@ class HomeViewModel @AssistedInject constructor(
 
     private fun createRemindersListItems(notes: List<NoteWithLabels>) = buildList {
         val calendar = Calendar.getInstance()
-        calendar[Calendar.HOUR_OF_DAY] = 0
-        calendar[Calendar.MINUTE] = 0
-        calendar[Calendar.SECOND] = 0
-        calendar[Calendar.MILLISECOND] = 0
+        calendar.setToStartOfDay()
         calendar.add(Calendar.DATE, 1)
         val endOfToday = calendar.timeInMillis
         val now = System.currentTimeMillis()
 
-        // If needed, add reminder that notifications won't work properly if battery is restricted.
+        // If needed, add warning that notifications won't work properly if battery is restricted.
         if (batteryRestricted && notes.isNotEmpty() &&
             now - prefs.lastRestrictedBatteryReminderTime >
             PrefsManager.RESTRICTED_BATTERY_REMINDER_DELAY.inWholeMilliseconds
         ) {
-            this += MessageItem(BATTERY_RESTRICTED_ITEM_ID,
-                R.string.reminder_restricted_battery)
+            this += MessageItem(BATTERY_RESTRICTED_ITEM_ID, R.string.reminder_restricted_battery)
+        }
+
+        // If needed, add warning that notification permission has been denied.
+        if (notes.isNotEmpty() && notificationsRestricted) {
+            this += MessageItem(NOTIFICATION_DENIED_ITEM_ID, R.string.reminder_notif_permission_denied)
         }
 
         var addedOverdueHeader = false
@@ -381,12 +400,11 @@ class HomeViewModel @AssistedInject constructor(
         is HomeDestination.Labels -> {
             PlaceholderData(R.drawable.ic_label_outline, R.string.label_notes_empty_placeholder)
         }
-        else -> error("Unknown destination")
     }
 
     data class NewNoteSettings(val labelId: Long, val initialReminder: Boolean)
 
-    @AssistedInject.Factory
+    @AssistedFactory
     interface Factory : AssistedSavedStateViewModelFactory<HomeViewModel> {
         override fun create(savedStateHandle: SavedStateHandle): HomeViewModel
     }
@@ -395,6 +413,7 @@ class HomeViewModel @AssistedInject constructor(
         private const val TRASH_REMINDER_ITEM_ID = -1L
         private const val BATTERY_RESTRICTED_ITEM_ID = -8L
         private const val AUTO_EXPORT_FAIL_ITEM_ID = -9L
+        private const val NOTIFICATION_DENIED_ITEM_ID = -10L
 
         val PINNED_HEADER_ITEM = HeaderItem(-2, R.string.note_pinned)
         val NOT_PINNED_HEADER_ITEM = HeaderItem(-3, R.string.note_not_pinned)

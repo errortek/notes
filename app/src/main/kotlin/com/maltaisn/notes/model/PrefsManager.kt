@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
 
 /**
  * Preference manager. This class interacts with [SharedPreferences]
@@ -43,10 +43,12 @@ class PrefsManager @Inject constructor(
 ) {
 
     val theme: AppTheme by enumPreference(THEME, AppTheme.SYSTEM)
+    val dynamicColors: Boolean by preference(DYNAMIC_COLORS, true)
     val strikethroughChecked: Boolean by preference(STRIKETHROUGH_CHECKED, false)
     val moveCheckedToBottom: Boolean by preference(MOVE_CHECKED_TO_BOTTOM, false)
     var listLayoutMode: NoteListLayoutMode by enumPreference(LIST_LAYOUT_MODE, NoteListLayoutMode.LIST)
-    val swipeAction: SwipeAction by enumPreference(SWIPE_ACTION, SwipeAction.ARCHIVE)
+    val swipeActionLeft: SwipeAction by enumPreference(SWIPE_ACTION_LEFT, SwipeAction.ARCHIVE)
+    val swipeActionRight: SwipeAction by enumPreference(SWIPE_ACTION_RIGHT, SwipeAction.ARCHIVE)
     val shownDateField: ShownDateField by enumPreference(SHOWN_DATE, ShownDateField.NONE)
     val maximumPreviewLabels: Int by preference(PREVIEW_LABELS, 0)
 
@@ -139,9 +141,32 @@ class PrefsManager @Inject constructor(
             }
         }
 
+    /**
+     * Used to migrate preferences from an older version of the app to a newer one.
+     * This is needed if a key name is changed for example.
+     */
+    fun migratePreferences() {
+        val editorDelegate = lazy { prefs.edit() }
+        val editor by editorDelegate
+
+        // v1.4.2 -> v1.5.0
+        val swipeAction = prefs.getString(SWIPE_ACTION, null)
+        if (swipeAction != null) {
+            // split value into two keys, one per direction
+            editor.remove(SWIPE_ACTION)
+                .putString(SWIPE_ACTION_LEFT, swipeAction)
+                .putString(SWIPE_ACTION_RIGHT, swipeAction)
+        }
+
+        if (editorDelegate.isInitialized()) {
+            editor.apply()
+        }
+    }
+
     companion object {
         // Settings keys
         const val THEME = "theme"
+        const val DYNAMIC_COLORS = "dynamic_colors"
         const val PREVIEW_LABELS = "preview_labels"
         const val PREVIEW_LINES = "preview_lines"
         const val PREVIEW_LINES_TEXT_LIST = "preview_lines_text_list"
@@ -151,7 +176,8 @@ class PrefsManager @Inject constructor(
         const val STRIKETHROUGH_CHECKED = "strikethrough_checked"
         const val MOVE_CHECKED_TO_BOTTOM = "move_checked_to_bottom"
         const val SHOWN_DATE = "shown_date"
-        const val SWIPE_ACTION = "swipe_action"
+        const val SWIPE_ACTION_LEFT = "swipe_action_left"
+        const val SWIPE_ACTION_RIGHT = "swipe_action_right"
         const val EXPORT_DATA = "export_data"
         const val AUTO_EXPORT = "auto_export"
         const val IMPORT_DATA = "import_data"
@@ -169,6 +195,9 @@ class PrefsManager @Inject constructor(
         private const val LAST_AUTO_EXPORT_TIME = "last_auto_export_time"
         private const val AUTO_EXPORT_FAILED = "auto_export_failed"
 
+        // Legacy keys
+        private const val SWIPE_ACTION = "swipe_action"
+
         private val PREFS_XML = listOf(
             R.xml.prefs,
             R.xml.prefs_preview_lines,
@@ -177,23 +206,23 @@ class PrefsManager @Inject constructor(
         /**
          * Delay after which notes in trash are automatically deleted forever.
          */
-        val TRASH_AUTO_DELETE_DELAY = Duration.days(7)
+        val TRASH_AUTO_DELETE_DELAY = 7.days
 
         /**
          * Required delay before showing the trash reminder delay after user dismisses it.
          */
-        val TRASH_REMINDER_DELAY = Duration.days(60)
+        val TRASH_REMINDER_DELAY = 60.days
 
         /**
          * Required delay before showing a notice that restricted battery mode will impact
          * reminders, after user dismisses it.
          */
-        val RESTRICTED_BATTERY_REMINDER_DELAY = Duration.days(60)
+        val RESTRICTED_BATTERY_REMINDER_DELAY = 60.days
 
         /**
          * Minimum delay between each automatic export.
          */
-        val AUTO_EXPORT_DELAY = Duration.days(1)
+        val AUTO_EXPORT_DELAY = 1.days
 
         const val AUTO_EXPORT_NO_URI = ""
 

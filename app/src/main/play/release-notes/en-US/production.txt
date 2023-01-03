@@ -1,3 +1,4 @@
-- Added sorting options.
-- Show more highlights in search screen.
-- Many bug fixes.
+- Full Material 3 redesign with support for dynamic colors.
+- Smooth transitions between screens.
+- Fixed app shortcuts not working.
+- Miscellaneous changes & fixes.

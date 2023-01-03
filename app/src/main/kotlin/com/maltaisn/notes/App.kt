@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,8 @@ class App : Application() {
 
         appComponent.inject(this)
 
-        // Set default preference values
+        // Initialize shared preferences
+        prefs.migratePreferences()
         prefs.setDefaults(this)
         updateTheme(prefs.theme)
 
@@ -78,5 +79,4 @@ class App : Application() {
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "reminders"
     }
-
 }

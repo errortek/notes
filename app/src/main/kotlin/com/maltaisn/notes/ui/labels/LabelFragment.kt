@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,10 @@
 
 package com.maltaisn.notes.ui.labels
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.ActionMode
 import android.view.LayoutInflater
@@ -24,22 +28,31 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.color.MaterialColors
+import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.transition.MaterialElevationScale
 import com.maltaisn.notes.App
 import com.maltaisn.notes.navigateSafe
 import com.maltaisn.notes.sync.R
 import com.maltaisn.notes.sync.databinding.FragmentLabelBinding
+import com.maltaisn.notes.ui.SharedViewModel
 import com.maltaisn.notes.ui.common.ConfirmDialog
 import com.maltaisn.notes.ui.labels.adapter.LabelAdapter
+import com.maltaisn.notes.ui.navGraphViewModel
 import com.maltaisn.notes.ui.observeEvent
 import com.maltaisn.notes.ui.utils.startSafeActionMode
 import com.maltaisn.notes.ui.viewModel
 import java.text.NumberFormat
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Provider
 
 /**
  * This fragment has two purposes:
@@ -56,6 +69,10 @@ class LabelFragment : DialogFragment(), Toolbar.OnMenuItemClickListener,
     lateinit var viewModelFactory: LabelViewModel.Factory
     val viewModel by viewModel { viewModelFactory.create(it) }
 
+    @Inject
+    lateinit var sharedViewModelProvider: Provider<SharedViewModel>
+    private val sharedViewModel by navGraphViewModel(R.id.nav_graph_main) { sharedViewModelProvider.get() }
+
     private val args: LabelFragmentArgs by navArgs()
 
     private var _binding: FragmentLabelBinding? = null
@@ -66,6 +83,13 @@ class LabelFragment : DialogFragment(), Toolbar.OnMenuItemClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireContext().applicationContext as App).appComponent.inject(this)
+
+        enterTransition = MaterialElevationScale(false).apply {
+            duration = resources.getInteger(R.integer.material_motion_duration_short_2).toLong()
+        }
+        exitTransition = MaterialElevationScale(true).apply {
+            duration = resources.getInteger(R.integer.material_motion_duration_short_2).toLong()
+        }
     }
 
     override fun onCreateView(
@@ -142,6 +166,10 @@ class LabelFragment : DialogFragment(), Toolbar.OnMenuItemClickListener,
         viewModel.exitEvent.observeEvent(viewLifecycleOwner) {
             findNavController().popBackStack()
         }
+
+        sharedViewModel.labelAddEventSelect.observeEvent(viewLifecycleOwner) { label ->
+            viewModel.selectNewLabel(label)
+        }
     }
 
     private fun updateActionModeForSelection(count: Int) {
@@ -198,8 +226,36 @@ class LabelFragment : DialogFragment(), Toolbar.OnMenuItemClickListener,
         return true
     }
 
+    private fun switchStatusBarColor(colorFrom: Int, colorTo: Int, duration: Long, endAsTransparent: Boolean = false) {
+        val anim = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+
+        anim.duration = duration
+        anim.addUpdateListener { animator ->
+            requireActivity().window.statusBarColor = animator.animatedValue as Int
+        }
+
+        if (endAsTransparent) {
+            anim.addListener(onEnd = {
+                // Wait 50ms before resetting the status bar color to prevent flickering, when the
+                // regular toolbar isn't yet visible again.
+                Executors.newSingleThreadScheduledExecutor().schedule({
+                    requireActivity().window.statusBarColor = Color.TRANSPARENT
+                }, 50, TimeUnit.MILLISECONDS)
+            })
+        }
+
+        anim.start()
+    }
+
     override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
         mode.menuInflater.inflate(R.menu.cab_label_selection, menu)
+        if (Build.VERSION.SDK_INT >= 23) {
+            switchStatusBarColor(
+                (binding.toolbarLayout.background as MaterialShapeDrawable).resolvedTintColor,
+                MaterialColors.getColor(requireView(), R.attr.colorSurfaceVariant),
+                resources.getInteger(R.integer.material_motion_duration_long_2).toLong()
+            )
+        }
         return true
     }
 
@@ -208,6 +264,14 @@ class LabelFragment : DialogFragment(), Toolbar.OnMenuItemClickListener,
     override fun onDestroyActionMode(mode: ActionMode) {
         actionMode = null
         viewModel.clearSelection()
+        if (Build.VERSION.SDK_INT >= 23) {
+            switchStatusBarColor(
+                MaterialColors.getColor(requireView(), R.attr.colorSurfaceVariant),
+                (binding.toolbarLayout.background as MaterialShapeDrawable).resolvedTintColor,
+                resources.getInteger(R.integer.material_motion_duration_long_1).toLong(),
+                true
+            )
+        }
     }
 
     override fun onDialogPositiveButtonClicked(tag: String?) {
@@ -221,5 +285,4 @@ class LabelFragment : DialogFragment(), Toolbar.OnMenuItemClickListener,
 
         private const val DELETE_CONFIRM_DIALOG_TAG = "delete_confirm_dialog"
     }
-
 }

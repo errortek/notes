@@ -1,7 +1,6 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
-    id "org.jetbrains.kotlin.kapt"
     id "org.jetbrains.kotlin.plugin.serialization"
     id "kotlin-allopen"
     id "androidx.navigation.safeargs.kotlin"
@@ -9,15 +8,12 @@ plugins {
     id "com.github.breadmoirai.github-release"
     id "com.mikepenz.aboutlibraries.plugin"
     id "kotlin-parcelize"
-}
-
-repositories {
-    maven { url "https://jitpack.io" }
+    id "kotlin-kapt"
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 33
+    buildToolsVersion "33.0.1"
 
     def schemasLocation = "$projectDir/schemas"
 
@@ -26,9 +22,10 @@ android {
         // there was a sync flavor. Package can't be changed on Play Store so it was kept.
         applicationId "com.maltaisn.notes.sync"
         minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 10401
-        versionName "1.4.1"
+        targetSdkVersion 33
+        versionCode 10500
+        versionName "1.5.0"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         kapt {
@@ -36,12 +33,9 @@ android {
                 arg("room.schemaLocation", schemasLocation)
             }
         }
-
-        // prevent half-translated app, for example if recurpickerlib is available is one language,
-        // but the app is not, then the app should show entirely in one language.
-        // REMOVED: prevents layout from showing in RTL direction
-//        resConfigs "en", "fr", "nb", "es"
     }
+
+    namespace "com.maltaisn.notes.sync"
 
     buildFeatures {
         viewBinding = true
@@ -52,22 +46,11 @@ android {
         main {
             java.srcDirs += "src/main/kotlin"
         }
-
         debug {
             java.srcDirs += "src/debug/kotlin"
         }
         release {
             java.srcDirs += "src/release/kotlin"
-        }
-
-        // All test source sets have a shared source set.
-        def sharedTestDir = "src/sharedTest/kotlin"
-        test {
-            java.srcDirs += [sharedTestDir, "src/test/kotlin"]
-        }
-        androidTest {
-            java.srcDirs += [sharedTestDir, "src/androidTest/kotlin"]
-            assets.srcDirs += files(schemasLocation)
         }
     }
 
@@ -94,7 +77,7 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
             buildConfigField "boolean", "ENABLE_DEBUG_FEATURES", "false"
         }
@@ -104,15 +87,25 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs += project.kotlinFlags
         freeCompilerArgs += [
-                "-Xopt-in=kotlin.ExperimentalStdlibApi",
-                "-Xopt-in=kotlin.time.ExperimentalTime",
-                "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                "-Xopt-in=kotlinx.coroutines.FlowPreview",
-                "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
+                "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
         ]
+    }
+
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
+
+    packagingOptions {
+        // see https://stackoverflow.com/questions/44342455
+        resources.excludes.add("META-INF/*")
     }
 }
 
@@ -140,9 +133,6 @@ dependencies {
     implementation "com.google.dagger:dagger:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 
-    compileOnly "com.squareup.inject:assisted-inject-annotations-dagger2:$assistedInjectVersion"
-    kapt "com.squareup.inject:assisted-inject-processor-dagger2:$assistedInjectVersion"
-
     // Architecture components
     kapt "androidx.room:room-compiler:$roomVersion"
     implementation "androidx.room:room-runtime:$roomVersion"
@@ -161,31 +151,20 @@ dependencies {
     debugImplementation "com.github.YarikSOffice.Venom:venom:$venomVersion"
     releaseImplementation "com.github.YarikSOffice.Venom:venom-no-op:$venomVersion"
 
+    // NOTE: dependencies for 'test' and 'androidTest' source sets include several
+    // dependencies declared as `api` in sharedTest/build.gradle.
+
     // Dependencies for local unit tests
-    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$kotlinMockitoVersion"
-    testImplementation "androidx.arch.core:core-testing:$androidxArchTestingVersion"
-    testImplementation "androidx.test:core:$androidxTestCoreVersion"
-    testImplementation "androidx.test:core-ktx:$androidxTestCoreKtxVersion"
-    testImplementation "androidx.test.ext:junit-ktx:$androidxTestExtVersion"
-    testImplementation "androidx.test:rules:$androidxTestRulesVersion"
+    testImplementation project(":sharedTest")
 
     // Dependencies for android tests
+    androidTestImplementation project(":sharedTest")
     androidTestImplementation "androidx.test:runner:$androidxTestRunnerVersion"
-    androidTestImplementation "androidx.test.ext:junit-ktx:$androidxTestExtVersion"
-    androidTestImplementation "androidx.test:core-ktx:$androidxTestCoreKtxVersion"
-    androidTestImplementation "androidx.test:rules:$androidxTestRulesVersion"
-    androidTestImplementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
-    androidTestImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
     androidTestImplementation "org.mockito:mockito-android:$mockitoAndroidVersion"
-    androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$kotlinMockitoVersion"
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
     androidTestImplementation "androidx.room:room-testing:$roomVersion"
     // For screenshots
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.4.0"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:3.4.0"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoVersion"
 }
 
 configurations.all {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,10 @@ import android.text.format.DateUtils
 import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.text.set
+import androidx.core.view.ViewCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -59,7 +61,9 @@ sealed class NoteViewHolder<T : NoteItem>(itemView: View) :
         DateFormat.getDateInstance(DateFormat.SHORT).format(date)
     }
 
-    protected abstract val cardView: MaterialCardView
+    abstract val cardView: MaterialCardView
+    abstract val swipeImv: ImageView
+
     protected abstract val titleTxv: TextView
     protected abstract val dateTxv: TextView
     protected abstract val reminderChip: Chip
@@ -74,6 +78,13 @@ sealed class NoteViewHolder<T : NoteItem>(itemView: View) :
         bindReminder(item)
         bindLabels(adapter, item)
         bindActionBtn(adapter, item)
+
+        // Set transition names for shared transitions
+        val noteId = item.note.id
+        ViewCompat.setTransitionName(
+            cardView,
+            "noteContainer$noteId"
+        )
 
         // Click listeners
         cardView.isChecked = item.checked
@@ -176,6 +187,8 @@ class TextNoteViewHolder(private val binding: ItemNoteTextBinding) :
     NoteViewHolder<NoteItemText>(binding.root) {
 
     override val cardView = binding.cardView
+    override val swipeImv = binding.swipeImv
+
     override val titleTxv = binding.titleTxv
     override val dateTxv = binding.dateTxv
     override val reminderChip = binding.reminderChip
@@ -186,10 +199,11 @@ class TextNoteViewHolder(private val binding: ItemNoteTextBinding) :
         super.bind(adapter, item)
 
         val contentTxv = binding.contentTxv
-        contentTxv.isVisible = item.note.content.isNotBlank()
+        val maxPreviewLines = adapter.prefsManager.getMaximumPreviewLines(NoteType.TEXT)
+        contentTxv.isVisible = maxPreviewLines > 0 && item.note.content.isNotBlank()
         contentTxv.text = getHighlightedText(item.content,
             adapter.highlightBackgroundColor, adapter.highlightForegroundColor)
-        contentTxv.maxLines = adapter.prefsManager.getMaximumPreviewLines(NoteType.TEXT)
+        contentTxv.maxLines = maxPreviewLines
     }
 }
 
@@ -197,6 +211,8 @@ class ListNoteViewHolder(private val binding: ItemNoteListBinding) :
     NoteViewHolder<NoteItemList>(binding.root) {
 
     override val cardView = binding.cardView
+    override val swipeImv = binding.swipeImv
+
     override val titleTxv = binding.titleTxv
     override val dateTxv = binding.dateTxv
     override val reminderChip = binding.reminderChip

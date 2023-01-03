@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import com.maltaisn.notes.model.entity.LabelRef
 import com.maltaisn.notes.model.entity.Note
 import com.maltaisn.notes.model.entity.NoteStatus
 import com.maltaisn.notes.model.entity.PinnedStatus
+import com.maltaisn.notes.sync.BuildConfig
 import com.maltaisn.notes.ui.Event
 import com.maltaisn.notes.ui.ShareData
 import com.maltaisn.notes.ui.StatusChange
@@ -100,8 +101,8 @@ abstract class NoteViewModel(
     val listLayoutMode: LiveData<NoteListLayoutMode>
         get() = _listLayoutMode
 
-    private val _editItemEvent = MutableLiveData<Event<Long>>()
-    val editItemEvent: LiveData<Event<Long>>
+    private val _editItemEvent = MutableLiveData<Event<Pair<Long, Int>>>()
+    val editItemEvent: LiveData<Event<Pair<Long, Int>>>
         get() = _editItemEvent
 
     private val _shareEvent = MutableLiveData<Event<ShareData>>()
@@ -138,6 +139,10 @@ abstract class NoteViewModel(
     init {
         // Initialize list layout to saved value.
         _listLayoutMode.value = prefs.listLayoutMode
+
+        if (BuildConfig.ENABLE_DEBUG_FEATURES) {
+            noteItemFactory.appendIdToTitle = true
+        }
     }
 
     /**
@@ -210,6 +215,8 @@ abstract class NoteViewModel(
         _showLabelsFragmentEvent.send(selectedNoteIds.toList())
     }
 
+    protected open fun onListLayoutModeChanged() = Unit
+
     fun toggleListLayoutMode() {
         val mode = when (_listLayoutMode.value!!) {
             NoteListLayoutMode.LIST -> NoteListLayoutMode.GRID
@@ -217,6 +224,8 @@ abstract class NoteViewModel(
         }
         _listLayoutMode.value = mode
         prefs.listLayoutMode = mode
+
+        onListLayoutModeChanged()
     }
 
     fun moveSelectedNotes() {
@@ -328,11 +337,13 @@ abstract class NoteViewModel(
             .ifEmpty { return }
 
         viewModelScope.launch {
+            val date = Date()
             val newNotes = mutableListOf<Note>()
             for (note in oldNotes) {
                 newNotes += note.copy(status = newStatus,
                     pinned = if (newStatus == NoteStatus.ACTIVE) PinnedStatus.UNPINNED else PinnedStatus.CANT_PIN,
-                    reminder = note.reminder.takeIf { newStatus != NoteStatus.DELETED })
+                    reminder = note.reminder.takeIf { newStatus != NoteStatus.DELETED },
+                    lastModifiedDate = date)
                 if (newStatus == NoteStatus.DELETED) {
                     if (note.reminder != null) {
                         // Remove reminder alarm for deleted note.
@@ -359,7 +370,7 @@ abstract class NoteViewModel(
     override fun onNoteItemClicked(item: NoteItem, pos: Int) {
         if (selectedNotes.isEmpty()) {
             // Edit item
-            _editItemEvent.send(item.note.id)
+            _editItemEvent.send(Pair(item.note.id, pos))
         } else {
             // Toggle item selection
             toggleItemChecked(item, pos)
@@ -385,9 +396,9 @@ abstract class NoteViewModel(
         // Do nothing.
     }
 
-    override val isNoteSwipeEnabled = false
+    override fun getNoteSwipeAction(direction: NoteAdapter.SwipeDirection) = SwipeAction.NONE
 
-    override fun onNoteSwiped(pos: Int) {
+    override fun onNoteSwiped(pos: Int, direction: NoteAdapter.SwipeDirection) {
         // Do nothing.
     }
 

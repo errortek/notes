@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,15 @@ import androidx.lifecycle.viewModelScope
 import com.maltaisn.notes.model.NotesRepository
 import com.maltaisn.notes.model.ReminderAlarmManager
 import com.maltaisn.notes.model.entity.Reminder
+import com.maltaisn.notes.setToStartOfDay
 import com.maltaisn.notes.ui.AssistedSavedStateViewModelFactory
 import com.maltaisn.notes.ui.Event
 import com.maltaisn.notes.ui.send
 import com.maltaisn.recurpicker.Recurrence
 import com.maltaisn.recurpicker.RecurrenceFinder
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
@@ -44,7 +46,7 @@ class ReminderViewModel @AssistedInject constructor(
     private val calendar = Calendar.getInstance()
 
     private var noteIds = emptyList<Long>()
-    private var date: Long
+    private var date: Long   // UTC millis
     private var recurrence: Recurrence
 
     private val _details = MutableLiveData<ReminderDetails>()
@@ -129,18 +131,16 @@ class ReminderViewModel @AssistedInject constructor(
             }
 
             if (reminder != null) {
-                date = reminder.start.time
+                date = reminder.next.time
                 recurrence = reminder.recurrence ?: Recurrence.DOES_NOT_REPEAT
             } else {
                 // Check preset hours for today
                 calendar.timeInMillis = System.currentTimeMillis()
                 val currHour = calendar[Calendar.HOUR_OF_DAY]
                 val todayReminderHour = DEFAULT_REMINDER_HOURS.find { it > currHour + REMINDER_HOUR_MIN_DISTANCE }
-                calendar[Calendar.HOUR_OF_DAY] = todayReminderHour ?:
-                        DEFAULT_REMINDER_HOURS.first { it > currHour + REMINDER_HOUR_MIN_DISTANCE - HOURS_IN_DAY }
-                calendar[Calendar.MINUTE] = 0
-                calendar[Calendar.SECOND] = 0
-                calendar[Calendar.MILLISECOND] = 0
+                calendar.setToStartOfDay()
+                calendar[Calendar.HOUR_OF_DAY] = todayReminderHour
+                    ?: DEFAULT_REMINDER_HOURS.first { it > currHour + REMINDER_HOUR_MIN_DISTANCE - HOURS_IN_DAY }
                 if (todayReminderHour == null) {
                     // All preset hours past for today, use first preset for tomorrow
                     calendar.add(Calendar.DATE, 1)
@@ -253,11 +253,11 @@ class ReminderViewModel @AssistedInject constructor(
         // Update notes in database
         // Note: changing reminder doesn't change the last modified date.
         val newNotes = noteIds.mapNotNull { id ->
-            val oldNote = notesRepository.getNoteById(id)!!
-            if (oldNote.reminder != reminder) {
-                oldNote.copy(reminder = reminder)
-            } else {
+            val oldNote = notesRepository.getNoteById(id)
+            if (oldNote == null || oldNote.reminder == reminder) {
                 null
+            } else {
+                oldNote.copy(reminder = reminder)
             }
         }
         notesRepository.updateNotes(newNotes)
@@ -285,7 +285,7 @@ class ReminderViewModel @AssistedInject constructor(
 
     data class ReminderDetails(val date: Long, val recurrence: Recurrence)
 
-    @AssistedInject.Factory
+    @AssistedFactory
     interface Factory : AssistedSavedStateViewModelFactory<ReminderViewModel> {
         override fun create(savedStateHandle: SavedStateHandle): ReminderViewModel
     }

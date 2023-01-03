@@ -29,12 +29,19 @@ import com.maltaisn.notes.App
 import com.maltaisn.notes.model.entity.Label
 import com.maltaisn.notes.sync.R
 import com.maltaisn.notes.sync.databinding.DialogLabelEditBinding
+import com.maltaisn.notes.ui.SharedViewModel
+import com.maltaisn.notes.ui.navGraphViewModel
 import com.maltaisn.notes.ui.observeEvent
 import com.maltaisn.notes.ui.viewModel
 import debugCheck
 import javax.inject.Inject
+import javax.inject.Provider
 
 class LabelEditDialog : DialogFragment() {
+
+    @Inject
+    lateinit var sharedViewModelProvider: Provider<SharedViewModel>
+    private val sharedViewModel by navGraphViewModel(R.id.nav_graph_main) { sharedViewModelProvider.get() }
 
     @Inject
     lateinit var viewModelFactory: LabelEditViewModel.Factory
@@ -59,18 +66,26 @@ class LabelEditDialog : DialogFragment() {
         val hiddenCheck = binding.labelHiddenChk
         val colorInput = binding.colorSeekBar
 
-        val dialog = MaterialAlertDialogBuilder(context)
+        val builder = MaterialAlertDialogBuilder(context)
             .setView(binding.root)
             .setPositiveButton(R.string.action_ok) { _, _ ->
                 viewModel.addLabel()
             }
             .setNegativeButton(R.string.action_cancel, null)
-            .setTitle(if (args.labelId == Label.NO_ID) {
+
+        // Only show dialog title if screen size is under a certain dimension.
+        // Otherwise it becomes much harder to type text, see #53.
+        val dimen = context.resources.getDimension(R.dimen.label_edit_dialog_title_min_height) /
+                context.resources.displayMetrics.density
+        if (context.resources.configuration.screenHeightDp >= dimen) {
+            builder.setTitle(if (args.labelId == Label.NO_ID) {
                 R.string.label_create
             } else {
                 R.string.label_edit
             })
-            .create()
+        }
+
+        val dialog = builder.create()
 
         dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
 
@@ -110,6 +125,8 @@ class LabelEditDialog : DialogFragment() {
             hiddenCheck.isChecked = label.hidden
             colorInput.color = label.color
         }
+
+        viewModel.labelAddEvent.observeEvent(this, sharedViewModel::onLabelAdd)
 
         viewModel.start(args.labelId)
 

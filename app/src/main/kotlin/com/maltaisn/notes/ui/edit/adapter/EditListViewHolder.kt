@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,12 @@ import android.content.res.ColorStateList
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.format.DateUtils
-import android.text.method.LinkMovementMethod
 import android.text.style.CharacterStyle
 import android.text.util.Linkify
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.EditText
 import androidx.core.text.getSpans
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.isInvisible
@@ -48,6 +48,7 @@ import com.maltaisn.notes.sync.databinding.ItemEditItemBinding
 import com.maltaisn.notes.sync.databinding.ItemEditLabelsBinding
 import com.maltaisn.notes.sync.databinding.ItemEditTitleBinding
 import com.maltaisn.notes.ui.edit.BulletTextWatcher
+import com.maltaisn.notes.ui.edit.LinkArrowKeyMovementMethod
 import com.maltaisn.notes.utils.RelativeDateFormatter
 import java.text.DateFormat
 
@@ -85,11 +86,12 @@ class EditTitleViewHolder(binding: ItemEditTitleBinding, callback: EditAdapter.C
             callback.onNoteClickedToEdit()
         }
         titleEdt.addTextChangedListener(clearSpansTextWatcher)
-        titleEdt.doAfterTextChanged {  editable ->
+        titleEdt.doAfterTextChanged { editable ->
             if (editable != item?.title?.text) {
                 item?.title = AndroidEditableText(editable ?: return@doAfterTextChanged)
             }
         }
+        titleEdt.addOnAttachStateChangeListener(PrepareCursorControllersListener())
         titleEdt.setHorizontallyScrolling(false)
         titleEdt.maxLines = Integer.MAX_VALUE
     }
@@ -117,7 +119,7 @@ class EditContentViewHolder(binding: ItemEditContentBinding, callback: EditAdapt
     init {
         contentEdt.addTextChangedListener(BulletTextWatcher())
         contentEdt.addTextChangedListener(clearSpansTextWatcher)
-        contentEdt.movementMethod = LinkMovementMethod.getInstance()  // Clickable links
+        contentEdt.movementMethod = LinkArrowKeyMovementMethod.getInstance()  // Clickable links
         contentEdt.doAfterTextChanged { editable ->
             // Add new links
             LinkifyCompat.addLinks(editable ?: return@doAfterTextChanged,
@@ -131,6 +133,10 @@ class EditContentViewHolder(binding: ItemEditContentBinding, callback: EditAdapt
         contentEdt.setOnClickListener {
             callback.onNoteClickedToEdit()
         }
+
+        // Fixes broken long press after holder has been recycled (#34).
+        // See https://stackoverflow.com/q/54833004
+        contentEdt.addOnAttachStateChangeListener(PrepareCursorControllersListener())
     }
 
     fun bind(item: EditContentItem) {
@@ -197,7 +203,7 @@ class EditItemViewHolder(binding: ItemEditItemBinding, callback: EditAdapter.Cal
                 LinkifyCompat.addLinks(editable ?: return@addTextChangedListener,
                     Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES)
             })
-        itemEdt.movementMethod = LinkMovementMethod.getInstance()  // Clickable links
+        itemEdt.movementMethod = LinkArrowKeyMovementMethod.getInstance()  // Clickable links
         itemEdt.setOnFocusChangeListener { _, hasFocus ->
             // Only show delete icon for currently focused item.
             deleteImv.isInvisible = !hasFocus
@@ -217,6 +223,7 @@ class EditItemViewHolder(binding: ItemEditItemBinding, callback: EditAdapter.Cal
         itemEdt.setOnClickListener {
             callback.onNoteClickedToEdit()
         }
+        itemEdt.addOnAttachStateChangeListener(PrepareCursorControllersListener())
 
         deleteImv.setOnClickListener {
             val pos = bindingAdapterPosition
@@ -345,4 +352,20 @@ private val clearSpansTextWatcher = object : TextWatcher {
             s.removeSpan(span)
         }
     }
+}
+
+/**
+ * Used to fix the issue described at [https://stackoverflow.com/q/54833004],
+ * causing the EditText long press to fail after a view holder has been recycled.
+ */
+private class PrepareCursorControllersListener : View.OnAttachStateChangeListener {
+    override fun onViewAttachedToWindow(view: View) {
+        if (view !is EditText) {
+            return
+        }
+        view.isCursorVisible = false
+        view.isCursorVisible = true
+    }
+
+    override fun onViewDetachedFromWindow(v: View) = Unit
 }

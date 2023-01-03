@@ -1,5 +1,5 @@
 <!--
-  Copyright 2021 Nicolas Maltais
+  Copyright 2022 Nicolas Maltais
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -156,6 +156,10 @@
     <string name="reminder_empty_placeholder">No reminders set</string>
     <string name="reminder_restricted_battery">Reminder alarms may not work correctly because the
     app has restricted battery usage. This can be changed in the app settings.</string>
+    <string name="reminder_notif_permission">To be able to send reminder notifications, the app needs a permission.
+    Click OK to show the permission request. You will be able to set a reminder afterwards.</string>
+    <string name="reminder_notif_permission_denied">The notification permission has been denied.
+    Reminder alarms will not work until enabled.</string>
 
     <!-- Labels -->
     <string name="label_create">Create new label</string>
@@ -175,6 +179,7 @@
     <string name="pref_theme_light">Light</string>
     <string name="pref_theme_dark">Dark</string>
     <string name="pref_theme_system">Follow system</string>
+    <string name="pref_dynamic_colors">Use dynamic colors</string>
     <string name="pref_strikethrough_checked">Strikethrough checked list items</string>
     <string name="pref_preview_labels">Maximum number of labels in preview</string>
 
@@ -192,7 +197,8 @@
     <string name="pref_preview_lines_list">Items in list note preview</string>
 
     <string name="pref_group_behavior">Behavior</string>
-    <string name="pref_behavior_swipe_action">Swipe action</string>
+    <string name="pref_behavior_swipe_action_left">Swipe left action</string>
+    <string name="pref_behavior_swipe_action_right">Swipe right action</string>
     <string name="pref_behavior_move_checked">Move checked items to the bottom</string>
 
     <string name="pref_group_data">Data</string>
@@ -212,6 +218,9 @@
     <string name="pref_about_view_source">View on Github</string>
     <string name="pref_about_view_licenses">Open source licenses</string>
     <string name="pref_about_version">Version</string>
+
+    <string name="pref_restart_dialog_title">Restart required!</string>
+    <string name="pref_restart_dialog_description">A restart is required for these changes to take effect. Do you want to restart the app now?</string>
 
     <!-- Import/export data messages -->
     <string name="export_success">Data exported successfully!</string>

@@ -28,7 +28,17 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://jitpack.io" }
     }
+}
+
+project.ext {
+    kotlinFlags = [
+            "-opt-in=kotlin.ExperimentalStdlibApi",
+            "-opt-in=kotlin.time.ExperimentalTime",
+            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+            "-opt-in=kotlinx.coroutines.FlowPreview",
+    ]
 }
 
 clean {

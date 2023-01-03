@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,16 +86,16 @@ fun <VM : ViewModel> createLazyViewModel(
     savedStateRegistryOwnerProducer: () -> SavedStateRegistryOwner,
     viewModelStoreOwnerProducer: () -> ViewModelStoreOwner,
     viewModelProvider: (SavedStateHandle) -> VM
-) = ViewModelLazy(viewModelClass, { viewModelStoreOwnerProducer().viewModelStore }) {
+) = ViewModelLazy(viewModelClass, { viewModelStoreOwnerProducer().viewModelStore }, {
     object : AbstractSavedStateViewModelFactory(savedStateRegistryOwnerProducer(), Bundle()) {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(
+        override fun <T : ViewModel> create(
             key: String,
             modelClass: Class<T>,
             handle: SavedStateHandle
         ) = viewModelProvider(handle) as T
     }
-}
+})
 
 interface AssistedSavedStateViewModelFactory<T> {
     fun create(savedStateHandle: SavedStateHandle): T

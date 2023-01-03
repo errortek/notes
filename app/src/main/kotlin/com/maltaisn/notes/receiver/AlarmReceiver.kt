@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.maltaisn.notes.App
@@ -70,12 +71,19 @@ class AlarmReceiver : BroadcastReceiver() {
 
         reminderAlarmManager.setNextNoteReminderAlarm(note)
 
+        var pendingIntentBaseFlags = 0
+        if (Build.VERSION.SDK_INT >= 23) {
+            pendingIntentBaseFlags = pendingIntentBaseFlags or PendingIntent.FLAG_IMMUTABLE
+        }
+
+        val noteText = note.asText(includeTitle = false).ifBlank { null }
         val builder = NotificationCompat.Builder(context, App.NOTIFICATION_CHANNEL_ID)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setSmallIcon(R.drawable.ic_app_icon)
             .setGroup(NOTIFICATION_GROUP)
             .setContentTitle(note.title.ifBlank { null })
-            .setContentText(note.asText(includeTitle = false).ifBlank { null })
+            .setContentText(noteText)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(noteText))
             .setAutoCancel(true)
 
         // Edit/view main action
@@ -83,18 +91,20 @@ class AlarmReceiver : BroadcastReceiver() {
             action = MainActivity.INTENT_ACTION_EDIT
             putExtra(EXTRA_NOTE_ID, noteId)
         }
-        builder.setContentIntent(PendingIntent.getActivity(context, noteId.toInt(), notifIntent, 0))
+        builder.setContentIntent(PendingIntent.getActivity(context,
+            noteId.toInt(), notifIntent, pendingIntentBaseFlags))
 
         // Add actions for non-recurring reminders
         if (note.reminder?.recurrence == null) {
+            val pendingIntentFlags = pendingIntentBaseFlags or PendingIntent.FLAG_UPDATE_CURRENT
+
             // Mark done action
             val markDoneIntent = Intent(context, AlarmReceiver::class.java).apply {
                 action = ACTION_MARK_DONE
                 putExtra(EXTRA_NOTE_ID, noteId)
             }
             builder.addAction(R.drawable.ic_check, context.getString(R.string.action_mark_as_done),
-                PendingIntent.getBroadcast(context, noteId.toInt(), markDoneIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT))
+                PendingIntent.getBroadcast(context, noteId.toInt(), markDoneIntent, pendingIntentFlags))
 
             // Postpone action only if not recurring.
             val postponeIntent = Intent(context, NotificationActivity::class.java).apply {
@@ -104,13 +114,12 @@ class AlarmReceiver : BroadcastReceiver() {
             }
             builder.addAction(R.drawable.ic_calendar,
                 context.getString(R.string.action_postpone),
-                PendingIntent.getActivity(context, noteId.toInt(), postponeIntent,
-                     PendingIntent.FLAG_UPDATE_CURRENT))
+                PendingIntent.getActivity(context, noteId.toInt(), postponeIntent, pendingIntentFlags))
         }
 
         NotificationManagerCompat.from(context).notify(noteId.toInt(), builder.build())
     }
-    
+
     private suspend fun markReminderAsDone(context: Context, noteId: Long) {
         reminderAlarmManager.markReminderAsDone(noteId)
         withContext(Dispatchers.Main) {
@@ -125,5 +134,4 @@ class AlarmReceiver : BroadcastReceiver() {
         const val EXTRA_NOTE_ID = "com.maltaisn.notes.reminder.NOTE_ID"
         const val NOTIFICATION_GROUP = "com.maltaisn.notes.reminder.REMINDERS"
     }
-
 }

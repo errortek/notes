@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.preference.PreferenceFragmentCompat
+import com.google.android.material.transition.MaterialElevationScale
+import com.maltaisn.notes.sync.R
 import com.maltaisn.notes.sync.databinding.FragmentSettingsBinding
 
 /**
@@ -33,6 +35,17 @@ import com.maltaisn.notes.sync.databinding.FragmentSettingsBinding
 class NestedSettingsFragment : PreferenceFragmentCompat() {
 
     private val args: NestedSettingsFragmentArgs by navArgs()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        enterTransition = MaterialElevationScale(false).apply {
+            duration = resources.getInteger(R.integer.material_motion_duration_short_2).toLong()
+        }
+        exitTransition = MaterialElevationScale(true).apply {
+            duration = resources.getInteger(R.integer.material_motion_duration_short_2).toLong()
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,5 +60,4 @@ class NestedSettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(args.prefsXml, rootKey)
     }
-
 }

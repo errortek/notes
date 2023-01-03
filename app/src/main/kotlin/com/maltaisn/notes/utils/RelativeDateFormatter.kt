@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package com.maltaisn.notes.utils
 import android.content.res.Resources
 import android.icu.text.RelativeDateTimeFormatter
 import android.text.format.DateUtils
+import com.maltaisn.notes.setToStartOfDay
 import com.maltaisn.notes.sync.R
 import java.text.DateFormat
 import java.util.Calendar
@@ -33,8 +34,10 @@ import java.util.Calendar
  *
  * @property absoluteDateFormatter Date formatter used for absolute dates.
  */
-class RelativeDateFormatter(private val resources: Resources,
-                            private val absoluteDateFormatter: (date: Long) -> String) {
+class RelativeDateFormatter(
+    private val resources: Resources,
+    private val absoluteDateFormatter: (date: Long) -> String
+) {
 
     private val calendar = Calendar.getInstance()
 
@@ -61,12 +64,4 @@ class RelativeDateFormatter(private val resources: Resources,
                 absoluteDateFormatter(date), timeStr)
         }
     }
-
-    private fun Calendar.setToStartOfDay() {
-        this[Calendar.HOUR_OF_DAY] = 0
-        this[Calendar.MINUTE] = 0
-        this[Calendar.SECOND] = 0
-        this[Calendar.MILLISECOND] = 0
-    }
-
 }

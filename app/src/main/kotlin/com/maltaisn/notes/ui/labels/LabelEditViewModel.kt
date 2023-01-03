@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,9 @@ import com.maltaisn.notes.model.entity.Label.Companion.NO_COLOR
 import com.maltaisn.notes.ui.AssistedSavedStateViewModelFactory
 import com.maltaisn.notes.ui.Event
 import com.maltaisn.notes.ui.send
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 
 class LabelEditViewModel @AssistedInject constructor(
@@ -35,6 +36,10 @@ class LabelEditViewModel @AssistedInject constructor(
     private val _setLabelEvent = MutableLiveData<Event<Label>>()
     val setLabelEvent: LiveData<Event<Label>>
         get() = _setLabelEvent
+
+    private val _labelAddEvent = MutableLiveData<Event<Label>>()
+    val labelAddEvent: LiveData<Event<Label>>
+        get() = _labelAddEvent
 
     private val _labelError = MutableLiveData(Error.NONE)
     val nameError: LiveData<Error>
@@ -99,17 +104,20 @@ class LabelEditViewModel @AssistedInject constructor(
     }
 
     fun addLabel() {
+        var label = Label(labelId, labelName, hidden, color)
         viewModelScope.launch {
             if (labelId == Label.NO_ID) {
-                labelsRepository.insertLabel(Label(Label.NO_ID, labelName, hidden, color))
+                val id = labelsRepository.insertLabel(label)
+                label = label.copy(id = id)
             } else {
                 // Must use update, using insert will remove the label references despite being update on conflict.
-                labelsRepository.updateLabel(Label(labelId, labelName, hidden, color))
+                labelsRepository.updateLabel(label)
             }
+            _labelAddEvent.send(label)
         }
     }
 
-    private fun updateError(){
+    private fun updateError() {
         viewModelScope.launch {
             // Label name must not be empty and must not exist.
             // Ignore name clash if label is the one being edited.
@@ -132,7 +140,7 @@ class LabelEditViewModel @AssistedInject constructor(
         BLANK
     }
 
-    @AssistedInject.Factory
+    @AssistedFactory
     interface Factory : AssistedSavedStateViewModelFactory<LabelEditViewModel> {
         override fun create(savedStateHandle: SavedStateHandle): LabelEditViewModel
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import com.maltaisn.notes.ui.assertLiveDataEventSent
 import com.maltaisn.notes.ui.getOrAwaitValue
 import com.maltaisn.recurpicker.Recurrence
 import com.maltaisn.recurpicker.RecurrenceFinder
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -77,28 +77,28 @@ class ReminderViewModelTest {
     }
 
     @Test
-    fun `should fail to start with no note ids`() = mainCoroutineRule.runBlockingTest {
+    fun `should fail to start with no note ids`() = runTest {
         assertFailsWith<IllegalArgumentException> {
             viewModel.start(emptyList())
         }
     }
 
     @Test
-    fun `should start with single note without reminder`() = mainCoroutineRule.runBlockingTest {
+    fun `should start with single note without reminder`() = runTest {
         viewModel.start(listOf(3))
         assertFalse(viewModel.isEditingReminder.getOrAwaitValue())
         assertFalse(viewModel.isDeleteBtnVisible.getOrAwaitValue())
     }
 
     @Test
-    fun `should start with multiple notes`() = mainCoroutineRule.runBlockingTest {
+    fun `should start with multiple notes`() = runTest {
         viewModel.start(listOf(1, 3))
         assertFalse(viewModel.isEditingReminder.getOrAwaitValue())
         assertTrue(viewModel.isDeleteBtnVisible.getOrAwaitValue())
     }
 
     @Test
-    fun `should edit single note with reminder`() = mainCoroutineRule.runBlockingTest {
+    fun `should edit single note with reminder`() = runTest {
         viewModel.start(listOf(1))
         assertTrue(viewModel.isEditingReminder.getOrAwaitValue())
         assertTrue(viewModel.isDeleteBtnVisible.getOrAwaitValue())
@@ -111,14 +111,13 @@ class ReminderViewModelTest {
     }
 
     @Test
-    fun `should use no recurrence by default when creating reminder`() =
-        mainCoroutineRule.runBlockingTest {
-            viewModel.start(listOf(3))
-            assertEquals(Recurrence.DOES_NOT_REPEAT, viewModel.details.getOrAwaitValue().recurrence)
-        }
+    fun `should use no recurrence by default when creating reminder`() = runTest {
+        viewModel.start(listOf(3))
+        assertEquals(Recurrence.DOES_NOT_REPEAT, viewModel.details.getOrAwaitValue().recurrence)
+    }
 
     @Test
-    fun `should show date dialog with correct date`() = mainCoroutineRule.runBlockingTest {
+    fun `should show date dialog with correct date`() = runTest {
         viewModel.start(listOf(1))
         viewModel.onDateClicked()
 
@@ -128,7 +127,7 @@ class ReminderViewModelTest {
     }
 
     @Test
-    fun `should show time dialog`() = mainCoroutineRule.runBlockingTest {
+    fun `should show time dialog`() = runTest {
         val reminder = notesRepo.requireNoteById(1).reminder!!
         viewModel.start(listOf(1))
         viewModel.onTimeClicked()
@@ -136,7 +135,7 @@ class ReminderViewModelTest {
     }
 
     @Test
-    fun `should show recurrence list dialog`() = mainCoroutineRule.runBlockingTest {
+    fun `should show recurrence list dialog`() = runTest {
         viewModel.start(listOf(1))
         viewModel.onRecurrenceClicked()
         val reminder = notesRepo.requireNoteById(1).reminder!!
@@ -147,7 +146,7 @@ class ReminderViewModelTest {
     }
 
     @Test
-    fun `should show recurrence picker dialog`() = mainCoroutineRule.runBlockingTest {
+    fun `should show recurrence picker dialog`() = runTest {
         viewModel.start(listOf(1))
         viewModel.onRecurrenceCustomClicked()
         val reminder = notesRepo.requireNoteById(1).reminder!!
@@ -157,15 +156,16 @@ class ReminderViewModelTest {
     }
 
     @Test
-    fun `should update reminder details when changing date`() = mainCoroutineRule.runBlockingTest {
+    fun `should update reminder details when changing date`() = runTest {
+        val date = GregorianCalendar(2020, Calendar.JANUARY, 1).timeInMillis
         viewModel.start(listOf(2))
-        viewModel.changeDate(2020, Calendar.JANUARY, 1)
+        viewModel.changeDate(date)
         val details = viewModel.details.getOrAwaitValue()
-        assertOnSameDay(GregorianCalendar(2020, Calendar.JANUARY, 1).timeInMillis, details.date)
+        assertOnSameDay(date, details.date)
     }
 
     @Test
-    fun `should update reminder details when changing time`() = mainCoroutineRule.runBlockingTest {
+    fun `should update reminder details when changing time`() = runTest {
         viewModel.start(listOf(2))
         viewModel.changeTime(3, 14)
         val details = viewModel.details.getOrAwaitValue()
@@ -175,115 +175,105 @@ class ReminderViewModelTest {
     }
 
     @Test
-    fun `should update reminder details when changing recurrence`() =
-        mainCoroutineRule.runBlockingTest {
-            viewModel.start(listOf(2))
-            viewModel.changeRecurrence(Recurrence(Recurrence.Period.DAILY))
-            val details = viewModel.details.getOrAwaitValue()
-            assertEquals(Recurrence(Recurrence.Period.DAILY), details.recurrence)
-        }
-
-    @Test
-    fun `should be invalid time if start date time is before now (yesterday)`() =
-        mainCoroutineRule.runBlockingTest {
-            viewModel.start(listOf(3))
-
-            val calendar = Calendar.getInstance()
-            calendar.add(Calendar.DATE, -1)
-            viewModel.changeDate(calendar[Calendar.YEAR],
-                calendar[Calendar.MONTH],
-                calendar[Calendar.DATE])
-            assertTrue(viewModel.invalidTime.getOrAwaitValue())
-            viewModel.changeTime(23, 59)
-            assertTrue(viewModel.invalidTime.getOrAwaitValue())
-        }
-
-    @Test
-    fun `should be invalid time if start date time is before now (today)`() =
-        mainCoroutineRule.runBlockingTest {
-            viewModel.start(listOf(3))
-
-            val calendar = Calendar.getInstance()
-            viewModel.changeDate(calendar[Calendar.YEAR],
-                calendar[Calendar.MONTH],
-                calendar[Calendar.DATE])
-            viewModel.changeTime(0, 0)
-            assertTrue(viewModel.invalidTime.getOrAwaitValue())
-        }
-
-    @Test
-    fun `should be valid time if start date time is after now (today)`() =
-        mainCoroutineRule.runBlockingTest {
-            viewModel.start(listOf(3))
-            val calendar = Calendar.getInstance()
-            viewModel.changeDate(calendar[Calendar.YEAR],
-                calendar[Calendar.MONTH],
-                calendar[Calendar.DATE])
-            viewModel.changeTime(23, 59)
-            assertFalse(viewModel.invalidTime.getOrAwaitValue())
-        }
-
-    @Test
-    fun `should be valid time if start date time is after now (tomorrow)`() =
-        mainCoroutineRule.runBlockingTest {
-            viewModel.start(listOf(3))
-            val calendar = Calendar.getInstance()
-            calendar.add(Calendar.DATE, 1)
-            viewModel.changeDate(calendar[Calendar.YEAR],
-                calendar[Calendar.MONTH],
-                calendar[Calendar.DATE])
-            assertFalse(viewModel.invalidTime.getOrAwaitValue())
-            viewModel.changeTime(0, 0)
-            assertFalse(viewModel.invalidTime.getOrAwaitValue())
-        }
-
-    @Test
-    fun `should be valid time by default`() = mainCoroutineRule.runBlockingTest {
-        viewModel.start(listOf(3))
-        assertFalse(viewModel.invalidTime.getOrAwaitValue())
-    }
-
-    @Test
-    fun `should remove end date if start date is set after`() = mainCoroutineRule.runBlockingTest {
+    fun `should update reminder details when changing recurrence`() = runTest {
         viewModel.start(listOf(2))
-        viewModel.changeRecurrence(Recurrence(Recurrence.Period.DAILY) {
-            endDate = dateFor("2020-08-16").time
-        })
-        viewModel.changeDate(2021, Calendar.JANUARY, 1)
+        viewModel.changeRecurrence(Recurrence(Recurrence.Period.DAILY))
         val details = viewModel.details.getOrAwaitValue()
         assertEquals(Recurrence(Recurrence.Period.DAILY), details.recurrence)
     }
 
     @Test
-    fun `should not remove end date if start date is set on same day`() =
-        mainCoroutineRule.runBlockingTest {
-            viewModel.start(listOf(2))
-            val recurrence = Recurrence(Recurrence.Period.DAILY) {
-                endDate = dateFor("2020-08-16").time
-            }
-            viewModel.changeRecurrence(recurrence)
-            viewModel.changeDate(2020, Calendar.AUGUST, 16)
-            val details = viewModel.details.getOrAwaitValue()
-            assertEquals(recurrence, details.recurrence)
-        }
-
-    @Test
-    fun `should change monthly recurrence on last day if start date not on last day`() =
-        mainCoroutineRule.runBlockingTest {
-            viewModel.start(listOf(2))
-            viewModel.changeDate(2020, Calendar.JANUARY, 31)
-            viewModel.changeRecurrence(Recurrence(Recurrence.Period.MONTHLY) {
-                dayInMonth = -1
-            })
-            viewModel.changeDate(2020, Calendar.JANUARY, 15)
-            val details = viewModel.details.getOrAwaitValue()
-            assertEquals(Recurrence(Recurrence.Period.MONTHLY), details.recurrence)
-        }
-
-    @Test
-    fun `should create reminder with changed fields`() = mainCoroutineRule.runBlockingTest {
+    fun `should be invalid time if start date time is before now (yesterday)`() = runTest {
         viewModel.start(listOf(3))
-        viewModel.changeDate(9999, Calendar.JANUARY, 1)
+
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DATE, -1)
+        viewModel.changeDate(calendar.timeInMillis)
+        assertTrue(viewModel.invalidTime.getOrAwaitValue())
+        viewModel.changeTime(23, 59)
+        assertTrue(viewModel.invalidTime.getOrAwaitValue())
+    }
+
+    @Test
+    fun `should be invalid time if start date time is before now (today)`() = runTest {
+        viewModel.start(listOf(3))
+
+        val calendar = Calendar.getInstance()
+        viewModel.changeDate(calendar.timeInMillis)
+        viewModel.changeTime(0, 0)
+        assertTrue(viewModel.invalidTime.getOrAwaitValue())
+    }
+
+    @Test
+    fun `should be valid time if start date time is after now (today)`() = runTest {
+        viewModel.start(listOf(3))
+        val calendar = Calendar.getInstance()
+        viewModel.changeDate(calendar.timeInMillis)
+        viewModel.changeTime(23, 59)
+        assertFalse(viewModel.invalidTime.getOrAwaitValue())
+    }
+
+    @Test
+    fun `should be valid time if start date time is after now (tomorrow)`() = runTest {
+        viewModel.start(listOf(3))
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DATE, 1)
+        viewModel.changeDate(calendar.timeInMillis)
+        assertFalse(viewModel.invalidTime.getOrAwaitValue())
+        viewModel.changeTime(0, 0)
+        assertFalse(viewModel.invalidTime.getOrAwaitValue())
+    }
+
+    @Test
+    fun `should be valid time by default`() = runTest {
+        viewModel.start(listOf(3))
+        assertFalse(viewModel.invalidTime.getOrAwaitValue())
+    }
+
+    @Test
+    fun `should remove end date if start date is set after`() = runTest {
+        viewModel.start(listOf(2))
+        viewModel.changeRecurrence(Recurrence(Recurrence.Period.DAILY) {
+            endDate = dateFor("2020-08-16").time
+        })
+        val date = GregorianCalendar(2021, Calendar.JANUARY, 1).timeInMillis
+        viewModel.changeDate(date)
+        val details = viewModel.details.getOrAwaitValue()
+        assertEquals(Recurrence(Recurrence.Period.DAILY), details.recurrence)
+    }
+
+    @Test
+    fun `should not remove end date if start date is set on same day`() = runTest {
+        viewModel.start(listOf(2))
+        val recurrence = Recurrence(Recurrence.Period.DAILY) {
+            endDate = dateFor("2020-08-16").time
+        }
+        viewModel.changeRecurrence(recurrence)
+        val date = GregorianCalendar(2020, Calendar.AUGUST, 16).timeInMillis
+        viewModel.changeDate(date)
+        val details = viewModel.details.getOrAwaitValue()
+        assertEquals(recurrence, details.recurrence)
+    }
+
+    @Test
+    fun `should change monthly recurrence on last day if start date not on last day`() = runTest {
+        viewModel.start(listOf(2))
+        val date1 = GregorianCalendar(2020, Calendar.JANUARY, 31).timeInMillis
+        viewModel.changeDate(date1)
+        viewModel.changeRecurrence(Recurrence(Recurrence.Period.MONTHLY) {
+            dayInMonth = -1
+        })
+        val date2 = GregorianCalendar(2020, Calendar.JANUARY, 15).timeInMillis
+        viewModel.changeDate(date2)
+        val details = viewModel.details.getOrAwaitValue()
+        assertEquals(Recurrence(Recurrence.Period.MONTHLY), details.recurrence)
+    }
+
+    @Test
+    fun `should create reminder with changed fields`() = runTest {
+        viewModel.start(listOf(3))
+        val date = GregorianCalendar(9999, Calendar.JANUARY, 1).timeInMillis
+        viewModel.changeDate(date)
         viewModel.changeTime(3, 14)
         viewModel.changeRecurrence(Recurrence(Recurrence.Period.WEEKLY))
         viewModel.createReminder()
@@ -299,9 +289,10 @@ class ReminderViewModelTest {
     }
 
     @Test
-    fun `should create non-recurring reminder`() = mainCoroutineRule.runBlockingTest {
+    fun `should create non-recurring reminder`() = runTest {
         viewModel.start(listOf(3))
-        viewModel.changeDate(9999, Calendar.JANUARY, 1)
+        val date = GregorianCalendar(9999, Calendar.JANUARY, 1).timeInMillis
+        viewModel.changeDate(date)
         viewModel.changeTime(3, 14)
         viewModel.createReminder()
 
@@ -312,9 +303,10 @@ class ReminderViewModelTest {
     }
 
     @Test
-    fun `should not create reminder with no events`() = mainCoroutineRule.runBlockingTest {
+    fun `should not create reminder with no events`() = runTest {
         viewModel.start(listOf(1))
-        viewModel.changeDate(2100, Calendar.JANUARY, 1) // Friday
+        val date = GregorianCalendar(2100, Calendar.JANUARY, 1).timeInMillis
+        viewModel.changeDate(date) // Friday
         viewModel.changeRecurrence(Recurrence(Recurrence.Period.WEEKLY) {
             setDaysOfWeek(Recurrence.THURSDAY)
             endDate = dateFor("2100-01-01").time
@@ -327,7 +319,7 @@ class ReminderViewModelTest {
     }
 
     @Test
-    fun `should delete reminder`() = mainCoroutineRule.runBlockingTest {
+    fun `should delete reminder`() = runTest {
         viewModel.start(listOf(1))
         viewModel.deleteReminder()
         assertNull(notesRepo.requireNoteById(1).reminder)
@@ -339,5 +331,11 @@ class ReminderViewModelTest {
     private fun assertOnSameDay(expected: Long, actual: Long) {
         val fmt = SimpleDateFormat("yyyy-MM-dd")
         assertEquals(fmt.format(expected), fmt.format(actual))
+    }
+
+    private fun ReminderViewModel.changeDate(newDate: Long) {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = newDate
+        this.changeDate(calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH])
     }
 }

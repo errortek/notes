@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,9 @@ import com.maltaisn.notes.ui.edit.adapter.EditTitleItem
 import com.maltaisn.notes.ui.edit.adapter.EditableText
 import com.maltaisn.notes.ui.note.ShownDateField
 import com.maltaisn.notes.ui.send
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
@@ -143,6 +144,10 @@ class EditViewModel @AssistedInject constructor(
     val editItems: LiveData<out List<EditListItem>>
         get() = _editItems
 
+    private val _noteCreateEvent = MutableLiveData<Event<Long>>()
+    val noteCreateEvent: LiveData<Event<Long>>
+        get() = _noteCreateEvent
+
     private val _focusEvent = MutableLiveData<Event<FocusChange>>()
     val focusEvent: LiveData<Event<FocusChange>>
         get() = _focusEvent
@@ -192,16 +197,18 @@ class EditViewModel @AssistedInject constructor(
         get() = status == NoteStatus.DELETED
 
     private var updateNoteJob: Job? = null
+    private var restoreNoteJob: Job? = null
 
     init {
         if (KEY_NOTE_ID in savedStateHandle) {
-            viewModelScope.launch {
+            restoreNoteJob = viewModelScope.launch {
                 isNewNote = savedStateHandle[KEY_IS_NEW_NOTE] ?: false
 
                 val note = notesRepository.getNoteById(savedStateHandle[KEY_NOTE_ID] ?: Note.NO_ID)
                 if (note != null) {
                     this@EditViewModel.note = note
                 }
+                restoreNoteJob = null
             }
         }
     }
@@ -211,14 +218,24 @@ class EditViewModel @AssistedInject constructor(
      * The view model can only be started once to edit a note.
      * Subsequent calls with different arguments will do nothing and previous note will be edited.
      *
-     * @param noteId Can be [Note.NO_ID] to create a new blank note.
+     * @param noteId Can be [Note.NO_ID] to create a new note with [type], [title] and [content].
      * @param labelId Can be different from [Label.NO_ID] to initially set a label on a new note.
+     * @param changeReminder Whether to start editing note by first changing the reminder.
      */
-    fun start(noteId: Long = Note.NO_ID, labelId: Long = Label.NO_ID, changeReminder: Boolean = false) {
+    fun start(
+        noteId: Long = Note.NO_ID,
+        labelId: Long = Label.NO_ID,
+        changeReminder: Boolean = false,
+        type: NoteType = NoteType.TEXT,
+        title: String = "",
+        content: String = "",
+    ) {
         viewModelScope.launch {
             // If fragment was very briefly destroyed then recreated, it's possible that this job is launched
             // before the job to save the note on fragment destruction is called.
             updateNoteJob?.join()
+            // Also make sure note is restored after recreation before this is called.
+            restoreNoteJob?.join()
 
             val isFirstStart = (note == BLANK_NOTE)
 
@@ -235,11 +252,15 @@ class EditViewModel @AssistedInject constructor(
             var note = noteWithLabels?.note
             var labels = noteWithLabels?.labels
 
-            if (note == null || labels == null) {
-                // Note doesn't exist, create new blank text note.
+            if (note == null) {
+                // Note doesn't exist, create new blank note of the corresponding type.
                 // This is the expected path for creating a new note (by passing Note.NO_ID)
                 val date = Date()
-                note = BLANK_NOTE.copy(addedDate = date, lastModifiedDate = date)
+                note = BLANK_NOTE.copy(addedDate = date, lastModifiedDate = date, title = title, content = content)
+                if (type == NoteType.LIST) {
+                    note = note.asListNote()
+                }
+
                 val id = notesRepository.insertNote(note)
                 note = note.copy(id = id)
 
@@ -251,12 +272,14 @@ class EditViewModel @AssistedInject constructor(
                     labelsRepository.insertLabelRefs(listOf(LabelRef(id, labelId)))
                 }
 
+                _noteCreateEvent.send(id)
+
                 isNewNote = true
-                savedStateHandle[KEY_IS_NEW_NOTE] = isNewNote
+                savedStateHandle[KEY_IS_NEW_NOTE] = true
             }
 
             this@EditViewModel.note = note
-            this@EditViewModel.labels = labels
+            this@EditViewModel.labels = labels!!
             status = note.status
             pinned = note.pinned
             reminder = note.reminder
@@ -266,11 +289,13 @@ class EditViewModel @AssistedInject constructor(
             _notePinned.value = pinned
             _noteReminder.value = reminder
 
+            savedStateHandle[KEY_NOTE_ID] = note.id
+
             recreateListItems()
 
             if (isFirstStart && isNewNote) {
-                // Focus on text content
-                focusItemAt(findItemPos<EditContentItem>(), 0, false)
+                // Focus on title
+                focusItemAt(findItemPos<EditTitleItem>(), 0, false)
 
                 if (changeReminder) {
                     changeReminder()
@@ -299,10 +324,9 @@ class EditViewModel @AssistedInject constructor(
                 // Note was changed.
                 // To know whether last modified date should be changed, compare note
                 // with a copy that has the original values for fields we don't care about.
-                val changeLastModified = (oldNote != note.copy(
-                    pinned = oldNote.pinned,
-                    status = oldNote.status))
-                if (changeLastModified) {
+                val noteForComparison = note.copy(
+                    pinned = if (note.status == oldNote.status) oldNote.pinned else note.pinned)
+                if (oldNote != noteForComparison) {
                     note = note.copy(lastModifiedDate = Date())
                 }
 
@@ -316,14 +340,13 @@ class EditViewModel @AssistedInject constructor(
      * Send exit event. If note is blank, it's discarded.
      */
     fun exit() {
-        if (note.isBlank) {
-            // Delete blank note
-            viewModelScope.launch {
-                notesRepository.deleteNote(note)
+        viewModelScope.launch {
+            updateNoteJob?.join()
+            if (note.isBlank) {
+                // Delete blank note
+                deleteNoteInternal()
                 _messageEvent.send(EditMessage.BLANK_NOTE_DISCARDED)
-                _exitEvent.send()
             }
-        } else {
             _exitEvent.send()
         }
     }
@@ -465,7 +488,7 @@ class EditViewModel @AssistedInject constructor(
 
     fun deleteNoteForeverAndExit() {
         viewModelScope.launch {
-            notesRepository.deleteNote(note)
+            deleteNoteInternal()
         }
         exit()
     }
@@ -496,6 +519,14 @@ class EditViewModel @AssistedInject constructor(
         }
 
         moveCheckedItemsToBottom()
+    }
+
+    fun focusNoteContent() {
+        if (note.type == NoteType.TEXT) {
+            val contentItemPos = findItemPos<EditContentItem>()
+            val contentItem = listItems[contentItemPos] as EditContentItem
+            focusItemAt(contentItemPos, contentItem.content.text.length, true)
+        }
     }
 
     private fun changeNoteStatusAndExit(newStatus: NoteStatus) {
@@ -535,6 +566,12 @@ class EditViewModel @AssistedInject constructor(
      * Note is not updated in database and last modified date isn't changed.
      */
     private fun updateNote() {
+        if (listItems.isEmpty()) {
+            // updateNote seems to be called before list items are created due to
+            // live data events being called in a non-deterministic order? Return to avoid a crash.
+            return
+        }
+
         // Create note
         val title = findItem<EditTitleItem>().title.text.toString()
         val content: String
@@ -558,6 +595,11 @@ class EditViewModel @AssistedInject constructor(
         }
         note = note.copy(title = title, content = content,
             metadata = metadata, status = status, pinned = pinned, reminder = reminder)
+    }
+
+    private suspend fun deleteNoteInternal() {
+        notesRepository.deleteNote(note)
+        reminderAlarmManager.removeAlarm(note.id)
     }
 
     /**
@@ -596,7 +638,7 @@ class EditViewModel @AssistedInject constructor(
                     // Unchecked list items
                     for ((i, item) in noteItems.withIndex()) {
                         if (!item.checked) {
-                            listItems += EditItemItem(DefaultEditableText(item.content), item.checked, canEdit, i)
+                            listItems += EditItemItem(DefaultEditableText(item.content), false, canEdit, i)
                         }
                     }
 
@@ -611,7 +653,7 @@ class EditViewModel @AssistedInject constructor(
                         listItems += EditCheckedHeaderItem(checkCount)
                         for ((i, item) in noteItems.withIndex()) {
                             if (item.checked) {
-                                listItems += EditItemItem(DefaultEditableText(item.content), item.checked, canEdit, i)
+                                listItems += EditItemItem(DefaultEditableText(item.content), true, canEdit, i)
                             }
                         }
                     }
@@ -797,7 +839,7 @@ class EditViewModel @AssistedInject constructor(
                 val firstUncheckedPos = listItems.indexOfFirst { it is EditItemItem }
                 listItems.subList(firstUncheckedPos, lastUncheckedPos).sortBy { (it as EditItemItem).actualPos }
             } else {
-               lastUncheckedPos = findItemPos<EditTitleItem>() + 1
+                lastUncheckedPos = findItemPos<EditTitleItem>() + 1
             }
 
             // Re-add the checked group if any checked items, items sorted by actual pos
@@ -851,7 +893,7 @@ class EditViewModel @AssistedInject constructor(
         override fun toString() = text.toString()
     }
 
-    @AssistedInject.Factory
+    @AssistedFactory
     interface Factory : AssistedSavedStateViewModelFactory<EditViewModel> {
         override fun create(savedStateHandle: SavedStateHandle): EditViewModel
     }
@@ -863,6 +905,6 @@ class EditViewModel @AssistedInject constructor(
         private const val KEY_NOTE_ID = "noteId"
         private const val KEY_IS_NEW_NOTE = "isNewNote"
 
-        private val TEMP_ITEM = EditItemItem(DefaultEditableText(), false, false, 0)
+        private val TEMP_ITEM = EditItemItem(DefaultEditableText(), checked = false, editable = false, actualPos = 0)
     }
 }

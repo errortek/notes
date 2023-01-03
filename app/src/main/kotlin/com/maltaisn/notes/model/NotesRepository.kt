@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,8 @@ interface NotesRepository {
     suspend fun getNoteById(id: Long): Note?
     suspend fun getNoteByIdWithLabels(id: Long): NoteWithLabels?
 
+    suspend fun getLastCreatedNote(): Note?
+
     fun getNotesByStatus(status: NoteStatus): Flow<List<NoteWithLabels>>
     fun getNotesByLabel(labelId: Long): Flow<List<NoteWithLabels>>
     fun getNotesWithReminder(): Flow<List<NoteWithLabels>>
@@ -43,5 +45,4 @@ interface NotesRepository {
     suspend fun deleteOldNotesInTrash()
 
     suspend fun clearAllData()
-
 }

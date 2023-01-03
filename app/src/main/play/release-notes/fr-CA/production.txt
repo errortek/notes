@@ -1,3 +1,4 @@
-- Ajout d'options de tri.
-- Plus de résultats surlignés dans la recherche.
-- Plusieurs bugs corrigés.
+- Redesign complet Material 3, avec couleurs dynamiques.
+- Transitions fluides entre les fenêtres de l'application.
+- Correction des raccourcis non fonctionnels.
+- Quelques changements et corrections de bugs mineurs.

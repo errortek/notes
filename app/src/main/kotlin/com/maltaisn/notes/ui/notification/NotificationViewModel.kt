@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,9 @@ import com.maltaisn.notes.model.entity.Note
 import com.maltaisn.notes.ui.AssistedSavedStateViewModelFactory
 import com.maltaisn.notes.ui.Event
 import com.maltaisn.notes.ui.send
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -56,6 +57,10 @@ class NotificationViewModel @AssistedInject constructor(
     private val _showTimeDialogEvent = MutableLiveData<Event<Long>>()
     val showTimeDialogEvent: LiveData<Event<Long>>
         get() = _showTimeDialogEvent
+
+    private val _clearNotificationEvent = MutableLiveData<Event<Long>>()
+    val clearNotificationEvent: LiveData<Event<Long>>
+        get() = _clearNotificationEvent
 
     private val _exitEvent = MutableLiveData<Event<Unit>>()
     val exitEvent: LiveData<Event<Unit>>
@@ -97,7 +102,6 @@ class NotificationViewModel @AssistedInject constructor(
 
         // Open time dialog next
         viewModelScope.launch {
-            // TODO thats ugly
             delay(INTER_DIALOG_DELAY)
             _showTimeDialogEvent.send(postponeTime)
         }
@@ -115,16 +119,19 @@ class NotificationViewModel @AssistedInject constructor(
                 val note = notesRepository.getNoteById(noteId)
                 val reminder = note?.reminder
                 if (note != null && reminder != null && reminder.recurrence == null
-                        && !reminder.done && calendar.timeInMillis > reminder.next.time) {
+                    && !reminder.done && calendar.timeInMillis > reminder.next.time
+                ) {
                     // Reminder can be null or be recurring if user changed it between the
                     // notification and the postpone action.
                     val newNote = note.copy(reminder = reminder.postponeTo(calendar.time))
                     notesRepository.updateNote(newNote)
                     reminderAlarmManager.setNoteReminderAlarm(newNote)
                 }
+                _clearNotificationEvent.send(noteId)
                 _exitEvent.send()
             }
         } else {
+            _clearNotificationEvent.send(noteId)
             _exitEvent.send()
         }
     }
@@ -133,7 +140,7 @@ class NotificationViewModel @AssistedInject constructor(
         _exitEvent.send()
     }
 
-    @AssistedInject.Factory
+    @AssistedFactory
     interface Factory : AssistedSavedStateViewModelFactory<NotificationViewModel> {
         override fun create(savedStateHandle: SavedStateHandle): NotificationViewModel
     }

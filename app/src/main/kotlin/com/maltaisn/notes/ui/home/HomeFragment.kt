@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,23 @@
 
 package com.maltaisn.notes.ui.home
 
+import android.Manifest
 import android.app.ActivityManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.ActionMode
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.Hold
 import com.maltaisn.notes.App
 import com.maltaisn.notes.model.entity.NoteStatus
 import com.maltaisn.notes.navigateSafe
@@ -57,15 +62,32 @@ class HomeFragment : NoteFragment(), Toolbar.OnMenuItemClickListener {
 
         val context = requireContext()
         (context.applicationContext as App).appComponent.inject(this)
+    }
 
+    override fun onResume() {
+        super.onResume()
+
+        val context = requireContext()
+
+        var batteryRestricted = false
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // Detect battery restriction as it affects reminder alarms.
-            val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE)
-                    as? ActivityManager
+            val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
             if (activityManager?.isBackgroundRestricted == true) {
-                viewModel.notifyBatteryRestricted()
+                batteryRestricted = true
             }
         }
+
+        var notificationRestricted = false
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED
+            ) {
+                notificationRestricted = true
+            }
+        }
+
+        viewModel.updateRestrictions(batteryRestricted, notificationRestricted)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,6 +108,7 @@ class HomeFragment : NoteFragment(), Toolbar.OnMenuItemClickListener {
         }
 
         // Floating action button
+        binding.fab.transitionName = "createNoteTransition"
         binding.fab.setOnClickListener {
             viewModel.createNote()
         }
@@ -95,7 +118,9 @@ class HomeFragment : NoteFragment(), Toolbar.OnMenuItemClickListener {
 
     private fun setupViewModelObservers() {
         viewModel.messageEvent.observeEvent(viewLifecycleOwner) { messageId ->
-            Snackbar.make(requireView(), messageId, Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(requireView(), messageId, Snackbar.LENGTH_SHORT)
+                .setGestureInsetBottomIgnored(true)
+                .show()
         }
 
         viewModel.listLayoutMode.observe(viewLifecycleOwner) { mode ->
@@ -118,8 +143,16 @@ class HomeFragment : NoteFragment(), Toolbar.OnMenuItemClickListener {
         }
 
         viewModel.createNoteEvent.observeEvent(viewLifecycleOwner) { settings ->
+            exitTransition = Hold().apply {
+                duration = resources.getInteger(R.integer.material_motion_duration_medium_2).toLong()
+            }
+
+            val extras = FragmentNavigatorExtras(
+                binding.fab to "noteContainer0"
+            )
+
             findNavController().navigateSafe(NavGraphMainDirections.actionEditNote(
-                labelId = settings.labelId, changeReminder = settings.initialReminder))
+                labelId = settings.labelId, changeReminder = settings.initialReminder), extras = extras)
         }
 
         viewModel.showEmptyTrashDialogEvent.observeEvent(viewLifecycleOwner) {

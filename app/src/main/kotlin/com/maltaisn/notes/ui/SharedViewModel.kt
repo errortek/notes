@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import androidx.lifecycle.viewModelScope
 import com.maltaisn.notes.model.NotesRepository
 import com.maltaisn.notes.model.ReminderAlarmManager
 import com.maltaisn.notes.model.SortSettings
+import com.maltaisn.notes.model.entity.Label
 import com.maltaisn.notes.model.entity.NoteStatus
 import com.maltaisn.notes.model.entity.Reminder
 import com.maltaisn.notes.sync.R
@@ -54,6 +55,16 @@ class SharedViewModel @Inject constructor(
     val reminderChangeEvent: LiveData<Event<Reminder?>>
         get() = _reminderChangeEvent
 
+    // This is a bit wrong... events can only be observed once, but the same event
+    // has to be observed twice here (label add event). Thus we need two LiveDatas... or a refactor.
+    private val _labelAddEventNav = MutableLiveData<Event<Label>>()
+    val labelAddEventNav: LiveData<Event<Label>>
+        get() = _labelAddEventNav
+
+    private val _labelAddEventSelect = MutableLiveData<Event<Label>>()
+    val labelAddEventSelect: LiveData<Event<Label>>
+        get() = _labelAddEventSelect
+
     private val _sortChangeEvent = MutableLiveData<Event<SortSettings>>()
     val sortChangeEvent: LiveData<Event<SortSettings>>
         get() = _sortChangeEvent
@@ -61,6 +72,18 @@ class SharedViewModel @Inject constructor(
     private val _currentHomeDestination = MutableLiveData<HomeDestination>()
     val currentHomeDestination: LiveData<HomeDestination>
         get() = _currentHomeDestination
+
+    private val _currentHomeDestinationChangeEvent = MutableLiveData<Event<Unit>>()
+    val currentHomeDestinationChangeEvent: LiveData<Event<Unit>>
+        get() = _currentHomeDestinationChangeEvent
+
+    private val _sharedElementTransitionFinishedEvent = MutableLiveData<Event<Unit>>()
+    val sharedElementTransitionFinishedEvent: LiveData<Event<Unit>>
+        get() = _sharedElementTransitionFinishedEvent
+
+    private val _noteCreatedEvent = MutableLiveData<Event<Long>>()
+    val noteCreatedEvent: LiveData<Event<Long>>
+        get() = _noteCreatedEvent
 
     fun onBlankNoteDiscarded() {
         // Not shown from EditFragment so that FAB is pushed up.
@@ -94,11 +117,29 @@ class SharedViewModel @Inject constructor(
         _reminderChangeEvent.send(reminder)
     }
 
+    fun onLabelAdd(label: Label) {
+        _labelAddEventNav.send(label)
+        _labelAddEventSelect.send(label)
+    }
+
     fun changeSortSettings(settings: SortSettings) {
         _sortChangeEvent.send(settings)
     }
 
+    /**
+     * This is the method to use whenever the home destination should be changed.
+     * The navigation list selection will be updated automatically and the rest of app can listen for these changes.
+     */
     fun changeHomeDestination(destination: HomeDestination) {
         _currentHomeDestination.value = destination
+        _currentHomeDestinationChangeEvent.send()
+    }
+
+    fun sharedElementTransitionFinished() {
+        _sharedElementTransitionFinishedEvent.send()
+    }
+
+    fun noteCreated(noteId: Long) {
+        _noteCreatedEvent.send(noteId)
     }
 }

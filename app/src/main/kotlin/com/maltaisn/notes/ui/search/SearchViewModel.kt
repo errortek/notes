@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.maltaisn.notes.ui.search
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.maltaisn.notes.model.LabelsRepository
@@ -31,10 +32,11 @@ import com.maltaisn.notes.ui.note.NoteViewModel
 import com.maltaisn.notes.ui.note.PlaceholderData
 import com.maltaisn.notes.ui.note.adapter.HeaderItem
 import com.maltaisn.notes.ui.note.adapter.NoteAdapter
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import debugCheck
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class SearchViewModel @AssistedInject constructor(
@@ -68,8 +70,15 @@ class SearchViewModel @AssistedInject constructor(
         val cleanedQuery = SearchQueryCleaner.clean(query)
         noteListJob = viewModelScope.launch {
             delay(SEARCH_DEBOUNCE_DELAY)
-            notesRepository.searchNotes(cleanedQuery).collect { notes ->
-                createListItems(notes)
+            try {
+                notesRepository.searchNotes(cleanedQuery).collect { notes ->
+                    createListItems(notes)
+                }
+            } catch (e: SQLiteException) {
+                // SearchQueryCleaner may not be perfect, user might have entered
+                // something that produces erronous FTS match syntax. Just ignore it.
+                debugCheck(false) { "Search query cleaner failed for query '$cleanedQuery'" }
+                createListItems(emptyList())
             }
         }
     }
@@ -82,8 +91,6 @@ class SearchViewModel @AssistedInject constructor(
             selectedNotes.any { it.status == NoteStatus.ACTIVE } -> NoteStatus.ACTIVE
             else -> NoteStatus.ARCHIVED
         }
-
-    override val isNoteSwipeEnabled = false
 
     private fun createListItems(notes: List<NoteWithLabels>) {
         listItems = buildList {
@@ -106,7 +113,7 @@ class SearchViewModel @AssistedInject constructor(
     override fun updatePlaceholder() = PlaceholderData(
         R.drawable.ic_search, R.string.search_empty_placeholder)
 
-    @AssistedInject.Factory
+    @AssistedFactory
     interface Factory : AssistedSavedStateViewModelFactory<SearchViewModel> {
         override fun create(savedStateHandle: SavedStateHandle): SearchViewModel
     }

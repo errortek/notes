@@ -34,6 +34,12 @@
 
         <SwitchPreferenceCompat
             android:defaultValue="true"
+            app:key="dynamic_colors"
+            app:title="@string/pref_dynamic_colors"
+            />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
             app:key="strikethrough_checked"
             app:title="@string/pref_strikethrough_checked"
             />
@@ -70,8 +76,17 @@
             app:defaultValue="archive"
             app:entries="@array/pref_swipe_action_entries"
             app:entryValues="@array/pref_swipe_action_values"
-            app:key="swipe_action"
-            app:title="@string/pref_behavior_swipe_action"
+            app:key="swipe_action_left"
+            app:title="@string/pref_behavior_swipe_action_left"
+            app:useSimpleSummaryProvider="true"
+            />
+
+        <DropDownPreference
+            app:defaultValue="archive"
+            app:entries="@array/pref_swipe_action_entries"
+            app:entryValues="@array/pref_swipe_action_values"
+            app:key="swipe_action_right"
+            app:title="@string/pref_behavior_swipe_action_right"
             app:useSimpleSummaryProvider="true"
             />
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2022 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,9 +65,15 @@ class HighlightHelperTest {
     }
 
     @Test
-    fun `should highlight no matches spanning items in list note`() {
+    fun `should highlight no matches spanning multiple lines`() {
         assertEquals(emptyList(),
             HighlightHelper.findHighlightsInString("bar\nfoo bar\nhello\nworld", "bar foo"))
+    }
+
+    @Test
+    fun `should highlight if query is quoted string`() {
+        assertEquals(listOf(4..11),
+            HighlightHelper.findHighlightsInString("bar foo bar", "\"foo bar\""))
     }
 
     @Test
@@ -115,4 +121,10 @@ class HighlightHelperTest {
                 mutableListOf(), 8, 4))
     }
 
+    @Test
+    fun `should ellipsize at threshold if distance greater than threshold`() {
+        assertEquals(Highlighted(HighlightHelper.START_ELLIPSIS + "ack needle haystack", listOf(7..13)),
+            HighlightHelper.getStartEllipsizedText("haystack needle haystack",
+                mutableListOf(10..16), 5, 8))
+    }
 }

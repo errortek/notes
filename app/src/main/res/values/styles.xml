@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  Copyright 2021 Nicolas Maltais
+  Copyright 2022 Nicolas Maltais
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@
     </style>
 
     <style name="NoteListItemCardStyle">
-        <item name="android:background">?colorOnSurface</item>
+        <item name="cardBackgroundColor">?colorSurface</item>
         <item name="android:foreground">?selectableItemBackground</item>
         <item name="cornerRadius">10dp</item>
         <item name="strokeColor">@color/color_note_card_stroke</item>
@@ -67,7 +67,7 @@
         <item name="chipMinTouchTargetSize">0dp</item>
     </style>
 
-    <style name="NoteReminderEditChipStyle" parent="NoteReminderChipStyleBase"/>
+    <style name="NoteReminderEditChipStyle" parent="NoteReminderChipStyleBase" />
 
     <style name="NoteLabelChipStyle">
         <item name="android:focusable">false</item>
@@ -82,13 +82,22 @@
         <item name="chipMinTouchTargetSize">0dp</item>
     </style>
 
-    <style name="NoteActionButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+    <style name="NoteActionButtonStyle" parent="Widget.Material3.Button.TextButton">
         <item name="android:textColor">@color/material_on_surface_emphasis_medium</item>
         <item name="android:textSize">12sp</item>
         <item name="iconTint">@color/material_on_surface_emphasis_medium</item>
         <item name="iconGravity">textStart</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <style name="NoteSwipeIconStyle">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginEnd">24dp</item>
+        <item name="android:tintMode">src_in</item>
+        <item name="tint">@color/material_on_background_emphasis_medium</item>
     </style>
 
     <style name="PlaceholderImageViewStyle">
@@ -115,7 +124,7 @@
         <item name="android:textColor">?colorControlNormal</item>
     </style>
 
-    <style name="BoxInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="BoxInputLayoutStyle" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="boxBackgroundColor" tools:ignore="PrivateResource">@color/mtrl_filled_background_color</item>
         <item name="boxStrokeWidth">0dp</item>
         <item name="boxStrokeWidthFocused">0dp</item>
@@ -134,21 +143,25 @@
         <item name="android:inputType">none|textNoSuggestions</item>
     </style>
 
-    <style name="MaterialAlertDialogStyle" parent="MaterialAlertDialog.MaterialComponents">
+    <style name="MaterialAlertDialogStyle" parent="MaterialAlertDialog.Material3">
         <!-- Material Components set 80dp vertical inset by default. Unusable! -->
         <item name="backgroundInsetTop">16dp</item>
         <item name="backgroundInsetBottom">16dp</item>
     </style>
 
-    <style name="ActionModeStyle" parent="Widget.AppCompat.ActionMode">
-        <item name="background">?colorPrimary</item>
+    <style name="ActionModeStyle" parent="Widget.Material3.ActionMode">
         <item name="titleTextStyle">@style/ActionModeTitleStyle</item>
+        <item name="background">?colorSurfaceVariant</item>
     </style>
 
-    <style name="SortDialogOptionStyle" parent="Widget.AppCompat.CompoundButton.RadioButton">
+    <style name="SortDialogOptionStyle" parent="Widget.Material3.CompoundButton.RadioButton">
         <item name="android:minHeight">0dp</item>
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>
+    </style>
+
+    <style name="Widget.App.Snackbar" parent="Widget.Material3.Snackbar">
+        <item name="animationMode">slide</item>
     </style>
 
 </resources>
