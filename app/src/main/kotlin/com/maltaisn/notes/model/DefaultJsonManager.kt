@@ -152,7 +152,7 @@ class DefaultJsonManager @Inject constructor(
                 }
                 existingNote.addedDate == note.addedDate -> {
                     // existing note has same creation date as the data, assume this is the same
-                    // same that was exported in the first place.
+                    // that was exported in the first place.
                     notesDao.update(note)
                 }
                 else -> {
