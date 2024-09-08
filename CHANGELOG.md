@@ -1,18 +1,41 @@
+## v1.5.4 (2023-12-28)
+- Ask for notification permission on Android 13 when importing data with reminders.
+- Added option to change trash auto-delete delay (#118, @dd-dreams).
+- Fixed link URL not saved across process death in EditFragment.
+- Fixed alarm permission causing crash on Android 14 (#125, @GitGitro)
+
+## v1.5.3 (2023-08-29)
+- Added Chinese translation.
+
+## v1.5.2 (2023-08-27)
+- Allow creating note from shared file.
+- Fixed share action not working if used more than once during execution.
+- Fixed automatic bullet insertion adding bullets when bullet char was preceded by non whitespace.
+- Fixed crash on search with zero lines preview setting (#47).
+- Avoid duplicating same note with different reminder when importing data (#106).
+- Added support for more link types when auto-linking text (#107).
+- Ask to confirm before opening links on click (#108).
+- Avoid opening links when clicked on first or last character (#108).
+
+## v1.5.1 (2023-01-14)
+- Added encrypted notes export (@nhoeher, #100).
+- Fixed data import not importing the hidden field of labels correctly.
+
 ## v1.5.0 (2022-12-28)
 - Changes by @nhoeher
     - Full Material 3 redesign, with support for dynamic colors.
     - Added shared element transitions for all screens.
     - Show next event date instead of start date when editing reminder.
     - Only clear notification after reminder has been postponed (#86).
-    - Fix title in drawer menu being cut of by status bar (#74).
-    - Fix notes created from launcher shortcut not saved (#78).
-    - Fix reminder launcher shortcut not working (#80).
-    - Fix note list preview lines not updated when changing layout mode (#88)
-    - Add monochrome icon for Android 13 (#98).
-- Change default focus to title when creating a new note.
-- Fix animated swipe icons not working on API <23.
-- Allow zero lines in note preview (#83).
-- Fix auto bullet feature not working with auto-suggesting keyboards.
+    - Fixed title in drawer menu being cut of by status bar (#74).
+    - Fixed notes created from launcher shortcut not saved (#78).
+    - Fixed reminder launcher shortcut not working (#80).
+    - Fixed note list preview lines not updated when changing layout mode (#88)
+    - Added monochrome icon for Android 13 (#98).
+- Changed default focus to title when creating a new note.
+- Fixed animated swipe icons not working on API <23.
+- Allowed zero lines in note preview (#83).
+- Fixed auto bullet feature not working with auto-suggesting keyboards.
 
 ## v1.4.5 (2022-09-25)
 - Fixed cursor moving to first line when scrolling (#60, thanks to @nhoeher)

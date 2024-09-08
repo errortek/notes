@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,21 @@ package com.maltaisn.notes.ui.edit.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.maltaisn.notes.databinding.ItemEditContentBinding
+import com.maltaisn.notes.databinding.ItemEditDateBinding
+import com.maltaisn.notes.databinding.ItemEditHeaderBinding
+import com.maltaisn.notes.databinding.ItemEditItemAddBinding
+import com.maltaisn.notes.databinding.ItemEditItemBinding
+import com.maltaisn.notes.databinding.ItemEditLabelsBinding
+import com.maltaisn.notes.databinding.ItemEditTitleBinding
 import com.maltaisn.notes.hideKeyboard
-import com.maltaisn.notes.sync.databinding.ItemEditContentBinding
-import com.maltaisn.notes.sync.databinding.ItemEditDateBinding
-import com.maltaisn.notes.sync.databinding.ItemEditHeaderBinding
-import com.maltaisn.notes.sync.databinding.ItemEditItemAddBinding
-import com.maltaisn.notes.sync.databinding.ItemEditItemBinding
-import com.maltaisn.notes.sync.databinding.ItemEditLabelsBinding
-import com.maltaisn.notes.sync.databinding.ItemEditTitleBinding
 import com.maltaisn.notes.ui.edit.EditViewModel
 
 class EditAdapter(val context: Context, val callback: Callback) :
@@ -172,6 +173,9 @@ class EditAdapter(val context: Context, val callback: Callback) :
 
         /** Called when any item is clicked on to start editing.*/
         fun onNoteClickedToEdit()
+
+        /** Called when a link with an [url] is clicked in the note text.*/
+        fun onLinkClickedInNote(linkText: String, linkUrl: String)
 
         /** Whether to enabled the dragging of [EditItemItem].*/
         val isNoteDragEnabled: Boolean

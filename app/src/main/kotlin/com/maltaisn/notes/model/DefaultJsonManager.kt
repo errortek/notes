@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@
 
 package com.maltaisn.notes.model
 
+import android.util.Base64
 import androidx.room.ColumnInfo
+import com.maltaisn.notes.model.JsonManager.ImportResult
 import com.maltaisn.notes.model.converter.DateTimeConverter
 import com.maltaisn.notes.model.converter.NoteMetadataConverter
 import com.maltaisn.notes.model.converter.NoteStatusConverter
@@ -33,13 +35,20 @@ import com.maltaisn.notes.model.entity.NoteStatus
 import com.maltaisn.notes.model.entity.NoteType
 import com.maltaisn.notes.model.entity.PinnedStatus
 import com.maltaisn.notes.model.entity.Reminder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.security.KeyStore
 import java.util.Date
+import javax.crypto.AEADBadTagException
+import javax.crypto.Cipher
+import javax.crypto.SecretKey
+import javax.crypto.spec.GCMParameterSpec
 import javax.inject.Inject
 
 class DefaultJsonManager @Inject constructor(
@@ -47,6 +56,7 @@ class DefaultJsonManager @Inject constructor(
     private val labelsDao: LabelsDao,
     private val json: Json,
     private val reminderAlarmManager: ReminderAlarmManager,
+    private val prefs: PrefsManager,
 ) : JsonManager {
 
     override suspend fun exportJsonData(): String {
@@ -69,12 +79,74 @@ class DefaultJsonManager @Inject constructor(
 
         // Encode to JSON and insert labels afterwards
         val notesData = NotesData(VERSION, notesMap, labelsMap)
-        return json.encodeToString(notesData)
+
+        // Handle optional encryption
+        return if (prefs.shouldEncryptExportedData) {
+            json.encodeToString(encryptNotesData(notesData))
+        } else {
+            json.encodeToString(notesData)
+        }
     }
 
-    override suspend fun importJsonData(data: String): ImportResult {
+    private suspend fun encryptNotesData(notesData: NotesData): EncryptedNotesData {
+        // Load the Android key store
+        val keyStore = KeyStore.getInstance("AndroidKeyStore")
+        withContext(Dispatchers.IO) {
+            keyStore.load(null)
+        }
+        // Retrieve the encryption key
+        val keyStoreKey = keyStore.getKey(EXPORT_ENCRYPTION_KEY_ALIAS, null)
+
+        // Initialize cipher object
+        val cipher = Cipher.getInstance(EXPORT_ENCRYPTION_ALGORITHM)
+        cipher.init(Cipher.ENCRYPT_MODE, keyStoreKey)
+
+        // Encrypt notesData
+        val ciphertext = cipher.doFinal(json.encodeToString(notesData).toByteArray(Charsets.UTF_8))
+
+        return EncryptedNotesData(
+            salt = prefs.encryptedExportKeyDerivationSalt,
+            nonce = Base64.encodeToString(cipher.iv, BASE64_FLAGS),
+            ciphertext = Base64.encodeToString(ciphertext, BASE64_FLAGS)
+        )
+    }
+
+    override suspend fun importJsonData(data: String, importKey: SecretKey?): ImportResult {
+        // JSON can either describe an EncryptedNotesData object or a NotesData object.
+        val jsonData: String = try {
+            val encryptedNotesData: EncryptedNotesData = json.decodeFromString(data)
+
+            // Key needs to be derived in order to decrypt the backup file
+            if (importKey == null) {
+                prefs.encryptedImportKeyDerivationSalt = encryptedNotesData.salt
+                return ImportResult.KEY_MISSING_OR_INCORRECT
+            }
+
+            // Get GCM nonce
+            val nonce = Base64.decode(encryptedNotesData.nonce, BASE64_FLAGS)
+            val gcmParameterSpec = GCMParameterSpec(128, nonce)
+
+            // Initialize the cipher object
+            val cipher = Cipher.getInstance(EXPORT_ENCRYPTION_ALGORITHM)
+            cipher.init(Cipher.DECRYPT_MODE, importKey, gcmParameterSpec)
+
+            val ciphertext = Base64.decode(encryptedNotesData.ciphertext, BASE64_FLAGS)
+            val plaintext = try {
+                cipher.doFinal(ciphertext).toString(Charsets.UTF_8)
+            } catch (e: AEADBadTagException) {
+                // This mainly occurs when the user has entered the wrong password
+                return ImportResult.KEY_MISSING_OR_INCORRECT
+            } catch (e: Exception) {
+                return ImportResult.BAD_DATA
+            }
+            plaintext
+        } catch (e: Exception) {
+            // Data is probably not encrypted.
+            data
+        }
+
         val notesData: NotesData = try {
-            json.decodeFromString(data)
+            json.decodeFromString(jsonData)
         } catch (e: BadDataException) {
             // could happen if user imported data from future version, which has incompatibilities.
             return ImportResult.BAD_DATA
@@ -120,7 +192,7 @@ class DefaultJsonManager @Inject constructor(
                 }
             } else {
                 val existingLabelByName = existingLabelsNameMap[name]
-                val labelName = if (existingLabelByName != null) {
+                if (existingLabelByName != null) {
                     // Label name already exists, create a new one.
                     var newName: String
                     var num = 2
@@ -128,18 +200,17 @@ class DefaultJsonManager @Inject constructor(
                         newName = "$name ($num)"
                         num++
                     } while (newName in existingLabelsNameMap)
-                    newName
+                    newLabelsMap[id] = labelsDao.insert(Label(id, newName, false))
                 } else {
-                    name
+                    newLabelsMap[id] = labelsDao.insert(Label(id, name, label.hidden))
                 }
-                newLabelsMap[id] = labelsDao.insert(Label(id, labelName))
             }
         }
         return newLabelsMap
     }
 
     private suspend fun importNotes(notesData: NotesData, newLabelsMap: Map<Long, Long>) {
-        val existingNotes = notesDao.getAll().asSequence().associateBy { it.note.id }
+        val existingNotes = notesDao.getAll().associateBy { it.note.id }
         val labelRefs = mutableListOf<LabelRef>()
         for ((id, ns) in notesData.notes) {
             var noteId = id
@@ -182,7 +253,8 @@ class DefaultJsonManager @Inject constructor(
         val reminder = when {
             old.reminder == null && new.reminder != null -> new.reminder
             old.reminder != null && new.reminder == null -> old.reminder
-            old.reminder != null && new.reminder != null && old.reminder != new.reminder -> {
+            old.reminder != null && new.reminder != null &&
+                    !compareReminders(old.reminder, new.reminder) -> {
                 // Old and new notes have different reminders, do not merge to avoid losing one or the other.
                 return null
             }
@@ -192,16 +264,15 @@ class DefaultJsonManager @Inject constructor(
         return new.copy(reminder = reminder)
     }
 
-    enum class ImportResult {
-        SUCCESS,
-        BAD_FORMAT,
-        BAD_DATA,
-        FUTURE_VERSION,
-    }
+    private fun compareReminders(old: Reminder, new: Reminder) =
+        old.start == new.start && old.recurrence == new.recurrence
 
     companion object {
         private const val VERSION = 4
         private const val FIRST_VERSION = 3
+        private const val EXPORT_ENCRYPTION_ALGORITHM = "AES/GCM/NoPadding"
+        private const val EXPORT_ENCRYPTION_KEY_ALIAS = "export_key"
+        private const val BASE64_FLAGS = Base64.NO_WRAP or Base64.NO_PADDING
     }
 }
 
@@ -242,4 +313,14 @@ private data class NotesData(
     val notes: Map<Long, NoteSurrogate> = emptyMap(),
     @SerialName("labels")
     val labels: Map<Long, Label> = emptyMap()
+)
+
+@Serializable
+private data class EncryptedNotesData(
+    @SerialName("salt")
+    val salt: String,
+    @SerialName("nonce")
+    val nonce: String,
+    @SerialName("ciphertext")
+    val ciphertext: String
 )

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.maltaisn.notes.model
 
+import android.text.format.DateUtils
 import com.maltaisn.notes.model.entity.Note
 import com.maltaisn.notes.model.entity.NoteStatus
 import kotlinx.coroutines.NonCancellable
@@ -72,7 +73,7 @@ class DefaultNotesRepository @Inject constructor(
     }
 
     override suspend fun deleteOldNotesInTrash() {
-        val delay = PrefsManager.TRASH_AUTO_DELETE_DELAY.inWholeMilliseconds
+        val delay = prefs.deletedNotesTimeout.value.toInt() * DateUtils.DAY_IN_MILLIS
         val minDate = System.currentTimeMillis() - delay
         notesDao.deleteNotesByStatusAndDate(NoteStatus.DELETED, minDate)
     }

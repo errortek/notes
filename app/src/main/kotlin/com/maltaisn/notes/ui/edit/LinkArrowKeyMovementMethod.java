@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,16 +25,20 @@ import android.text.method.ArrowKeyMovementMethod;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.textclassifier.TextLinks;
 import android.widget.TextView;
 
+import com.maltaisn.notes.ui.edit.adapter.EditEditText;
+
 import java.lang.reflect.Method;
 
 /**
  * Class that combines {@link LinkMovementMethod} and {@link ArrowKeyMovementMethod}.
+ * This class only works when used with a {@link EditEditText}.
  */
 public class LinkArrowKeyMovementMethod extends ArrowKeyMovementMethod {
     private static final int CLICK = 1;
@@ -101,21 +105,13 @@ public class LinkArrowKeyMovementMethod extends ArrowKeyMovementMethod {
         return super.right(widget, buffer);
     }
 
-    private static void linkOnClick(View widget, ClickableSpan link, int invocationMethod) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (link instanceof TextLinks.TextLinkSpan) {
-                TextLinks.TextLinkSpan linkSpan = (TextLinks.TextLinkSpan) link;
-                try {
-                    Method method = TextLinks.TextLinkSpan.class.getMethod("onClick", View.class, int.class);
-                    method.invoke(linkSpan, widget, invocationMethod);
-                } catch (Exception e) {
-                    // reflection failed
-                }
-            } else {
-                link.onClick(widget);
-            }
-        } else {
-            link.onClick(widget);
+    private static void linkOnClick(TextView widget, Spannable buffer, ClickableSpan link) {
+        if (link instanceof URLSpan) {
+            int start = buffer.getSpanStart(link);
+            int end = buffer.getSpanEnd(link);
+            String url = ((URLSpan) link).getURL();
+            String text = buffer.subSequence(start, end).toString();
+            ((EditEditText) widget).onLinkClicked(text, url);
         }
     }
 
@@ -147,13 +143,15 @@ public class LinkArrowKeyMovementMethod extends ArrowKeyMovementMethod {
             }
         }
 
-        if (selStart > last)
+        if (selStart > last) {
             selStart = selEnd = Integer.MAX_VALUE;
-        if (selEnd < first)
+        }
+        if (selEnd < first) {
             selStart = selEnd = -1;
+        }
 
         switch (what) {
-            case CLICK:
+            case CLICK: {
                 if (selStart == selEnd) {
                     return false;
                 }
@@ -165,14 +163,14 @@ public class LinkArrowKeyMovementMethod extends ArrowKeyMovementMethod {
                 }
 
                 ClickableSpan link = links[0];
-                linkOnClick(widget, link, 1);
+                final int start = buffer.getSpanStart(link);
+                final int end = buffer.getSpanEnd(link);
+                linkOnClick(widget, buffer, link);
                 break;
-
-            case UP:
-                int bestStart, bestEnd;
-
-                bestStart = -1;
-                bestEnd = -1;
+            }
+            case UP: {
+                int bestStart = -1;
+                int bestEnd = -1;
 
                 for (ClickableSpan clickableSpan : candidates) {
                     int end = buffer.getSpanEnd(clickableSpan);
@@ -191,10 +189,10 @@ public class LinkArrowKeyMovementMethod extends ArrowKeyMovementMethod {
                 }
 
                 break;
-
-            case DOWN:
-                bestStart = Integer.MAX_VALUE;
-                bestEnd = Integer.MAX_VALUE;
+            }
+            case DOWN: {
+                int bestStart = Integer.MAX_VALUE;
+                int bestEnd = Integer.MAX_VALUE;
 
                 for (ClickableSpan candidate : candidates) {
                     int start = buffer.getSpanStart(candidate);
@@ -213,6 +211,7 @@ public class LinkArrowKeyMovementMethod extends ArrowKeyMovementMethod {
                 }
 
                 break;
+            }
         }
 
         return false;
@@ -241,22 +240,29 @@ public class LinkArrowKeyMovementMethod extends ArrowKeyMovementMethod {
 
             if (links.length != 0) {
                 ClickableSpan link = links[0];
-                if (action == MotionEvent.ACTION_UP) {
-                    linkOnClick(widget, link, 0);
-                } else {
-                    if (widget.getContext().getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.P) {
-                        // Selection change will reposition the toolbar. Hide it for a few ms for a
-                        // smoother transition.
-                        try {
-                            Method method = View.class.getMethod("hideFloatingToolbar", int.class);
-                            method.invoke(widget, HIDE_FLOATING_TOOLBAR_DELAY_MS);
-                        } catch (Exception e) {
-                            // reflection failed
+                // Don't open the link if clicked on the first or last character.
+                // This is very annoying as clicking near a link to add text next to it will open it,
+                // including when clicking in the end margin very far off the link!
+                final int start = buffer.getSpanStart(link);
+                final int end = buffer.getSpanEnd(link);
+                if (start != off && end != off) {
+                    if (action == MotionEvent.ACTION_UP) {
+                        linkOnClick(widget, buffer, link);
+                    } else {
+                        if (widget.getContext().getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.P) {
+                            // Selection change will reposition the toolbar. Hide it for a few ms for a
+                            // smoother transition.
+                            try {
+                                Method method = View.class.getMethod("hideFloatingToolbar", int.class);
+                                method.invoke(widget, HIDE_FLOATING_TOOLBAR_DELAY_MS);
+                            } catch (Exception e) {
+                                // reflection failed
+                            }
                         }
+                        Selection.setSelection(buffer,
+                                buffer.getSpanStart(link),
+                                buffer.getSpanEnd(link));
                     }
-                    Selection.setSelection(buffer,
-                            buffer.getSpanStart(link),
-                            buffer.getSpanEnd(link));
                 }
                 return true;
             }
@@ -283,9 +289,9 @@ public class LinkArrowKeyMovementMethod extends ArrowKeyMovementMethod {
     }
 
     public static MovementMethod getInstance() {
-        if (sInstance == null)
+        if (sInstance == null) {
             sInstance = new LinkArrowKeyMovementMethod();
-
+        }
         return sInstance;
     }
 

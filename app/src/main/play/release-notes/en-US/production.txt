@@ -1,4 +1,4 @@
-- Full Material 3 redesign with support for dynamic colors.
-- Smooth transitions between screens.
-- Fixed app shortcuts not working.
-- Miscellaneous changes & fixes.
+- Configurable trash auto-delete delay.
+- Fix reminders crash on Android 14.
+- Add Japenese translation.
+- Other small fixes.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,13 @@ package com.maltaisn.notes.model
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.annotation.OpenForTesting
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import com.maltaisn.notes.OpenForTesting
+import com.maltaisn.notes.R
 import com.maltaisn.notes.model.entity.NoteType
-import com.maltaisn.notes.sync.R
 import com.maltaisn.notes.ui.AppTheme
+import com.maltaisn.notes.ui.note.DeletedNotesTimeoutField
 import com.maltaisn.notes.ui.note.ShownDateField
 import com.maltaisn.notes.ui.note.SwipeAction
 import com.maltaisn.notes.ui.note.adapter.NoteListLayoutMode
@@ -51,10 +52,14 @@ class PrefsManager @Inject constructor(
     val swipeActionRight: SwipeAction by enumPreference(SWIPE_ACTION_RIGHT, SwipeAction.ARCHIVE)
     val shownDateField: ShownDateField by enumPreference(SHOWN_DATE, ShownDateField.NONE)
     val maximumPreviewLabels: Int by preference(PREVIEW_LABELS, 0)
+    val deletedNotesTimeout: DeletedNotesTimeoutField by enumPreference(DELETED_TIMEOUT, DeletedNotesTimeoutField.WEEK)
 
     var sortField: SortField by enumPreference(SORT_FIELD, SortField.MODIFIED_DATE)
     var sortDirection: SortDirection by enumPreference(SORT_DIRECTION, SortDirection.DESCENDING)
 
+    var shouldEncryptExportedData: Boolean by preference(ENCRYPTED_EXPORT, false)
+    var encryptedExportKeyDerivationSalt: String by preference(ENCRYPTED_EXPORT_KEY_DERIVATION_SALT, "")
+    var encryptedImportKeyDerivationSalt: String by preference(ENCRYPTED_IMPORT_KEY_DERIVATION_SALT, "")
     var shouldAutoExport: Boolean by preference(AUTO_EXPORT, false)
     var autoExportUri: String by preference(AUTO_EXPORT_URI, "")
     var autoExportFailed: Boolean by preference(AUTO_EXPORT_FAILED, false)
@@ -178,12 +183,14 @@ class PrefsManager @Inject constructor(
         const val SHOWN_DATE = "shown_date"
         const val SWIPE_ACTION_LEFT = "swipe_action_left"
         const val SWIPE_ACTION_RIGHT = "swipe_action_right"
+        const val ENCRYPTED_EXPORT = "encrypted_export"
         const val EXPORT_DATA = "export_data"
         const val AUTO_EXPORT = "auto_export"
         const val IMPORT_DATA = "import_data"
         const val CLEAR_DATA = "clear_data"
         const val VIEW_LICENSES = "view_licenses"
         const val VERSION = "version"
+        const val DELETED_TIMEOUT = "deleted_timeout"
 
         // Other keys
         private const val AUTO_EXPORT_URI = "auto_export_uri"
@@ -194,6 +201,8 @@ class PrefsManager @Inject constructor(
         private const val LAST_RESTRICTED_BATTERY_REMIND_TIME = "last_restricted_battery_remind_time"
         private const val LAST_AUTO_EXPORT_TIME = "last_auto_export_time"
         private const val AUTO_EXPORT_FAILED = "auto_export_failed"
+        private const val ENCRYPTED_EXPORT_KEY_DERIVATION_SALT = "encrypted_export_key_derivation_salt"
+        private const val ENCRYPTED_IMPORT_KEY_DERIVATION_SALT = "encrypted_import_key_derivation_salt"
 
         // Legacy keys
         private const val SWIPE_ACTION = "swipe_action"
@@ -202,11 +211,6 @@ class PrefsManager @Inject constructor(
             R.xml.prefs,
             R.xml.prefs_preview_lines,
         )
-
-        /**
-         * Delay after which notes in trash are automatically deleted forever.
-         */
-        val TRASH_AUTO_DELETE_DELAY = 7.days
 
         /**
          * Required delay before showing the trash reminder delay after user dismisses it.

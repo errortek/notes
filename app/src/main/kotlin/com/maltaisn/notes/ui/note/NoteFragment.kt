@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,13 +48,13 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialElevationScale
+import com.maltaisn.notes.NavGraphMainDirections
+import com.maltaisn.notes.R
+import com.maltaisn.notes.databinding.FragmentNoteBinding
 import com.maltaisn.notes.model.PrefsManager
 import com.maltaisn.notes.model.entity.NoteStatus
 import com.maltaisn.notes.model.entity.PinnedStatus
 import com.maltaisn.notes.navigateSafe
-import com.maltaisn.notes.sync.NavGraphMainDirections
-import com.maltaisn.notes.sync.R
-import com.maltaisn.notes.sync.databinding.FragmentNoteBinding
 import com.maltaisn.notes.ui.SharedViewModel
 import com.maltaisn.notes.ui.StatusChange
 import com.maltaisn.notes.ui.common.ConfirmDialog
@@ -70,6 +70,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Provider
+import com.google.android.material.R as RMaterial
 
 /**
  * This fragment provides common code for home and search fragments.
@@ -143,7 +144,7 @@ abstract class NoteFragment : Fragment(), ActionMode.Callback, ConfirmDialog.Cal
         rcv.layoutManager = layoutManager
 
         // Apply padding to the bottom of the recyclerview, so that the last notes aren't covered by the FAB
-        val initialPadding = (resources.displayMetrics.density * 88 + 0.5).toInt()
+        val initialPadding = resources.getDimensionPixelSize(R.dimen.notes_recyclerview_bottom_padding)
         ViewCompat.setOnApplyWindowInsetsListener(rcv) { _, insets ->
             val sysWindow = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
             rcv.updatePadding(bottom = sysWindow.bottom + initialPadding)
@@ -156,10 +157,10 @@ abstract class NoteFragment : Fragment(), ActionMode.Callback, ConfirmDialog.Cal
         setupViewModelObservers(adapter, layoutManager)
 
         enterTransition = MaterialElevationScale(false).apply {
-            duration = resources.getInteger(R.integer.material_motion_duration_short_2).toLong()
+            duration = resources.getInteger(RMaterial.integer.material_motion_duration_short_2).toLong()
         }
         exitTransition = MaterialElevationScale(true).apply {
-            duration = resources.getInteger(R.integer.material_motion_duration_short_2).toLong()
+            duration = resources.getInteger(RMaterial.integer.material_motion_duration_short_2).toLong()
         }
 
         // Handle Shared Element Transitions when returning to this fragment.
@@ -215,7 +216,7 @@ abstract class NoteFragment : Fragment(), ActionMode.Callback, ConfirmDialog.Cal
 
         viewModel.editItemEvent.observeEvent(viewLifecycleOwner) { (noteId, pos) ->
             exitTransition = Hold()
-                .apply { duration = resources.getInteger(R.integer.material_motion_duration_medium_2).toLong() }
+                .apply { duration = resources.getInteger(RMaterial.integer.material_motion_duration_medium_2).toLong() }
 
             val itemView: View =
                 binding.recyclerView.findViewHolderForAdapterPosition(pos)!!.itemView.findViewById(R.id.card_view)
@@ -487,8 +488,8 @@ abstract class NoteFragment : Fragment(), ActionMode.Callback, ConfirmDialog.Cal
         if (Build.VERSION.SDK_INT >= 23) {
             switchStatusBarColor(
                 (binding.toolbarLayout.background as MaterialShapeDrawable).resolvedTintColor,
-                MaterialColors.getColor(requireView(), R.attr.colorSurfaceVariant),
-                resources.getInteger(R.integer.material_motion_duration_long_2).toLong()
+                MaterialColors.getColor(requireView(), RMaterial.attr.colorSurfaceVariant),
+                resources.getInteger(RMaterial.integer.material_motion_duration_long_2).toLong()
             )
         }
         return true
@@ -503,9 +504,9 @@ abstract class NoteFragment : Fragment(), ActionMode.Callback, ConfirmDialog.Cal
 
             if (Build.VERSION.SDK_INT >= 23) {
                 switchStatusBarColor(
-                    MaterialColors.getColor(requireView(), R.attr.colorSurfaceVariant),
+                    MaterialColors.getColor(requireView(), RMaterial.attr.colorSurfaceVariant),
                     (binding.toolbarLayout.background as MaterialShapeDrawable).resolvedTintColor,
-                    resources.getInteger(R.integer.material_motion_duration_long_1).toLong(),
+                    resources.getInteger(RMaterial.integer.material_motion_duration_long_1).toLong(),
                     true
                 )
             }
@@ -530,9 +531,9 @@ abstract class NoteFragment : Fragment(), ActionMode.Callback, ConfirmDialog.Cal
             // Change status bar color to match label fragment
             if (Build.VERSION.SDK_INT >= 23) {
                 switchStatusBarColor(
-                    MaterialColors.getColor(requireView(), R.attr.colorSurfaceVariant),
-                    MaterialColors.getColor(requireView(), R.attr.colorSurface),
-                    resources.getInteger(R.integer.material_motion_duration_long_1).toLong() * 2,
+                    MaterialColors.getColor(requireView(), RMaterial.attr.colorSurfaceVariant),
+                    MaterialColors.getColor(requireView(), RMaterial.attr.colorSurface),
+                    resources.getInteger(RMaterial.integer.material_motion_duration_long_1).toLong() * 2,
                     true
                 )
             }

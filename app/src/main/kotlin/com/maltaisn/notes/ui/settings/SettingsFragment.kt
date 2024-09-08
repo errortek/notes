@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,14 @@ package com.maltaisn.notes.ui.settings
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
@@ -40,32 +42,37 @@ import com.google.android.material.color.DynamicColors
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialElevationScale
 import com.maltaisn.notes.App
+import com.maltaisn.notes.BuildConfig
+import com.maltaisn.notes.R
 import com.maltaisn.notes.TAG
+import com.maltaisn.notes.databinding.FragmentSettingsBinding
 import com.maltaisn.notes.model.PrefsManager
 import com.maltaisn.notes.navigateSafe
-import com.maltaisn.notes.sync.BuildConfig
-import com.maltaisn.notes.sync.R
-import com.maltaisn.notes.sync.databinding.FragmentSettingsBinding
 import com.maltaisn.notes.ui.AppTheme
 import com.maltaisn.notes.ui.common.ConfirmDialog
 import com.maltaisn.notes.ui.main.MainActivity
+import com.maltaisn.notes.ui.notification.NotificationPermission
 import com.maltaisn.notes.ui.observeEvent
+import com.maltaisn.notes.ui.reminder.ReminderPermission
 import com.maltaisn.notes.ui.viewModel
 import com.mikepenz.aboutlibraries.LibsBuilder
 import java.text.DateFormat
 import javax.inject.Inject
-import javax.inject.Provider
+import com.google.android.material.R as RMaterial
 
-class SettingsFragment : PreferenceFragmentCompat(), ConfirmDialog.Callback {
+class SettingsFragment : PreferenceFragmentCompat(), ConfirmDialog.Callback, ExportPasswordDialog.Callback,
+    ImportPasswordDialog.Callback {
 
     @Inject
-    lateinit var viewModelProvider: Provider<SettingsViewModel>
-
-    private val viewModel by viewModel { viewModelProvider.get() }
+    lateinit var viewModelFactory: SettingsViewModel.Factory
+    val viewModel by viewModel { viewModelFactory.create(it) }
 
     private var exportDataLauncher: ActivityResultLauncher<Intent>? = null
     private var autoExportLauncher: ActivityResultLauncher<Intent>? = null
     private var importDataLauncher: ActivityResultLauncher<Intent>? = null
+
+    private var notificationPermission: NotificationPermission? = null
+    private var reminderPermission: ReminderPermission? = null
 
     override fun onCreate(state: Bundle?) {
         super.onCreate(state)
@@ -127,11 +134,14 @@ class SettingsFragment : PreferenceFragmentCompat(), ConfirmDialog.Callback {
             }
         }
 
+        notificationPermission = NotificationPermission(this)
+        reminderPermission = getContext()?.let { ReminderPermission(this, it) }
+
         enterTransition = MaterialElevationScale(false).apply {
-            duration = resources.getInteger(R.integer.material_motion_duration_short_2).toLong()
+            duration = resources.getInteger(RMaterial.integer.material_motion_duration_short_2).toLong()
         }
         exitTransition = MaterialElevationScale(true).apply {
-            duration = resources.getInteger(R.integer.material_motion_duration_short_2).toLong()
+            duration = resources.getInteger(RMaterial.integer.material_motion_duration_short_2).toLong()
         }
     }
 
@@ -168,6 +178,16 @@ class SettingsFragment : PreferenceFragmentCompat(), ConfirmDialog.Callback {
                 // Permission was revoked? will probably happen sometimes
                 Log.i(TAG, "Failed to release persistable URI permission", e)
             }
+        }
+        viewModel.showImportPasswordDialogEvent.observeEvent(viewLifecycleOwner) {
+            ImportPasswordDialog.newInstance()
+                .show(childFragmentManager, null)
+        }
+        viewModel.askNotificationPermission.observeEvent(viewLifecycleOwner) {
+            notificationPermission?.request()
+        }
+        viewModel.askReminderPermission.observeEvent(viewLifecycleOwner) {
+            reminderPermission?.request()
         }
     }
 
@@ -206,6 +226,22 @@ class SettingsFragment : PreferenceFragmentCompat(), ConfirmDialog.Callback {
             val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
                 .setType("application/json").addCategory(Intent.CATEGORY_OPENABLE)
             exportDataLauncher?.launch(intent)
+            true
+        }
+
+        val encryptedExportPref: SwitchPreferenceCompat = requirePreference(PrefsManager.ENCRYPTED_EXPORT)
+        // Older versions don't support PBKDF2withHmacSHA512
+        if (Build.VERSION.SDK_INT < 26) {
+            encryptedExportPref.isVisible = false
+        }
+
+        encryptedExportPref.setOnPreferenceChangeListener { _, newValue ->
+            if (newValue == true) {
+                ExportPasswordDialog.newInstance()
+                    .show(childFragmentManager, null)
+            } else {
+                viewModel.deleteExportKey()
+            }
             true
         }
 
@@ -259,7 +295,10 @@ class SettingsFragment : PreferenceFragmentCompat(), ConfirmDialog.Callback {
     override fun onDestroy() {
         super.onDestroy()
         exportDataLauncher = null
+        importDataLauncher = null
         autoExportLauncher = null
+        notificationPermission = null
+        reminderPermission = null
     }
 
     private fun showMessage(@StringRes messageId: Int) {
@@ -303,26 +342,58 @@ class SettingsFragment : PreferenceFragmentCompat(), ConfirmDialog.Callback {
                     .addCategory(Intent.CATEGORY_OPENABLE)
                 autoExportLauncher?.launch(intent)
             }
+            NOTIF_PERMISSION_DIALOG -> notificationPermission?.onDialogPositiveButtonClicked(tag)
+            else -> reminderPermission?.onDialogPositiveButtonClicked(tag)
         }
     }
 
     override fun onDialogNegativeButtonClicked(tag: String?) {
-        if (tag == AUTOMATIC_EXPORT_DIALOG_TAG) {
-            // No file chosen for auto export, disable it.
-            autoExportPref.isChecked = false
+        when (tag) {
+            AUTOMATIC_EXPORT_DIALOG_TAG -> {
+                // No file chosen for auto export, disable it.
+                autoExportPref.isChecked = false
+            }
+            NOTIF_PERMISSION_DIALOG -> notificationPermission?.onDialogNegativeButtonClicked(tag)
+            else -> reminderPermission?.onDialogPositiveButtonClicked(tag)
         }
     }
 
     override fun onDialogCancelled(tag: String?) {
-        if (tag == AUTOMATIC_EXPORT_DIALOG_TAG) {
-            // No file chosen for auto export, disable it.
-            autoExportPref.isChecked = false
+        when (tag) {
+            AUTOMATIC_EXPORT_DIALOG_TAG -> {
+                // No file chosen for auto export, disable it.
+                autoExportPref.isChecked = false
+            }
+            NOTIF_PERMISSION_DIALOG -> notificationPermission?.onDialogCancelled(tag)
+            else -> reminderPermission?.onDialogPositiveButtonClicked(tag)
         }
+    }
+
+    private val exportEncryptionPref: SwitchPreferenceCompat
+        get() = requirePreference(PrefsManager.ENCRYPTED_EXPORT)
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onExportPasswordDialogPositiveButtonClicked(password: String) {
+        viewModel.generateExportKeyFromPassword(password)
+    }
+
+    override fun onExportPasswordDialogNegativeButtonClicked() {
+        exportEncryptionPref.isChecked = false
+    }
+
+    override fun onExportPasswordDialogCancelled() {
+        exportEncryptionPref.isChecked = false
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onImportPasswordDialogPositiveButtonClicked(password: String) {
+        viewModel.importSavedEncryptedJsonData(password)
     }
 
     companion object {
         private const val RESTART_DIALOG_TAG = "restart_dialog"
         private const val CLEAR_DATA_DIALOG_TAG = "clear_data_dialog"
         private const val AUTOMATIC_EXPORT_DIALOG_TAG = "automatic_export_dialog"
+        private const val NOTIF_PERMISSION_DIALOG = "notif-permission-dialog"
     }
 }

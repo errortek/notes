@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,7 @@ package com.maltaisn.notes.ui.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
-import com.maltaisn.notes.MainCoroutineRule
-import com.maltaisn.notes.dateFor
-import com.maltaisn.notes.model.MockLabelsRepository
-import com.maltaisn.notes.model.MockNotesRepository
+import com.maltaisn.notes.R
 import com.maltaisn.notes.model.PrefsManager
 import com.maltaisn.notes.model.ReminderAlarmManager
 import com.maltaisn.notes.model.SortDirection
@@ -32,8 +29,6 @@ import com.maltaisn.notes.model.entity.LabelRef
 import com.maltaisn.notes.model.entity.Note
 import com.maltaisn.notes.model.entity.NoteStatus
 import com.maltaisn.notes.model.entity.PinnedStatus
-import com.maltaisn.notes.sync.R
-import com.maltaisn.notes.testNote
 import com.maltaisn.notes.ui.MockAlarmCallback
 import com.maltaisn.notes.ui.StatusChange
 import com.maltaisn.notes.ui.assertLiveDataEventSent
@@ -46,16 +41,21 @@ import com.maltaisn.notes.ui.note.adapter.MessageItem
 import com.maltaisn.notes.ui.note.adapter.NoteAdapter
 import com.maltaisn.notes.ui.note.adapter.NoteItem
 import com.maltaisn.notes.ui.note.adapter.NoteListLayoutMode
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.maltaisn.notesshared.MainCoroutineRule
+import com.maltaisn.notesshared.dateFor
+import com.maltaisn.notesshared.model.MockLabelsRepository
+import com.maltaisn.notesshared.model.MockNotesRepository
+import com.maltaisn.notesshared.testNote
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -161,8 +161,7 @@ class HomeViewModelTest {
         assertFalse(viewModel.fabShown.getOrAwaitValue())
 
         assertEquals(listOf(
-            MessageItem(-1, R.string.trash_reminder_message,
-                listOf(PrefsManager.TRASH_AUTO_DELETE_DELAY.inWholeDays)),
+            MessageItem(-1, R.plurals.trash_reminder_message, listOf(7)),
             noteItem(note)
         ), viewModel.noteItems.getOrAwaitValue())
     }

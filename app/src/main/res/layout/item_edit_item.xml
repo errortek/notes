@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  Copyright 2022 Nicolas Maltais
+  Copyright 2023 Nicolas Maltais
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@
         android:minWidth="0dp"
         />
 
-    <EditText
+    <com.maltaisn.notes.ui.edit.adapter.EditEditText
         android:id="@+id/content_edt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -65,9 +65,9 @@
         android:textDirection="anyRtl"
         android:textColor="@color/item_edit_item_text_color"
         android:textSize="15sp"
-        android:autoLink="web|email"
         android:linksClickable="true"
         app:emojiCompatEnabled="false"
+        app:autoLink="true"
         tools:ignore="LabelFor"
         tools:text="Mauris rutrum massa placerat felis pharetra tristique. Nulla sed urna a dui vehicula euismod."
         />

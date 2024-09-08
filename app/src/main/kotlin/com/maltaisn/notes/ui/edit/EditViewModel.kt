@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,6 +107,15 @@ class EditViewModel @AssistedInject constructor(
     private var reminder: Reminder? = null
 
     /**
+     * URL of last clicked span, if any.
+     */
+    private var linkUrl: String?
+        get() = savedStateHandle[KEY_LINK_URL]
+        set(value) {
+            savedStateHandle[KEY_LINK_URL] = value
+        }
+
+    /**
      * The currently displayed list items created in [recreateListItems].
      *
      * While this list is mutable, any in place changes should be reported to the adapter! This is used in the case
@@ -179,6 +188,14 @@ class EditViewModel @AssistedInject constructor(
     private val _showLabelsFragmentEvent = MutableLiveData<Event<Long>>()
     val showLabelsFragmentEvent: LiveData<Event<Long>>
         get() = _showLabelsFragmentEvent
+
+    private val _showLinkDialogEvent = MutableLiveData<Event<String>>()
+    val showLinkDialogEvent: LiveData<Event<String>>
+        get() = _showLinkDialogEvent
+
+    private val _openLinkEvent = MutableLiveData<Event<String>>()
+    val openLinkEvent: LiveData<Event<String>>
+        get() = _openLinkEvent
 
     private val _exitEvent = MutableLiveData<Event<Unit>>()
     val exitEvent: LiveData<Event<Unit>>
@@ -529,6 +546,11 @@ class EditViewModel @AssistedInject constructor(
         }
     }
 
+    fun openClickedLink() {
+        _openLinkEvent.send(linkUrl ?: return)
+        linkUrl = null
+    }
+
     private fun changeNoteStatusAndExit(newStatus: NoteStatus) {
         updateNote()
 
@@ -778,6 +800,11 @@ class EditViewModel @AssistedInject constructor(
         }
     }
 
+    override fun onLinkClickedInNote(linkText: String, linkUrl: String) {
+        this.linkUrl = linkUrl
+        _showLinkDialogEvent.send(linkText)
+    }
+
     override val isNoteDragEnabled: Boolean
         get() = !isNoteInTrash && listItems.count { it is EditItemItem } > 1
 
@@ -904,6 +931,7 @@ class EditViewModel @AssistedInject constructor(
 
         private const val KEY_NOTE_ID = "noteId"
         private const val KEY_IS_NEW_NOTE = "isNewNote"
+        private const val KEY_LINK_URL = "linkUrl"
 
         private val TEMP_ITEM = EditItemItem(DefaultEditableText(), checked = false, editable = false, actualPos = 0)
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import androidx.annotation.StringRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.maltaisn.notes.sync.R
+import com.maltaisn.notes.R
 
 /**
  * Simple dialog with a callback to ask user for confirmation.
@@ -51,6 +51,11 @@ class ConfirmDialog : DialogFragment() {
         val message = args.getInt(ARG_MESSAGE)
         if (message != 0) {
             builder.setMessage(message)
+        } else {
+            val messageStr = args.getString(ARG_MESSAGE_STR)
+            if (!messageStr.isNullOrEmpty()) {
+                builder.setMessage(messageStr);
+            }
         }
 
         val dialog = builder.create()
@@ -80,17 +85,20 @@ class ConfirmDialog : DialogFragment() {
         private const val ARG_MESSAGE = "message"
         private const val ARG_BTN_POSITIVE = "btn_positive"
         private const val ARG_BTN_NEGATIVE = "btn_negative"
+        private const val ARG_MESSAGE_STR = "message_str"
 
         fun newInstance(
             @StringRes title: Int = 0,
             @StringRes message: Int = 0,
             @StringRes btnPositive: Int,
-            @StringRes btnNegative: Int = R.string.action_cancel
+            @StringRes btnNegative: Int = R.string.action_cancel,
+            messageStr: String = "",
         ): ConfirmDialog {
             val dialog = ConfirmDialog()
             dialog.arguments = bundleOf(
                 ARG_TITLE to title,
                 ARG_MESSAGE to message,
+                ARG_MESSAGE_STR to messageStr,
                 ARG_BTN_POSITIVE to btnPositive,
                 ARG_BTN_NEGATIVE to btnNegative)
             return dialog

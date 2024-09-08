@@ -1,4 +1,4 @@
-- Redesign complet Material 3, avec couleurs dynamiques.
-- Transitions fluides entre les fenêtres de l'application.
-- Correction des raccourcis non fonctionnels.
-- Quelques changements et corrections de bugs mineurs.
+- Délai d'auto-supression configurable pour la corbeille.
+- Correction d'un bug avec les rappels sur Android 14.
+- Ajout d'une traduction en japonais.
+- Autres corrections mineures.

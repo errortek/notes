@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,12 @@ package com.maltaisn.notes.ui.home
 
 import android.Manifest
 import android.app.ActivityManager
+import android.app.AlarmManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.ActionMode
 import android.view.MenuItem
 import android.view.View
@@ -34,11 +36,11 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.Hold
 import com.maltaisn.notes.App
+import com.maltaisn.notes.BuildConfig
+import com.maltaisn.notes.NavGraphMainDirections
+import com.maltaisn.notes.R
 import com.maltaisn.notes.model.entity.NoteStatus
 import com.maltaisn.notes.navigateSafe
-import com.maltaisn.notes.sync.BuildConfig
-import com.maltaisn.notes.sync.NavGraphMainDirections
-import com.maltaisn.notes.sync.R
 import com.maltaisn.notes.ui.common.ConfirmDialog
 import com.maltaisn.notes.ui.navigation.HomeDestination
 import com.maltaisn.notes.ui.note.NoteFragment
@@ -46,6 +48,7 @@ import com.maltaisn.notes.ui.note.adapter.NoteListLayoutMode
 import com.maltaisn.notes.ui.observeEvent
 import com.maltaisn.notes.ui.viewModel
 import javax.inject.Inject
+import com.google.android.material.R as RMaterial
 
 /**
  * Start screen fragment displaying a list of notes for different note status,
@@ -87,7 +90,16 @@ class HomeFragment : NoteFragment(), Toolbar.OnMenuItemClickListener {
             }
         }
 
-        viewModel.updateRestrictions(batteryRestricted, notificationRestricted)
+        var reminderRestricted = false
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
+            val alarmManager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            if (!alarmManager.canScheduleExactAlarms()){
+                Log.d("TAG","Crash" +alarmManager.canScheduleExactAlarms())
+                reminderRestricted = true
+            }
+        }
+
+        viewModel.updateRestrictions(batteryRestricted, notificationRestricted, reminderRestricted)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -144,7 +156,7 @@ class HomeFragment : NoteFragment(), Toolbar.OnMenuItemClickListener {
 
         viewModel.createNoteEvent.observeEvent(viewLifecycleOwner) { settings ->
             exitTransition = Hold().apply {
-                duration = resources.getInteger(R.integer.material_motion_duration_medium_2).toLong()
+                duration = resources.getInteger(RMaterial.integer.material_motion_duration_medium_2).toLong()
             }
 
             val extras = FragmentNavigatorExtras(

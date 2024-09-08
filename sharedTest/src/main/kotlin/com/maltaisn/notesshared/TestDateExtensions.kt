@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes
+package com.maltaisn.notesshared
 
+import android.os.Build
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-val datePatterns = listOf(
+var datePatterns = listOf(
     DatePattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", TimeZone.getTimeZone("GMT"), 24),
     DatePattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", null, null),
     DatePattern("yyyy-MM-dd'T'HH:mm:ss.SSS", TimeZone.getDefault(), 23),
+    DatePattern("yyyy-MM-dd'Z'", TimeZone.getTimeZone("GMT"), 11),
     DatePattern("yyyy-MM-dd", TimeZone.getDefault(), 10)
 )
 
@@ -43,6 +45,10 @@ fun dateFor(date: String): Date {
     val dateFormat = SimpleDateFormat("", Locale.US)
     for (pattern in datePatterns) {
         if (pattern.length == null || date.length == pattern.length) {
+            // Pattern character 'X' is only supported starting from API 24
+            if (Build.VERSION.SDK_INT < 24 && pattern.pattern.contains("X")) {
+                continue
+            }
             if (pattern.timeZone != null) {
                 dateFormat.timeZone = pattern.timeZone
             }

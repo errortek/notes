@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,12 @@
 package com.maltaisn.notes.ui.edit
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Browser
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -42,6 +46,9 @@ import androidx.transition.TransitionListenerAdapter
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.maltaisn.notes.App
+import com.maltaisn.notes.NavGraphMainDirections
+import com.maltaisn.notes.R
+import com.maltaisn.notes.databinding.FragmentEditBinding
 import com.maltaisn.notes.hideKeyboard
 import com.maltaisn.notes.model.entity.Note
 import com.maltaisn.notes.model.entity.NoteStatus
@@ -50,9 +57,6 @@ import com.maltaisn.notes.model.entity.PinnedStatus
 import com.maltaisn.notes.model.entity.Reminder
 import com.maltaisn.notes.navigateSafe
 import com.maltaisn.notes.showKeyboard
-import com.maltaisn.notes.sync.NavGraphMainDirections
-import com.maltaisn.notes.sync.R
-import com.maltaisn.notes.sync.databinding.FragmentEditBinding
 import com.maltaisn.notes.ui.SharedViewModel
 import com.maltaisn.notes.ui.common.ConfirmDialog
 import com.maltaisn.notes.ui.edit.adapter.EditAdapter
@@ -63,6 +67,7 @@ import com.maltaisn.notes.ui.viewModel
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 import javax.inject.Provider
+import com.google.android.material.R as RMaterial
 
 class EditFragment : Fragment(), Toolbar.OnMenuItemClickListener, ConfirmDialog.Callback {
 
@@ -82,13 +87,13 @@ class EditFragment : Fragment(), Toolbar.OnMenuItemClickListener, ConfirmDialog.
     override fun onCreate(savedInstanceState: Bundle?) {
         sharedElementEnterTransition = MaterialContainerTransform(requireContext(), true).apply {
             fadeMode = MaterialContainerTransform.FADE_MODE_CROSS
-            duration = resources.getInteger(R.integer.material_motion_duration_long_1).toLong()
+            duration = resources.getInteger(RMaterial.integer.material_motion_duration_long_1).toLong()
         }
 
         sharedElementReturnTransition = MaterialContainerTransform(requireContext(), false).apply {
             scrimColor = Color.TRANSPARENT
             fadeMode = MaterialContainerTransform.FADE_MODE_CROSS
-            duration = resources.getInteger(R.integer.material_motion_duration_long_1).toLong()
+            duration = resources.getInteger(RMaterial.integer.material_motion_duration_long_1).toLong()
         }
 
         // Send an event via the sharedViewModel when the transition has finished playing
@@ -193,7 +198,7 @@ class EditFragment : Fragment(), Toolbar.OnMenuItemClickListener, ConfirmDialog.
         // Dynamically adjust the padding on the bottom of the RecyclerView.
         // This enables edge-to-edge functionality and also handles resizing
         // when the keyboard is opened / closed.
-        val initialPadding = (resources.displayMetrics.density * 16 + 0.5).toInt()
+        val initialPadding = resources.getDimensionPixelSize(R.dimen.edit_recyclerview_bottom_padding)
         ViewCompat.setOnApplyWindowInsetsListener(rcv) { _, insets ->
             val sysWindow = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
             rcv.updatePadding(bottom = sysWindow.bottom + initialPadding)
@@ -244,6 +249,7 @@ class EditFragment : Fragment(), Toolbar.OnMenuItemClickListener, ConfirmDialog.
                     R.plurals.edit_message_move_restore, 1), Snackbar.LENGTH_SHORT)
                     .setGestureInsetBottomIgnored(true)
                     .show()
+
                 EditMessage.CANT_EDIT_IN_TRASH -> restoreNoteSnackbar.show()
             }
         }
@@ -277,6 +283,26 @@ class EditFragment : Fragment(), Toolbar.OnMenuItemClickListener, ConfirmDialog.
             navController.navigateSafe(NavGraphMainDirections.actionLabel(longArrayOf(noteId)))
         }
 
+        viewModel.showLinkDialogEvent.observeEvent(viewLifecycleOwner) { linkText ->
+            ConfirmDialog.newInstance(
+                btnPositive = R.string.action_open,
+                btnNegative = R.string.action_cancel,
+                messageStr = linkText,
+            ).show(childFragmentManager, OPEN_LINK_DIALOG_TAG)
+        }
+
+        viewModel.openLinkEvent.observeEvent(viewLifecycleOwner) { url ->
+            val uri = Uri.parse(url)
+            val context = requireContext()
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.packageName)
+            try {
+                context.startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                // do nothing
+            }
+        }
+
         sharedViewModel.reminderChangeEvent.observeEvent(viewLifecycleOwner) { reminder ->
             viewModel.onReminderChange(reminder)
         }
@@ -295,10 +321,12 @@ class EditFragment : Fragment(), Toolbar.OnMenuItemClickListener, ConfirmDialog.
                 moveItem.setIcon(R.drawable.ic_archive)
                 moveItem.setTitle(R.string.action_archive)
             }
+
             NoteStatus.ARCHIVED -> {
                 moveItem.setIcon(R.drawable.ic_unarchive)
                 moveItem.setTitle(R.string.action_unarchive)
             }
+
             NoteStatus.DELETED -> {
                 moveItem.setIcon(R.drawable.ic_restore)
                 moveItem.setTitle(R.string.action_restore)
@@ -324,11 +352,13 @@ class EditFragment : Fragment(), Toolbar.OnMenuItemClickListener, ConfirmDialog.
                 item.setTitle(R.string.action_unpin)
                 item.setIcon(R.drawable.ic_pin_outline)
             }
+
             PinnedStatus.UNPINNED -> {
                 item.isVisible = true
                 item.setTitle(R.string.action_pin)
                 item.setIcon(R.drawable.ic_pin)
             }
+
             PinnedStatus.CANT_PIN -> {
                 item.isVisible = false
             }
@@ -352,6 +382,7 @@ class EditFragment : Fragment(), Toolbar.OnMenuItemClickListener, ConfirmDialog.
                 typeItem.setIcon(R.drawable.ic_checkbox)
                 typeItem.setTitle(R.string.action_convert_to_list)
             }
+
             NoteType.LIST -> {
                 typeItem.setIcon(R.drawable.ic_text)
                 typeItem.setTitle(R.string.action_convert_to_text)
@@ -387,9 +418,11 @@ class EditFragment : Fragment(), Toolbar.OnMenuItemClickListener, ConfirmDialog.
             R.id.item_uncheck_all -> {
                 viewModel.uncheckAllItems()
             }
+
             R.id.item_delete_checked -> viewModel.deleteCheckedItems()
             R.id.item_copy -> viewModel.copyNote(getString(R.string.edit_copy_untitled_name),
                 getString(R.string.edit_copy_suffix))
+
             R.id.item_delete -> viewModel.deleteNote()
             else -> return false
         }
@@ -400,6 +433,7 @@ class EditFragment : Fragment(), Toolbar.OnMenuItemClickListener, ConfirmDialog.
         when (tag) {
             DELETE_CONFIRM_DIALOG_TAG -> viewModel.deleteNoteForeverAndExit()
             REMOVE_CHECKED_CONFIRM_DIALOG_TAG -> viewModel.convertToText(false)
+            OPEN_LINK_DIALOG_TAG -> viewModel.openClickedLink()
         }
     }
 
@@ -412,6 +446,7 @@ class EditFragment : Fragment(), Toolbar.OnMenuItemClickListener, ConfirmDialog.
     companion object {
         private const val DELETE_CONFIRM_DIALOG_TAG = "delete_confirm_dialog"
         private const val REMOVE_CHECKED_CONFIRM_DIALOG_TAG = "remove_checked_confirm_dialog"
+        private const val OPEN_LINK_DIALOG_TAG = "open_link_confirm_dialog"
 
         private const val CANT_EDIT_SNACKBAR_DURATION = 5000
     }

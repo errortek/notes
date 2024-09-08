@@ -1,5 +1,5 @@
 <!--
-  Copyright 2022 Nicolas Maltais
+  Copyright 2023 Nicolas Maltais
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@
     <string name="action_mark_as_done">Mark as done</string>
     <string name="action_none">None</string>
     <string name="action_ok">OK</string>
+    <string name="action_open">Open</string>
     <string name="action_pin">Pin</string>
     <string name="action_postpone">Postpone</string>
     <string name="action_reminder_add">Add reminder</string>
@@ -90,7 +91,10 @@
         <item quantity="other">+ %d checked items</item>
     </plurals>
 
-    <string name="trash_reminder_message">Notes in recycle bin are automatically deleted after %d days.</string>
+    <plurals name="trash_reminder_message">
+        <item quantity="one">Notes in recycle bin are automatically deleted after %d day.</item>
+        <item quantity="other">Notes in recycle bin are automatically deleted after %d days.</item>
+    </plurals>
     <string name="trash_delete_message">This note will be permanently deleted.</string>
     <string name="trash_delete_selected_message">Selected notes will be permanently deleted.</string>
     <string name="trash_empty_message">All notes in recycle bin will be permanently deleted.</string>
@@ -158,8 +162,17 @@
     app has restricted battery usage. This can be changed in the app settings.</string>
     <string name="reminder_notif_permission">To be able to send reminder notifications, the app needs a permission.
     Click OK to show the permission request. You will be able to set a reminder afterwards.</string>
+    <string name="reminder_alarm_permission">To be able to send reminder notifications starting from
+        Android 14, the app needs another permission. Click OK to show the permission request.
+        You will be able to set reminder afterwards.</string>
     <string name="reminder_notif_permission_denied">The notification permission has been denied.
     Reminder alarms will not work until enabled.</string>
+    <string name="reminder_alarm_permission_denied">The reminder permission has been denied.
+    Reminder alarms will not work until enabled.</string>
+    <string name="toast_notification_permission_denied">Notification permission denied, reminders
+        won\'t work! Tap any reminder to setup</string>
+    <string name="toast_alarm_permission_denied">Alarm permission denied, reminders won\'t work!
+        Tap any reminder to setup</string>
 
     <!-- Labels -->
     <string name="label_create">Create new label</string>
@@ -188,6 +201,12 @@
     <string name="pref_shown_date_modified">Last modified date</string>
     <string name="pref_shown_date_none">No date shown</string>
 
+    <string name="pref_deleted_notes_timeout_title">Trash auto-delete delay</string>
+    <string name="pref_deleted_notes_timeout_day">24 hours</string>
+    <string name="pref_deleted_notes_timeout_week">7 days</string>
+    <string name="pref_deleted_notes_timeout_month">30 days</string>
+    <string name="pref_deleted_notes_timeout_year">1 year</string>
+
     <string name="pref_preview_lines">Maximum lines in previews</string>
     <string name="pref_preview_lines_summary">Configure how many lines and items are shown on notes,
         for each layout mode and note type</string>
@@ -200,10 +219,14 @@
     <string name="pref_behavior_swipe_action_left">Swipe left action</string>
     <string name="pref_behavior_swipe_action_right">Swipe right action</string>
     <string name="pref_behavior_move_checked">Move checked items to the bottom</string>
+    <string name="pref_deleted_notes_timeout">Deleted notes timeout</string>
 
     <string name="pref_group_data">Data</string>
     <string name="pref_data_export">Export data</string>
     <string name="pref_data_export_summary">Export notes data as JSON</string>
+    <string name="pref_data_encrypted_export">Encrypted export</string>
+    <string name="pref_data_encrypted_export_summary">Encrypts the exported notes. Access is not possible without
+        the correct password.</string>
     <string name="pref_data_auto_export">Automatic data export</string>
     <string name="pref_data_auto_export_summary">Automatically export the app\'s data to a file, once a day.</string>
     <string name="pref_data_auto_export_date">(Last exported on %s)</string>
@@ -220,11 +243,20 @@
     <string name="pref_about_version">Version</string>
 
     <string name="pref_restart_dialog_title">Restart required!</string>
-    <string name="pref_restart_dialog_description">A restart is required for these changes to take effect. Do you want to restart the app now?</string>
+    <string name="pref_restart_dialog_description">A restart is required for these changes to take effect.
+        Do you want to restart the app now?</string>
 
     <!-- Import/export data messages -->
     <string name="export_success">Data exported successfully!</string>
     <string name="export_fail">An error occurred during data export.</string>
+    <string name="export_serialization_fail">An error occurred during data export.
+        Try disabling encryption and try again.</string>
+    <string name="encrypted_export_dialog_title">Set password</string>
+    <string name="encrypted_export_password">Password</string>
+    <string name="encrypted_export_repeat_password">Confirm password</string>
+    <string name="encrypted_export_password_matching_error">Passwords do not match</string>
+    <string name="encrypted_export_key_generation_successful">Encryption enabled successfully!</string>
+    <string name="encrypted_export_key_deletion_successful">Encryption disabled successfully!</string>
     <string name="import_success">Data imported successfully!</string>
     <string name="import_future_version">Data imported successfully! Note that some information may
         have been lost because the data originates from a later version.</string>
@@ -232,6 +264,11 @@
     <string name="import_bad_format">Could not import data, JSON data is invalid.</string>
     <string name="import_bad_data">Could not import data, some fields have invalid values.
         This can happen if importing data from a later version, try updating the app.</string>
+    <string name="encrypted_import_dialog_title">Enter password</string>
+    <string name="encrypted_import_key_error">An error occurred while attempting to decrypt this file.
+        Check if the password was correct.</string>
+    <string name="encrypted_import_encryption_unsupported">Could not import data, encryption is not supported
+        on this version of Android.</string>
     <string name="auto_export_message">To enable automatic export, a file must be chosen to
         save the data. The app\'s data will be exported once a day while the app is opened.
         Click OK to proceed.</string>

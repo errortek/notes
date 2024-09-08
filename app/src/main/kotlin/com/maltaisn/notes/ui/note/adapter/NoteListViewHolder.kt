@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,17 +34,17 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.maltaisn.notes.R
+import com.maltaisn.notes.databinding.ItemHeaderBinding
+import com.maltaisn.notes.databinding.ItemMessageBinding
+import com.maltaisn.notes.databinding.ItemNoteLabelBinding
+import com.maltaisn.notes.databinding.ItemNoteListBinding
+import com.maltaisn.notes.databinding.ItemNoteListItemBinding
+import com.maltaisn.notes.databinding.ItemNoteTextBinding
 import com.maltaisn.notes.model.PrefsManager
 import com.maltaisn.notes.model.entity.Label
 import com.maltaisn.notes.model.entity.NoteType
 import com.maltaisn.notes.strikethroughText
-import com.maltaisn.notes.sync.R
-import com.maltaisn.notes.sync.databinding.ItemHeaderBinding
-import com.maltaisn.notes.sync.databinding.ItemMessageBinding
-import com.maltaisn.notes.sync.databinding.ItemNoteLabelBinding
-import com.maltaisn.notes.sync.databinding.ItemNoteListBinding
-import com.maltaisn.notes.sync.databinding.ItemNoteListItemBinding
-import com.maltaisn.notes.sync.databinding.ItemNoteTextBinding
 import com.maltaisn.notes.ui.note.Highlighted
 import com.maltaisn.notes.ui.note.ShownDateField
 import com.maltaisn.notes.utils.RelativeDateFormatter
@@ -262,7 +262,14 @@ class MessageViewHolder(private val binding: ItemMessageBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: MessageItem, adapter: NoteAdapter) {
-        binding.messageTxv.text = adapter.context.getString(item.message, *item.args.toTypedArray())
+        val firstArg = item.args.getOrNull(0)
+        binding.messageTxv.text = if (firstArg is Int) {
+            // Likely a plural
+            adapter.context.resources.getQuantityString(item.message, firstArg, *item.args.toTypedArray())
+        } else {
+            // A string, possibly with format arguments
+            adapter.context.getString(item.message, *item.args.toTypedArray())
+        }
         binding.closeImv.setOnClickListener {
             adapter.callback.onMessageItemDismissed(item, bindingAdapterPosition)
             adapter.notifyItemRemoved(bindingAdapterPosition)

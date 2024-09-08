@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,16 +26,23 @@ import android.view.View
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.children
 import androidx.core.view.contains
 import androidx.core.view.forEach
+import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.color.DynamicColors
 import com.maltaisn.notes.App
+import com.maltaisn.notes.NavGraphMainDirections
+import com.maltaisn.notes.R
 import com.maltaisn.notes.TAG
+import com.maltaisn.notes.databinding.ActivityMainBinding
 import com.maltaisn.notes.model.PrefsManager
 import com.maltaisn.notes.model.converter.NoteTypeConverter
 import com.maltaisn.notes.model.entity.Note
@@ -43,14 +50,14 @@ import com.maltaisn.notes.model.entity.NoteStatus
 import com.maltaisn.notes.model.entity.NoteType
 import com.maltaisn.notes.navigateSafe
 import com.maltaisn.notes.receiver.AlarmReceiver
-import com.maltaisn.notes.sync.NavGraphMainDirections
-import com.maltaisn.notes.sync.R
-import com.maltaisn.notes.sync.databinding.ActivityMainBinding
 import com.maltaisn.notes.ui.SharedViewModel
+import com.maltaisn.notes.ui.main.MainViewModel.NewNoteData
 import com.maltaisn.notes.ui.navGraphViewModel
 import com.maltaisn.notes.ui.navigation.HomeDestination
 import com.maltaisn.notes.ui.observeEvent
 import com.maltaisn.notes.ui.viewModel
+import java.io.IOException
+import java.io.InputStreamReader
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -97,6 +104,20 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
         // Allow for transparent status and navigation bars
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        // Apply padding to navigation drawer
+        val initialPadding = resources.getDimensionPixelSize(R.dimen.navigation_drawer_bottom_padding)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.navView) { _, insets ->
+            val sysWindow = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            binding.navView.getHeaderView(0).updatePadding(top = sysWindow.top)
+            binding.navView.children.last().updatePadding(bottom = initialPadding + sysWindow.bottom)
+            // Don't draw under system bars, if it conflicts with the navigation drawer.
+            // This is mainly the case if the app is used in landscape mode with traditional 3 button navigation.
+            if (sysWindow.left > 0) {
+                WindowCompat.setDecorFitsSystemWindows(window, true)
+            }
+            insets
+        }
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
@@ -245,18 +266,16 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             when (intent.action) {
                 Intent.ACTION_SEND -> {
                     // Plain text was shared to app, create new note for it
-                    if (intent.type == "text/plain") {
-                        val title = intent.getStringExtra(Intent.EXTRA_TITLE)
-                            ?: intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: ""
-                        val content = intent.getStringExtra(Intent.EXTRA_TEXT) ?: ""
-                        viewModel.createNote(NoteType.TEXT, title, content)
+                    val noteData = createNoteFromIntent(intent)
+                    if (noteData != null) {
+                        viewModel.createNote(noteData)
                     }
                 }
                 INTENT_ACTION_CREATE -> {
                     // Intent to create a note of a certain type. Used by launcher shortcuts.
                     val type = NoteTypeConverter.toType(
                         intent.getIntExtra(EXTRA_NOTE_TYPE, 0))
-                    viewModel.createNote(type)
+                    viewModel.createNote(NewNoteData(type))
                 }
                 INTENT_ACTION_EDIT -> {
                     // Intent to edit a specific note. This is used by reminder notification.
@@ -272,6 +291,36 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             // Mark intent as handled or it will be handled again if activity is resumed again.
             intent.putExtra(KEY_INTENT_HANDLED, true)
         }
+    }
+
+    private fun createNoteFromIntent(intent: Intent): NewNoteData? {
+        val extras = intent.extras ?: return null
+        var noteData: NewNoteData? = null
+        if (intent.type == "text/plain") {
+            if (extras.containsKey(Intent.EXTRA_STREAM)) {
+                // A file was shared
+                @Suppress("DEPRECATION")
+                val uri = extras.get(Intent.EXTRA_STREAM) as? Uri
+                if (uri != null) {
+                    try {
+                        val reader = InputStreamReader(contentResolver.openInputStream(uri))
+                        val title = uri.pathSegments.last()
+                        val content = reader.readText()
+                        noteData = NewNoteData(NoteType.TEXT, title, content)
+                        reader.close()
+                    } catch (e: IOException) {
+                        // nothing to do (file doesn't exist, access error, etc)
+                    }
+                }
+            } else {
+                // Text was shared
+                val title = extras.getString(Intent.EXTRA_TITLE)
+                    ?: extras.getString(Intent.EXTRA_SUBJECT) ?: ""
+                val content = extras.getString(Intent.EXTRA_TEXT) ?: ""
+                noteData = NewNoteData(NoteType.TEXT, title, content)
+            }
+        }
+        return noteData
     }
 
     companion object {

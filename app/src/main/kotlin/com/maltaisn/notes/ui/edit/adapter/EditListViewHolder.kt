@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,37 +18,30 @@ package com.maltaisn.notes.ui.edit.adapter
 
 import android.content.res.ColorStateList
 import android.text.Editable
-import android.text.TextWatcher
 import android.text.format.DateUtils
-import android.text.style.CharacterStyle
-import android.text.util.Linkify
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
-import androidx.core.text.getSpans
-import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.isInvisible
-import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
+import com.maltaisn.notes.R
+import com.maltaisn.notes.databinding.ItemEditContentBinding
+import com.maltaisn.notes.databinding.ItemEditDateBinding
+import com.maltaisn.notes.databinding.ItemEditHeaderBinding
+import com.maltaisn.notes.databinding.ItemEditItemAddBinding
+import com.maltaisn.notes.databinding.ItemEditItemBinding
+import com.maltaisn.notes.databinding.ItemEditLabelsBinding
+import com.maltaisn.notes.databinding.ItemEditTitleBinding
 import com.maltaisn.notes.hideKeyboard
 import com.maltaisn.notes.model.PrefsManager
 import com.maltaisn.notes.model.entity.Label
 import com.maltaisn.notes.model.entity.Reminder
 import com.maltaisn.notes.showKeyboard
 import com.maltaisn.notes.strikethroughText
-import com.maltaisn.notes.sync.R
-import com.maltaisn.notes.sync.databinding.ItemEditContentBinding
-import com.maltaisn.notes.sync.databinding.ItemEditDateBinding
-import com.maltaisn.notes.sync.databinding.ItemEditHeaderBinding
-import com.maltaisn.notes.sync.databinding.ItemEditItemAddBinding
-import com.maltaisn.notes.sync.databinding.ItemEditItemBinding
-import com.maltaisn.notes.sync.databinding.ItemEditLabelsBinding
-import com.maltaisn.notes.sync.databinding.ItemEditTitleBinding
 import com.maltaisn.notes.ui.edit.BulletTextWatcher
-import com.maltaisn.notes.ui.edit.LinkArrowKeyMovementMethod
 import com.maltaisn.notes.utils.RelativeDateFormatter
 import java.text.DateFormat
 
@@ -85,13 +78,11 @@ class EditTitleViewHolder(binding: ItemEditTitleBinding, callback: EditAdapter.C
         titleEdt.setOnClickListener {
             callback.onNoteClickedToEdit()
         }
-        titleEdt.addTextChangedListener(clearSpansTextWatcher)
         titleEdt.doAfterTextChanged { editable ->
             if (editable != item?.title?.text) {
                 item?.title = AndroidEditableText(editable ?: return@doAfterTextChanged)
             }
         }
-        titleEdt.addOnAttachStateChangeListener(PrepareCursorControllersListener())
         titleEdt.setHorizontallyScrolling(false)
         titleEdt.maxLines = Integer.MAX_VALUE
     }
@@ -118,14 +109,8 @@ class EditContentViewHolder(binding: ItemEditContentBinding, callback: EditAdapt
 
     init {
         contentEdt.addTextChangedListener(BulletTextWatcher())
-        contentEdt.addTextChangedListener(clearSpansTextWatcher)
-        contentEdt.movementMethod = LinkArrowKeyMovementMethod.getInstance()  // Clickable links
         contentEdt.doAfterTextChanged { editable ->
-            // Add new links
-            LinkifyCompat.addLinks(editable ?: return@doAfterTextChanged,
-                Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES)
-
-            if (editable != item?.content?.text) {
+            if (editable != null && editable != item?.content?.text) {
                 item?.content = AndroidEditableText(editable)
             }
         }
@@ -133,10 +118,7 @@ class EditContentViewHolder(binding: ItemEditContentBinding, callback: EditAdapt
         contentEdt.setOnClickListener {
             callback.onNoteClickedToEdit()
         }
-
-        // Fixes broken long press after holder has been recycled (#34).
-        // See https://stackoverflow.com/q/54833004
-        contentEdt.addOnAttachStateChangeListener(PrepareCursorControllersListener())
+        contentEdt.onLinkClickListener = callback::onLinkClickedInNote
     }
 
     fun bind(item: EditContentItem) {
@@ -180,36 +162,27 @@ class EditItemViewHolder(binding: ItemEditItemBinding, callback: EditAdapter.Cal
             }
         }
 
-        itemEdt.addTextChangedListener(clearSpansTextWatcher)
+        itemEdt.doOnTextChanged { _, _, _, count ->
+            if (itemEdt.text != item?.content?.text) {
+                item?.content = AndroidEditableText(itemEdt.text!!)
+            }
 
-        itemEdt.addTextChangedListener(
-            beforeTextChanged = { _, _, _, _ -> },
-            onTextChanged = { _, _, _, count ->
-                if (itemEdt.text != item?.content?.text) {
-                    item?.content = AndroidEditableText(itemEdt.text)
-                }
-
-                // This is used to detect when user enters line breaks into the input, so the
-                // item can be split into multiple items. When user enters a single line break,
-                // selection is set at the beginning of new item. On paste, i.e. when more than one
-                // character is entered, selection is set at the end of last new item.
-                val pos = bindingAdapterPosition
-                if (pos != RecyclerView.NO_POSITION) {
-                    callback.onNoteItemChanged(pos, count > 1)
-                }
-            },
-            afterTextChanged = { editable ->
-                // Add new links
-                LinkifyCompat.addLinks(editable ?: return@addTextChangedListener,
-                    Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES)
-            })
-        itemEdt.movementMethod = LinkArrowKeyMovementMethod.getInstance()  // Clickable links
+            // This is used to detect when user enters line breaks into the input, so the
+            // item can be split into multiple items. When user enters a single line break,
+            // selection is set at the beginning of new item. On paste, i.e. when more than one
+            // character is entered, selection is set at the end of last new item.
+            val pos = bindingAdapterPosition
+            if (pos != RecyclerView.NO_POSITION) {
+                callback.onNoteItemChanged(pos, count > 1)
+            }
+        }
         itemEdt.setOnFocusChangeListener { _, hasFocus ->
             // Only show delete icon for currently focused item.
             deleteImv.isInvisible = !hasFocus
         }
         itemEdt.setOnKeyListener { _, _, event ->
-            val isCursorAtStart = itemEdt.selectionStart == 0 && itemEdt.selectionStart == itemEdt.selectionEnd
+            val isCursorAtStart =
+                itemEdt.selectionStart == 0 && itemEdt.selectionStart == itemEdt.selectionEnd
             if (isCursorAtStart && event.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_DEL) {
                 // If user presses backspace at the start of an item, current item
                 // will be merged with previous.
@@ -223,7 +196,7 @@ class EditItemViewHolder(binding: ItemEditItemBinding, callback: EditAdapter.Cal
         itemEdt.setOnClickListener {
             callback.onNoteClickedToEdit()
         }
-        itemEdt.addOnAttachStateChangeListener(PrepareCursorControllersListener())
+        itemEdt.onLinkClickListener = callback::onLinkClickedInNote
 
         deleteImv.setOnClickListener {
             val pos = bindingAdapterPosition
@@ -298,14 +271,19 @@ class EditItemLabelsViewHolder(binding: ItemEditLabelsBinding, callback: EditAda
         for (chip in item.chips) {
             when (chip) {
                 is Label -> {
-                    val view = layoutInflater.inflate(R.layout.view_edit_chip_label, chipGroup, false) as Chip
+                    val view = layoutInflater.inflate(R.layout.view_edit_chip_label,
+                        chipGroup,
+                        false) as Chip
                     chipGroup.addView(view)
                     view.text = chip.name
                     view.chipBackgroundColor = ColorStateList.valueOf(chip.color)
                     view.setOnClickListener(labelClickListener)
                 }
+
                 is Reminder -> {
-                    val view = layoutInflater.inflate(R.layout.view_edit_chip_reminder, chipGroup, false) as Chip
+                    val view = layoutInflater.inflate(R.layout.view_edit_chip_reminder,
+                        chipGroup,
+                        false) as Chip
                     chipGroup.addView(view)
                     view.text = reminderDateFormatter.format(chip.next.time,
                         System.currentTimeMillis(), PrefsManager.MAXIMUM_RELATIVE_DATE_DAYS)
@@ -314,6 +292,7 @@ class EditItemLabelsViewHolder(binding: ItemEditLabelsBinding, callback: EditAda
                     view.setChipIconResource(if (chip.recurrence != null) R.drawable.ic_repeat else R.drawable.ic_alarm)
                     view.setOnClickListener(reminderClickListener)
                 }
+
                 else -> error("Unknown chip type")
             }
         }
@@ -333,39 +312,4 @@ private class AndroidEditableText(override val text: Editable) : EditableText {
     override fun replaceAll(text: CharSequence) {
         this.text.replace(0, this.text.length, text)
     }
-}
-
-private val clearSpansTextWatcher = object : TextWatcher {
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-        // nothing
-    }
-
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        // nothing
-    }
-
-    override fun afterTextChanged(s: Editable?) {
-        if (s == null) return
-        // Might not remove all spans but will work for most of them.
-        val spansToRemove = s.getSpans<CharacterStyle>()
-        for (span in spansToRemove) {
-            s.removeSpan(span)
-        }
-    }
-}
-
-/**
- * Used to fix the issue described at [https://stackoverflow.com/q/54833004],
- * causing the EditText long press to fail after a view holder has been recycled.
- */
-private class PrepareCursorControllersListener : View.OnAttachStateChangeListener {
-    override fun onViewAttachedToWindow(view: View) {
-        if (view !is EditText) {
-            return
-        }
-        view.isCursorVisible = false
-        view.isCursorVisible = true
-    }
-
-    override fun onViewDetachedFromWindow(v: View) = Unit
 }

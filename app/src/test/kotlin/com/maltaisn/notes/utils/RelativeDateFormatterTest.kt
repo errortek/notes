@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,14 @@
 package com.maltaisn.notes.utils
 
 import android.content.res.Resources
-import com.maltaisn.notes.dateFor
-import com.maltaisn.notes.sync.R
-import com.nhaarman.mockitokotlin2.anyVararg
-import com.nhaarman.mockitokotlin2.doAnswer
-import com.nhaarman.mockitokotlin2.mock
+import com.maltaisn.notes.R
+import com.maltaisn.notesshared.dateFor
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.kotlin.anyVararg
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.mock
 import java.text.DateFormat
 import java.util.Locale
 import kotlin.test.assertEquals

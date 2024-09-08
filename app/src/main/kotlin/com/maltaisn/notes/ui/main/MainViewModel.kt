@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
+import com.maltaisn.notes.NavGraphMainDirections
+import com.maltaisn.notes.R
 import com.maltaisn.notes.model.JsonManager
 import com.maltaisn.notes.model.LabelsRepository
 import com.maltaisn.notes.model.NotesRepository
@@ -33,8 +35,6 @@ import com.maltaisn.notes.model.ReminderAlarmManager
 import com.maltaisn.notes.model.entity.Label
 import com.maltaisn.notes.model.entity.NoteStatus
 import com.maltaisn.notes.model.entity.NoteType
-import com.maltaisn.notes.sync.NavGraphMainDirections
-import com.maltaisn.notes.sync.R
 import com.maltaisn.notes.ui.AssistedSavedStateViewModelFactory
 import com.maltaisn.notes.ui.Event
 import com.maltaisn.notes.ui.home.HomeFragmentDirections
@@ -47,7 +47,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.io.OutputStream
 import kotlin.time.Duration.Companion.hours
 
@@ -72,10 +73,10 @@ class MainViewModel @AssistedInject constructor(
     val createNoteEvent: LiveData<Event<NewNoteData>>
         get() = _createNoteEvent
 
-    // This semaphore is used to signal that the process of deleting old blank notes is finished and
+    // This mutex is used to signal that the process of deleting old blank notes is finished and
     // new notes can safely be created. Otherwise newly created notes might be instantly deleted,
     // depending on the timing of the different coroutines.
-    private val _deletionFinishedSignal = Semaphore(1, 1)
+    private val _deletionFinishedMutex = Mutex(locked = true)
 
     private val _navDirectionsEvent = MutableLiveData<Event<NavDirections>>()
     val navDirectionsEvent: LiveData<Event<NavDirections>>
@@ -120,7 +121,7 @@ class MainViewModel @AssistedInject constructor(
             if (lastCreatedNote?.isBlank == true) {
                 notesRepository.deleteNote(lastCreatedNote)
             }
-            _deletionFinishedSignal.release()
+            _deletionFinishedMutex.unlock()
 
             // Periodically remove old notes in trash, and auto export if needed.
             while (true) {
@@ -212,11 +213,12 @@ class MainViewModel @AssistedInject constructor(
         }
     }
 
-    fun createNote(type: NoteType, title: String = "", content: String = "") {
+    fun createNote(newNoteData: NewNoteData) {
         viewModelScope.launch {
             // Wait until older notes have been checked / deleted
-            _deletionFinishedSignal.acquire()
-            _createNoteEvent.send(NewNoteData(type, title, content))
+            _deletionFinishedMutex.withLock {
+                _createNoteEvent.send(newNoteData)
+            }
         }
     }
 
@@ -232,8 +234,8 @@ class MainViewModel @AssistedInject constructor(
     fun autoExport(output: OutputStream?) {
         if (output != null) {
             viewModelScope.launch(Dispatchers.IO) {
-                val jsonData = jsonManager.exportJsonData()
                 prefsManager.autoExportFailed = try {
+                    val jsonData = jsonManager.exportJsonData()
                     output.use {
                         output.write(jsonData.toByteArray())
                     }
@@ -253,7 +255,7 @@ class MainViewModel @AssistedInject constructor(
         override fun create(savedStateHandle: SavedStateHandle): MainViewModel
     }
 
-    data class NewNoteData(val type: NoteType, val title: String, val content: String)
+    data class NewNoteData(val type: NoteType, val title: String = "", val content: String = "")
 
     companion object {
         private const val KEY_HOME_DESTINATION = "destination"

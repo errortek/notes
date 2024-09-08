@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,21 @@
 
 package com.maltaisn.notes.ui.note
 
-import com.maltaisn.notes.listNote
 import com.maltaisn.notes.model.PrefsManager
 import com.maltaisn.notes.model.entity.Label
 import com.maltaisn.notes.model.entity.ListNoteItem
 import com.maltaisn.notes.model.entity.NoteType
-import com.maltaisn.notes.testNote
 import com.maltaisn.notes.ui.note.adapter.NoteItemList
 import com.maltaisn.notes.ui.note.adapter.NoteItemText
 import com.maltaisn.notes.ui.note.adapter.NoteListLayoutMode
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import com.maltaisn.notesshared.listNote
+import com.maltaisn.notesshared.testNote
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import kotlin.test.assertEquals
 
 class NoteItemFactoryTest {
@@ -612,6 +612,20 @@ class NoteItemFactoryTest {
             Highlighted("needle 8 needle", listOf(0..6, 9..15)),
         ), listOf(false, false, false, true, true), 4,
             onlyCheckedInOverflow = false, showMarkAsDone = false), item)
+    }
+
+    @Test
+    fun `should create note and highlight with zero lines preview`() {
+        prefs = mock {
+            on { listLayoutMode } doReturn NoteListLayoutMode.LIST
+            on { getMaximumPreviewLines(any()) } doReturn 0
+            on { moveCheckedToBottom } doReturn false
+        }
+        val note = testNote(id = 2, title = "title", content = "needle")
+        factory.query = "need"
+        val item = factory.createItem(note, emptyList(), false)
+        assertEquals(NoteItemText(2, note, emptyList(), false, "title".hl,
+            Highlighted("needle", listOf(0..4)), showMarkAsDone = false), item)
     }
 
     private val String.hl: Highlighted

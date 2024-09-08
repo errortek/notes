@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.maltaisn.notes.R
 import com.maltaisn.notes.model.LabelsRepository
 import com.maltaisn.notes.model.NotesRepository
 import com.maltaisn.notes.model.PrefsManager
@@ -30,7 +31,6 @@ import com.maltaisn.notes.model.entity.NoteStatus
 import com.maltaisn.notes.model.entity.NoteWithLabels
 import com.maltaisn.notes.model.entity.PinnedStatus
 import com.maltaisn.notes.setToStartOfDay
-import com.maltaisn.notes.sync.R
 import com.maltaisn.notes.ui.AssistedSavedStateViewModelFactory
 import com.maltaisn.notes.ui.Event
 import com.maltaisn.notes.ui.navigation.HomeDestination
@@ -67,6 +67,7 @@ class HomeViewModel @AssistedInject constructor(
 
     private var batteryRestricted = false
     private var notificationsRestricted = false
+    private var remindersRestricted = false
 
     private val _fabShown = MutableLiveData<Boolean>()
     val fabShown: LiveData<Boolean>
@@ -161,10 +162,11 @@ class HomeViewModel @AssistedInject constructor(
     }
 
     /** Update restrictions status so that appropriate warnings may be shown to user. */
-    fun updateRestrictions(battery: Boolean, notifications: Boolean) {
-        val updateList = battery != batteryRestricted || notifications != notificationsRestricted
+    fun updateRestrictions(battery: Boolean, notifications: Boolean, reminders: Boolean) {
+        val updateList = battery != batteryRestricted || notifications != notificationsRestricted || reminders != remindersRestricted
         batteryRestricted = battery
         notificationsRestricted = notifications
+        remindersRestricted = reminders
         if (updateList) {
             updateNoteList()
         }
@@ -284,9 +286,8 @@ class HomeViewModel @AssistedInject constructor(
             System.currentTimeMillis() - prefs.lastTrashReminderTime >
             PrefsManager.TRASH_REMINDER_DELAY.inWholeMilliseconds
         ) {
-            this += MessageItem(TRASH_REMINDER_ITEM_ID,
-                R.string.trash_reminder_message,
-                listOf(PrefsManager.TRASH_AUTO_DELETE_DELAY.inWholeDays))
+            this += MessageItem(TRASH_REMINDER_ITEM_ID, R.plurals.trash_reminder_message,
+                listOf(prefs.deletedNotesTimeout.value.toInt()))
         }
 
         for (note in notes) {
@@ -342,6 +343,9 @@ class HomeViewModel @AssistedInject constructor(
         // If needed, add warning that notification permission has been denied.
         if (notes.isNotEmpty() && notificationsRestricted) {
             this += MessageItem(NOTIFICATION_DENIED_ITEM_ID, R.string.reminder_notif_permission_denied)
+        }
+        if (notes.isNotEmpty() && remindersRestricted) {
+            this += MessageItem(REMINDER_DENIED_ITEM_ID, R.string.reminder_alarm_permission_denied)
         }
 
         var addedOverdueHeader = false
@@ -414,6 +418,7 @@ class HomeViewModel @AssistedInject constructor(
         private const val BATTERY_RESTRICTED_ITEM_ID = -8L
         private const val AUTO_EXPORT_FAIL_ITEM_ID = -9L
         private const val NOTIFICATION_DENIED_ITEM_ID = -10L
+        private const val REMINDER_DENIED_ITEM_ID = -11L
 
         val PINNED_HEADER_ITEM = HeaderItem(-2, R.string.note_pinned)
         val NOT_PINNED_HEADER_ITEM = HeaderItem(-3, R.string.note_not_pinned)

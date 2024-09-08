@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Nicolas Maltais
+ * Copyright 2023 Nicolas Maltais
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,9 @@ import com.google.android.material.color.MaterialColors
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.transition.MaterialElevationScale
 import com.maltaisn.notes.App
+import com.maltaisn.notes.R
+import com.maltaisn.notes.databinding.FragmentLabelBinding
 import com.maltaisn.notes.navigateSafe
-import com.maltaisn.notes.sync.R
-import com.maltaisn.notes.sync.databinding.FragmentLabelBinding
 import com.maltaisn.notes.ui.SharedViewModel
 import com.maltaisn.notes.ui.common.ConfirmDialog
 import com.maltaisn.notes.ui.labels.adapter.LabelAdapter
@@ -53,6 +53,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Provider
+import com.google.android.material.R as RMaterial
 
 /**
  * This fragment has two purposes:
@@ -85,10 +86,10 @@ class LabelFragment : DialogFragment(), Toolbar.OnMenuItemClickListener,
         (requireContext().applicationContext as App).appComponent.inject(this)
 
         enterTransition = MaterialElevationScale(false).apply {
-            duration = resources.getInteger(R.integer.material_motion_duration_short_2).toLong()
+            duration = resources.getInteger(RMaterial.integer.material_motion_duration_short_2).toLong()
         }
         exitTransition = MaterialElevationScale(true).apply {
-            duration = resources.getInteger(R.integer.material_motion_duration_short_2).toLong()
+            duration = resources.getInteger(RMaterial.integer.material_motion_duration_short_2).toLong()
         }
     }
 
@@ -252,8 +253,8 @@ class LabelFragment : DialogFragment(), Toolbar.OnMenuItemClickListener,
         if (Build.VERSION.SDK_INT >= 23) {
             switchStatusBarColor(
                 (binding.toolbarLayout.background as MaterialShapeDrawable).resolvedTintColor,
-                MaterialColors.getColor(requireView(), R.attr.colorSurfaceVariant),
-                resources.getInteger(R.integer.material_motion_duration_long_2).toLong()
+                MaterialColors.getColor(requireView(), RMaterial.attr.colorSurfaceVariant),
+                resources.getInteger(RMaterial.integer.material_motion_duration_long_2).toLong()
             )
         }
         return true
@@ -266,9 +267,9 @@ class LabelFragment : DialogFragment(), Toolbar.OnMenuItemClickListener,
         viewModel.clearSelection()
         if (Build.VERSION.SDK_INT >= 23) {
             switchStatusBarColor(
-                MaterialColors.getColor(requireView(), R.attr.colorSurfaceVariant),
+                MaterialColors.getColor(requireView(), RMaterial.attr.colorSurfaceVariant),
                 (binding.toolbarLayout.background as MaterialShapeDrawable).resolvedTintColor,
-                resources.getInteger(R.integer.material_motion_duration_long_1).toLong(),
+                resources.getInteger(RMaterial.integer.material_motion_duration_long_1).toLong(),
                 true
             )
         }
