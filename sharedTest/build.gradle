@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace "com.maltaisn.notesshared"
+    namespace "com.errortek.notesshared"
     compileSdk 34
 
     defaultConfig {

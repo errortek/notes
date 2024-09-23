@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.reminder
+package com.errortek.notes.ui.reminder
 
 import android.Manifest
 import android.app.AlarmManager
@@ -25,8 +25,8 @@ import android.provider.Settings
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.maltaisn.notes.R
-import com.maltaisn.notes.ui.common.ConfirmDialog
+import com.errortek.notes.R
+import com.errortek.notes.ui.common.ConfirmDialog
 
 class ReminderPermission(
     val fragment: Fragment,

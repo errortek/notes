@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.home
+package com.errortek.notes.ui.home
 
 import android.Manifest
 import android.app.ActivityManager
@@ -35,18 +35,18 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.Hold
-import com.maltaisn.notes.App
-import com.maltaisn.notes.BuildConfig
-import com.maltaisn.notes.NavGraphMainDirections
-import com.maltaisn.notes.R
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.navigateSafe
-import com.maltaisn.notes.ui.common.ConfirmDialog
-import com.maltaisn.notes.ui.navigation.HomeDestination
-import com.maltaisn.notes.ui.note.NoteFragment
-import com.maltaisn.notes.ui.note.adapter.NoteListLayoutMode
-import com.maltaisn.notes.ui.observeEvent
-import com.maltaisn.notes.ui.viewModel
+import com.errortek.notes.App
+import com.errortek.notes.BuildConfig
+import com.errortek.notes.NavGraphMainDirections
+import com.errortek.notes.R
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.navigateSafe
+import com.errortek.notes.ui.common.ConfirmDialog
+import com.errortek.notes.ui.navigation.HomeDestination
+import com.errortek.notes.ui.note.NoteFragment
+import com.errortek.notes.ui.note.adapter.NoteListLayoutMode
+import com.errortek.notes.ui.observeEvent
+import com.errortek.notes.ui.viewModel
 import javax.inject.Inject
 import com.google.android.material.R as RMaterial
 

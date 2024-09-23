@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model
+package com.errortek.notes.model
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.maltaisn.notes.model.converter.DateTimeConverter
-import com.maltaisn.notes.model.converter.NoteMetadataConverter
-import com.maltaisn.notes.model.converter.NoteStatusConverter
-import com.maltaisn.notes.model.converter.NoteTypeConverter
-import com.maltaisn.notes.model.converter.PinnedStatusConverter
-import com.maltaisn.notes.model.converter.RecurrenceConverter
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.LabelRef
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.model.entity.NoteFts
+import com.errortek.notes.model.converter.DateTimeConverter
+import com.errortek.notes.model.converter.NoteMetadataConverter
+import com.errortek.notes.model.converter.NoteStatusConverter
+import com.errortek.notes.model.converter.NoteTypeConverter
+import com.errortek.notes.model.converter.PinnedStatusConverter
+import com.errortek.notes.model.converter.RecurrenceConverter
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.LabelRef
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.model.entity.NoteFts
 
 @Database(
     entities = [

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model.entity
+package com.errortek.notes.model.entity
 
-import com.maltaisn.notesshared.dateFor
+import com.errortek.notesshared.dateFor
 import com.maltaisn.recurpicker.Recurrence
 import com.maltaisn.recurpicker.RecurrenceFinder
 import org.junit.Test

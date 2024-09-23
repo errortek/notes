@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model.converter
+package com.errortek.notes.model.converter
 
 import androidx.room.TypeConverter
 import kotlinx.serialization.KSerializer

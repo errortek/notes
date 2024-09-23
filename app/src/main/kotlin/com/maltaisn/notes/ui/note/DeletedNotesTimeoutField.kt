@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.note
+package com.errortek.notes.ui.note
 
-import com.maltaisn.notes.R
-import com.maltaisn.notes.model.ValueEnum
-import com.maltaisn.notes.model.findValueEnum
+import com.errortek.notes.R
+import com.errortek.notes.model.ValueEnum
+import com.errortek.notes.model.findValueEnum
 
 /**
  * Enum for deleted notes timeout.

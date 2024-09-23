@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.settings
+package com.errortek.notes.ui.settings
 
 import android.os.Build
 import android.security.keystore.KeyProperties
@@ -26,16 +26,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.maltaisn.notes.R
-import com.maltaisn.notes.model.JsonManager
-import com.maltaisn.notes.model.JsonManager.ImportResult
-import com.maltaisn.notes.model.LabelsRepository
-import com.maltaisn.notes.model.NotesRepository
-import com.maltaisn.notes.model.PrefsManager
-import com.maltaisn.notes.model.ReminderAlarmManager
-import com.maltaisn.notes.ui.AssistedSavedStateViewModelFactory
-import com.maltaisn.notes.ui.Event
-import com.maltaisn.notes.ui.send
+import com.errortek.notes.R
+import com.errortek.notes.model.JsonManager
+import com.errortek.notes.model.JsonManager.ImportResult
+import com.errortek.notes.model.LabelsRepository
+import com.errortek.notes.model.NotesRepository
+import com.errortek.notes.model.PrefsManager
+import com.errortek.notes.model.ReminderAlarmManager
+import com.errortek.notes.ui.AssistedSavedStateViewModelFactory
+import com.errortek.notes.ui.Event
+import com.errortek.notes.ui.send
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

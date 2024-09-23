@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.receiver
+package com.errortek.notes.receiver
 
 import android.Manifest
 import android.app.AlarmManager
@@ -28,9 +28,9 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import com.maltaisn.notes.R
-import com.maltaisn.notes.model.ReminderAlarmCallback
-import com.maltaisn.notes.model.ReminderAlarmManager
+import com.errortek.notes.R
+import com.errortek.notes.model.ReminderAlarmCallback
+import com.errortek.notes.model.ReminderAlarmManager
 import javax.inject.Inject
 
 /**

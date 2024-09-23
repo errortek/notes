@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.di
+package com.errortek.notes.di
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import com.maltaisn.notes.model.DefaultJsonManager
-import com.maltaisn.notes.model.DefaultLabelsRepository
-import com.maltaisn.notes.model.DefaultNotesRepository
-import com.maltaisn.notes.model.JsonManager
-import com.maltaisn.notes.model.LabelsRepository
-import com.maltaisn.notes.model.NotesRepository
-import com.maltaisn.notes.model.ReminderAlarmCallback
-import com.maltaisn.notes.receiver.ReceiverAlarmCallback
+import com.errortek.notes.model.DefaultJsonManager
+import com.errortek.notes.model.DefaultLabelsRepository
+import com.errortek.notes.model.DefaultNotesRepository
+import com.errortek.notes.model.JsonManager
+import com.errortek.notes.model.LabelsRepository
+import com.errortek.notes.model.NotesRepository
+import com.errortek.notes.model.ReminderAlarmCallback
+import com.errortek.notes.receiver.ReceiverAlarmCallback
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

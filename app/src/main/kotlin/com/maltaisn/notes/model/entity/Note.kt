@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model.entity
+package com.errortek.notes.model.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
@@ -22,7 +22,7 @@ import androidx.room.Entity
 import androidx.room.Junction
 import androidx.room.PrimaryKey
 import androidx.room.Relation
-import com.maltaisn.notes.model.converter.NoteMetadataConverter
+import com.errortek.notes.model.converter.NoteMetadataConverter
 import debugCheck
 import debugRequire
 import kotlinx.serialization.Transient

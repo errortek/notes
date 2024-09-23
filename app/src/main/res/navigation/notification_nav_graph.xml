@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/fragment_notification"
-        android:name="com.maltaisn.notes.ui.notification.NotificationFragment"
+        android:name="com.errortek.notes.ui.notification.NotificationFragment"
         >
         <action
             android:id="@+id/action_reminder_postpone_date"
@@ -37,7 +37,7 @@
 
     <dialog
         android:id="@+id/dialog_reminder_postpone_date"
-        android:name="com.maltaisn.notes.ui.notification.ReminderPostponeDateDialog"
+        android:name="com.errortek.notes.ui.notification.ReminderPostponeDateDialog"
         >
         <argument
             android:name="date"
@@ -47,7 +47,7 @@
 
     <dialog
         android:id="@+id/dialog_reminder_postpone_time"
-        android:name="com.maltaisn.notes.ui.notification.ReminderPostponeTimeDialog"
+        android:name="com.errortek.notes.ui.notification.ReminderPostponeTimeDialog"
         >
         <argument
             android:name="date"

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.notification
+package com.errortek.notes.ui.notification
 
 import android.content.Intent
 import android.os.Bundle
@@ -26,12 +26,12 @@ import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import com.maltaisn.notes.App
-import com.maltaisn.notes.R
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.receiver.AlarmReceiver
-import com.maltaisn.notes.ui.navGraphViewModel
-import com.maltaisn.notes.ui.observeEvent
+import com.errortek.notes.App
+import com.errortek.notes.R
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.receiver.AlarmReceiver
+import com.errortek.notes.ui.navGraphViewModel
+import com.errortek.notes.ui.observeEvent
 import java.util.Calendar
 import java.util.TimeZone
 import javax.inject.Inject
@@ -154,8 +154,8 @@ class NotificationActivity : AppCompatActivity() {
         private const val DATE_DIALOG_TAG = "date-picker-dialog"
         private const val TIME_DIALOG_TAG = "time-picker-dialog"
 
-        private const val KEY_INTENT_HANDLED = "com.maltaisn.notes.INTENT_HANDLED"
+        private const val KEY_INTENT_HANDLED = "com.errortek.notes.INTENT_HANDLED"
 
-        const val INTENT_ACTION_POSTPONE = "com.maltaisn.notes.reminder.POSTPONE"
+        const val INTENT_ACTION_POSTPONE = "com.errortek.notes.reminder.POSTPONE"
     }
 }

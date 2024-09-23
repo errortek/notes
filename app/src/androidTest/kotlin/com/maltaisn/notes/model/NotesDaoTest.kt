@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model
+package com.errortek.notes.model
 
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.LabelRef
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.NoteWithLabels
-import com.maltaisn.notes.model.entity.PinnedStatus
-import com.maltaisn.notes.model.entity.Reminder
-import com.maltaisn.notes.ui.search.SearchQueryCleaner
-import com.maltaisn.notesshared.dateFor
-import com.maltaisn.notesshared.testNote
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.LabelRef
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.NoteWithLabels
+import com.errortek.notes.model.entity.PinnedStatus
+import com.errortek.notes.model.entity.Reminder
+import com.errortek.notes.ui.search.SearchQueryCleaner
+import com.errortek.notesshared.dateFor
+import com.errortek.notesshared.testNote
 import com.maltaisn.recurpicker.RecurrenceFinder
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking

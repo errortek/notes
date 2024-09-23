@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.edit;
+package com.errortek.notes.ui.edit;
 
 import android.os.Build;
 import android.text.Layout;
@@ -32,7 +32,7 @@ import android.view.View;
 import android.view.textclassifier.TextLinks;
 import android.widget.TextView;
 
-import com.maltaisn.notes.ui.edit.adapter.EditEditText;
+import com.errortek.notes.ui.edit.adapter.EditEditText;
 
 import java.lang.reflect.Method;
 

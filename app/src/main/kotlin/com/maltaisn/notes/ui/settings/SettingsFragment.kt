@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.settings
+package com.errortek.notes.ui.settings
 
 import android.app.Activity
 import android.content.Intent
@@ -41,20 +41,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialElevationScale
-import com.maltaisn.notes.App
-import com.maltaisn.notes.BuildConfig
-import com.maltaisn.notes.R
-import com.maltaisn.notes.TAG
-import com.maltaisn.notes.databinding.FragmentSettingsBinding
-import com.maltaisn.notes.model.PrefsManager
-import com.maltaisn.notes.navigateSafe
-import com.maltaisn.notes.ui.AppTheme
-import com.maltaisn.notes.ui.common.ConfirmDialog
-import com.maltaisn.notes.ui.main.MainActivity
-import com.maltaisn.notes.ui.notification.NotificationPermission
-import com.maltaisn.notes.ui.observeEvent
-import com.maltaisn.notes.ui.reminder.ReminderPermission
-import com.maltaisn.notes.ui.viewModel
+import com.errortek.notes.App
+import com.errortek.notes.BuildConfig
+import com.errortek.notes.R
+import com.errortek.notes.TAG
+import com.errortek.notes.databinding.FragmentSettingsBinding
+import com.errortek.notes.model.PrefsManager
+import com.errortek.notes.navigateSafe
+import com.errortek.notes.ui.AppTheme
+import com.errortek.notes.ui.common.ConfirmDialog
+import com.errortek.notes.ui.main.MainActivity
+import com.errortek.notes.ui.notification.NotificationPermission
+import com.errortek.notes.ui.observeEvent
+import com.errortek.notes.ui.reminder.ReminderPermission
+import com.errortek.notes.ui.viewModel
 import com.mikepenz.aboutlibraries.LibsBuilder
 import java.text.DateFormat
 import javax.inject.Inject

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.note.adapter
+package com.errortek.notes.ui.note.adapter
 
-import com.maltaisn.notes.model.ValueEnum
-import com.maltaisn.notes.model.findValueEnum
+import com.errortek.notes.model.ValueEnum
+import com.errortek.notes.model.findValueEnum
 
 /**
  * A note list layout mode.

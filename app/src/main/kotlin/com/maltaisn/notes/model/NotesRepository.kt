@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model
+package com.errortek.notes.model
 
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.NoteWithLabels
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.NoteWithLabels
 import kotlinx.coroutines.flow.Flow
 
 interface NotesRepository {

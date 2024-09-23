@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.screenshot
+package com.errortek.notes.screenshot
 
 import android.content.Context
 import android.view.View
@@ -34,21 +34,21 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
-import com.maltaisn.notes.App
-import com.maltaisn.notes.R
-import com.maltaisn.notes.hideKeyboard
-import com.maltaisn.notes.model.LabelsDao
-import com.maltaisn.notes.model.NotesDao
-import com.maltaisn.notes.model.PrefsManager
-import com.maltaisn.notes.model.entity.LabelRef
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.PinnedStatus
-import com.maltaisn.notes.model.entity.Reminder
-import com.maltaisn.notes.ui.edit.adapter.EditItemViewHolder
-import com.maltaisn.notes.ui.main.MainActivity
-import com.maltaisn.notes.ui.note.ShownDateField
-import com.maltaisn.notes.ui.note.adapter.NoteViewHolder
-import com.maltaisn.notesshared.dateFor
+import com.errortek.notes.App
+import com.errortek.notes.R
+import com.errortek.notes.hideKeyboard
+import com.errortek.notes.model.LabelsDao
+import com.errortek.notes.model.NotesDao
+import com.errortek.notes.model.PrefsManager
+import com.errortek.notes.model.entity.LabelRef
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.PinnedStatus
+import com.errortek.notes.model.entity.Reminder
+import com.errortek.notes.ui.edit.adapter.EditItemViewHolder
+import com.errortek.notes.ui.main.MainActivity
+import com.errortek.notes.ui.note.ShownDateField
+import com.errortek.notes.ui.note.adapter.NoteViewHolder
+import com.errortek.notesshared.dateFor
 import com.maltaisn.recurpicker.Recurrence
 import com.maltaisn.recurpicker.RecurrenceFinder
 import kotlinx.coroutines.CoroutineScope
@@ -65,7 +65,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.Calendar
-import com.maltaisn.notes.test.R as RT
+import com.errortek.notes.test.R as RT
 
 /**
  * Screenshots should be taken with release build type, or debug features will appear.

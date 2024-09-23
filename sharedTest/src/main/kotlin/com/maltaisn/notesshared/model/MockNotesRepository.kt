@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notesshared.model
+package com.errortek.notesshared.model
 
-import com.maltaisn.notes.model.NotesRepository
-import com.maltaisn.notes.model.SortDirection
-import com.maltaisn.notes.model.SortField
-import com.maltaisn.notes.model.entity.LabelRef
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.NoteWithLabels
+import com.errortek.notes.model.NotesRepository
+import com.errortek.notes.model.SortDirection
+import com.errortek.notes.model.SortField
+import com.errortek.notes.model.entity.LabelRef
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.NoteWithLabels
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui
+package com.errortek.notes.ui
 
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.model.entity.NoteStatus
 
 /**
  * A class representing a change of status for one or many notes.

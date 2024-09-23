@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.note
+package com.errortek.notes.ui.note
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.maltaisn.notes.BuildConfig
-import com.maltaisn.notes.model.LabelsRepository
-import com.maltaisn.notes.model.NotesRepository
-import com.maltaisn.notes.model.PrefsManager
-import com.maltaisn.notes.model.ReminderAlarmManager
-import com.maltaisn.notes.model.entity.LabelRef
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.PinnedStatus
-import com.maltaisn.notes.ui.Event
-import com.maltaisn.notes.ui.ShareData
-import com.maltaisn.notes.ui.StatusChange
-import com.maltaisn.notes.ui.note.adapter.MessageItem
-import com.maltaisn.notes.ui.note.adapter.NoteAdapter
-import com.maltaisn.notes.ui.note.adapter.NoteItem
-import com.maltaisn.notes.ui.note.adapter.NoteListItem
-import com.maltaisn.notes.ui.note.adapter.NoteListLayoutMode
-import com.maltaisn.notes.ui.send
+import com.errortek.notes.BuildConfig
+import com.errortek.notes.model.LabelsRepository
+import com.errortek.notes.model.NotesRepository
+import com.errortek.notes.model.PrefsManager
+import com.errortek.notes.model.ReminderAlarmManager
+import com.errortek.notes.model.entity.LabelRef
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.PinnedStatus
+import com.errortek.notes.ui.Event
+import com.errortek.notes.ui.ShareData
+import com.errortek.notes.ui.StatusChange
+import com.errortek.notes.ui.note.adapter.MessageItem
+import com.errortek.notes.ui.note.adapter.NoteAdapter
+import com.errortek.notes.ui.note.adapter.NoteItem
+import com.errortek.notes.ui.note.adapter.NoteListItem
+import com.errortek.notes.ui.note.adapter.NoteListLayoutMode
+import com.errortek.notes.ui.send
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.Date

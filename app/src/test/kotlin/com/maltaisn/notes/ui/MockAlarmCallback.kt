@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui
+package com.errortek.notes.ui
 
-import com.maltaisn.notes.model.ReminderAlarmCallback
+import com.errortek.notes.model.ReminderAlarmCallback
 
 class MockAlarmCallback : ReminderAlarmCallback {
 

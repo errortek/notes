@@ -44,9 +44,9 @@ LOCALES=(
 # adb executable
 ADB=adb
 # app package ID
-PACKAGE=com.maltaisn.notes.debug
+PACKAGE=com.errortek.notes.debug
 # test class for taking screenshots
-TEST_CLASS=com.maltaisn.notes.screenshot.Screenshots
+TEST_CLASS=com.errortek.notes.screenshot.Screenshots
 # test runner, leave empty for auto-detection
 # auto-detection might fail if multiple test apps are installed
 TEST_RUNNER=

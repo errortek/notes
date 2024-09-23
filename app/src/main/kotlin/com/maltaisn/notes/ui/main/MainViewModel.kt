@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.main
+package com.errortek.notes.ui.main
 
 import android.view.Menu
 import android.view.MenuItem
@@ -25,21 +25,21 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
-import com.maltaisn.notes.NavGraphMainDirections
-import com.maltaisn.notes.R
-import com.maltaisn.notes.model.JsonManager
-import com.maltaisn.notes.model.LabelsRepository
-import com.maltaisn.notes.model.NotesRepository
-import com.maltaisn.notes.model.PrefsManager
-import com.maltaisn.notes.model.ReminderAlarmManager
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.NoteType
-import com.maltaisn.notes.ui.AssistedSavedStateViewModelFactory
-import com.maltaisn.notes.ui.Event
-import com.maltaisn.notes.ui.home.HomeFragmentDirections
-import com.maltaisn.notes.ui.navigation.HomeDestination
-import com.maltaisn.notes.ui.send
+import com.errortek.notes.NavGraphMainDirections
+import com.errortek.notes.R
+import com.errortek.notes.model.JsonManager
+import com.errortek.notes.model.LabelsRepository
+import com.errortek.notes.model.NotesRepository
+import com.errortek.notes.model.PrefsManager
+import com.errortek.notes.model.ReminderAlarmManager
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.NoteType
+import com.errortek.notes.ui.AssistedSavedStateViewModelFactory
+import com.errortek.notes.ui.Event
+import com.errortek.notes.ui.home.HomeFragmentDirections
+import com.errortek.notes.ui.navigation.HomeDestination
+import com.errortek.notes.ui.send
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

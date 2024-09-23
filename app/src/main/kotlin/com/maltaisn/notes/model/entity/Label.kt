@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model.entity
+package com.errortek.notes.model.entity
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo

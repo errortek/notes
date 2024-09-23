@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.search
+package com.errortek.notes.ui.search
 
 import android.os.Bundle
 import android.view.View
@@ -23,12 +23,12 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.transition.MaterialElevationScale
-import com.maltaisn.notes.App
-import com.maltaisn.notes.R
-import com.maltaisn.notes.hideKeyboard
-import com.maltaisn.notes.showKeyboard
-import com.maltaisn.notes.ui.note.NoteFragment
-import com.maltaisn.notes.ui.viewModel
+import com.errortek.notes.App
+import com.errortek.notes.R
+import com.errortek.notes.hideKeyboard
+import com.errortek.notes.showKeyboard
+import com.errortek.notes.ui.note.NoteFragment
+import com.errortek.notes.ui.viewModel
 import javax.inject.Inject
 import com.google.android.material.R as RMaterial
 

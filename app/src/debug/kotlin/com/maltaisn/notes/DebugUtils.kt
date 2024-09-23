@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes
+package com.errortek.notes
 
-import com.maltaisn.notes.model.entity.BlankNoteMetadata
-import com.maltaisn.notes.model.entity.ListNoteMetadata
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.model.entity.NoteMetadata
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.NoteType
-import com.maltaisn.notes.model.entity.PinnedStatus
+import com.errortek.notes.model.entity.BlankNoteMetadata
+import com.errortek.notes.model.entity.ListNoteMetadata
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.model.entity.NoteMetadata
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.NoteType
+import com.errortek.notes.model.entity.PinnedStatus
 import java.util.Date
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.days

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.home
+package com.errortek.notes.ui.home
 
-import com.maltaisn.notes.DebugUtils
-import com.maltaisn.notes.model.LabelsRepository
-import com.maltaisn.notes.model.NotesRepository
-import com.maltaisn.notes.model.entity.LabelRef
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.ui.navigation.HomeDestination
+import com.errortek.notes.DebugUtils
+import com.errortek.notes.model.LabelsRepository
+import com.errortek.notes.model.NotesRepository
+import com.errortek.notes.model.entity.LabelRef
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.ui.navigation.HomeDestination
 import javax.inject.Inject
 
 class DebugBuildTypeBehavior @Inject constructor(

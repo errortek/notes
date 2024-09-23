@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model
+package com.errortek.notes.model
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -26,11 +26,11 @@ import androidx.room.Transaction
 import androidx.room.Update
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.maltaisn.notes.model.converter.NoteStatusConverter
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.NoteWithLabels
+import com.errortek.notes.model.converter.NoteStatusConverter
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.NoteWithLabels
 import kotlinx.coroutines.flow.Flow
 
 @Dao

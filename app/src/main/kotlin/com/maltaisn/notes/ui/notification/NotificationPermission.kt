@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.notification
+package com.errortek.notes.ui.notification
 
 import android.Manifest
 import android.content.Intent
@@ -25,8 +25,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.maltaisn.notes.R
-import com.maltaisn.notes.ui.common.ConfirmDialog
+import com.errortek.notes.R
+import com.errortek.notes.ui.common.ConfirmDialog
 
 /**
  * Helper class used to request the notification permission for reminders on API 33+.

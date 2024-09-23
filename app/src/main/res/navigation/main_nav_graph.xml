@@ -26,7 +26,7 @@
 
     <fragment
         android:id="@+id/fragment_home"
-        android:name="com.maltaisn.notes.ui.home.HomeFragment"
+        android:name="com.errortek.notes.ui.home.HomeFragment"
         tools:layout="@layout/fragment_note"
         >
         <action
@@ -49,13 +49,13 @@
 
     <fragment
         android:id="@+id/fragment_search"
-        android:name="com.maltaisn.notes.ui.search.SearchFragment"
+        android:name="com.errortek.notes.ui.search.SearchFragment"
         tools:layout="@layout/fragment_note"
         />
 
     <fragment
         android:id="@+id/fragment_edit"
-        android:name="com.maltaisn.notes.ui.edit.EditFragment"
+        android:name="com.errortek.notes.ui.edit.EditFragment"
         tools:layout="@layout/fragment_edit"
         >
         <argument
@@ -92,12 +92,12 @@
 
     <dialog
         android:id="@+id/dialog_sort"
-        android:name="com.maltaisn.notes.ui.sort.SortDialog"
+        android:name="com.errortek.notes.ui.sort.SortDialog"
         />
 
     <fragment
         android:id="@+id/fragment_settings"
-        android:name="com.maltaisn.notes.ui.settings.SettingsFragment"
+        android:name="com.errortek.notes.ui.settings.SettingsFragment"
         tools:layout="@layout/fragment_settings"
         >
         <action
@@ -112,7 +112,7 @@
 
     <fragment
         android:id="@+id/fragment_settings_nested"
-        android:name="com.maltaisn.notes.ui.settings.NestedSettingsFragment"
+        android:name="com.errortek.notes.ui.settings.NestedSettingsFragment"
         tools:layout="@layout/fragment_settings"
         >
         <argument
@@ -137,7 +137,7 @@
 
         <dialog
             android:id="@+id/dialog_reminder"
-            android:name="com.maltaisn.notes.ui.reminder.ReminderDialog"
+            android:name="com.errortek.notes.ui.reminder.ReminderDialog"
             tools:layout="@layout/dialog_reminder"
             >
             <argument
@@ -150,7 +150,7 @@
 
     <fragment
         android:id="@+id/fragment_label"
-        android:name="com.maltaisn.notes.ui.labels.LabelFragment"
+        android:name="com.errortek.notes.ui.labels.LabelFragment"
         >
         <argument
             android:name="noteIds"
@@ -164,7 +164,7 @@
 
     <dialog
         android:id="@+id/dialog_label_edit"
-        android:name="com.maltaisn.notes.ui.labels.LabelEditDialog"
+        android:name="com.errortek.notes.ui.labels.LabelEditDialog"
         >
         <argument
             android:name="labelId"

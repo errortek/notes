@@ -17,24 +17,24 @@
 @file:UseSerializers(DateTimeConverter::class, NoteTypeConverter::class,
     NoteStatusConverter::class, NoteMetadataConverter::class, PinnedStatusConverter::class)
 
-package com.maltaisn.notes.model
+package com.errortek.notes.model
 
 import android.util.Base64
 import androidx.room.ColumnInfo
-import com.maltaisn.notes.model.JsonManager.ImportResult
-import com.maltaisn.notes.model.converter.DateTimeConverter
-import com.maltaisn.notes.model.converter.NoteMetadataConverter
-import com.maltaisn.notes.model.converter.NoteStatusConverter
-import com.maltaisn.notes.model.converter.NoteTypeConverter
-import com.maltaisn.notes.model.converter.PinnedStatusConverter
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.LabelRef
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.model.entity.NoteMetadata
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.NoteType
-import com.maltaisn.notes.model.entity.PinnedStatus
-import com.maltaisn.notes.model.entity.Reminder
+import com.errortek.notes.model.JsonManager.ImportResult
+import com.errortek.notes.model.converter.DateTimeConverter
+import com.errortek.notes.model.converter.NoteMetadataConverter
+import com.errortek.notes.model.converter.NoteStatusConverter
+import com.errortek.notes.model.converter.NoteTypeConverter
+import com.errortek.notes.model.converter.PinnedStatusConverter
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.LabelRef
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.model.entity.NoteMetadata
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.NoteType
+import com.errortek.notes.model.entity.PinnedStatus
+import com.errortek.notes.model.entity.Reminder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName

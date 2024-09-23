@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.receiver
+package com.errortek.notes.receiver
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -23,13 +23,13 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.maltaisn.notes.App
-import com.maltaisn.notes.R
-import com.maltaisn.notes.model.NotesRepository
-import com.maltaisn.notes.model.ReminderAlarmManager
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.ui.main.MainActivity
-import com.maltaisn.notes.ui.notification.NotificationActivity
+import com.errortek.notes.App
+import com.errortek.notes.R
+import com.errortek.notes.model.NotesRepository
+import com.errortek.notes.model.ReminderAlarmManager
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.ui.main.MainActivity
+import com.errortek.notes.ui.notification.NotificationActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -128,10 +128,10 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     companion object {
-        const val ACTION_ALARM = "com.maltaisn.notes.reminder.ALARM"
-        const val ACTION_MARK_DONE = "com.maltaisn.notes.reminder.MARK_DONE"
+        const val ACTION_ALARM = "com.errortek.notes.reminder.ALARM"
+        const val ACTION_MARK_DONE = "com.errortek.notes.reminder.MARK_DONE"
 
-        const val EXTRA_NOTE_ID = "com.maltaisn.notes.reminder.NOTE_ID"
-        const val NOTIFICATION_GROUP = "com.maltaisn.notes.reminder.REMINDERS"
+        const val EXTRA_NOTE_ID = "com.errortek.notes.reminder.NOTE_ID"
+        const val NOTIFICATION_GROUP = "com.errortek.notes.reminder.REMINDERS"
     }
 }

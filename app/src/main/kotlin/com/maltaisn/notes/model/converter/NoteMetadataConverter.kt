@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model.converter
+package com.errortek.notes.model.converter
 
 import androidx.room.TypeConverter
-import com.maltaisn.notes.model.BadDataException
-import com.maltaisn.notes.model.entity.NoteMetadata
+import com.errortek.notes.model.BadDataException
+import com.errortek.notes.model.entity.NoteMetadata
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.PrimitiveKind

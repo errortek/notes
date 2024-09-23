@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui
+package com.errortek.notes.ui
 
 import android.content.Intent
 import androidx.fragment.app.Fragment

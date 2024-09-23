@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model
+package com.errortek.notes.model
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.maltaisn.notes.model.entity.Reminder
-import com.maltaisn.notes.ui.MockAlarmCallback
-import com.maltaisn.notesshared.MainCoroutineRule
-import com.maltaisn.notesshared.dateFor
-import com.maltaisn.notesshared.model.MockLabelsRepository
-import com.maltaisn.notesshared.model.MockNotesRepository
-import com.maltaisn.notesshared.testNote
+import com.errortek.notes.model.entity.Reminder
+import com.errortek.notes.ui.MockAlarmCallback
+import com.errortek.notesshared.MainCoroutineRule
+import com.errortek.notesshared.dateFor
+import com.errortek.notesshared.model.MockLabelsRepository
+import com.errortek.notesshared.model.MockNotesRepository
+import com.errortek.notesshared.testNote
 import com.maltaisn.recurpicker.Recurrence
 import com.maltaisn.recurpicker.RecurrenceFinder
 import kotlinx.coroutines.test.runTest

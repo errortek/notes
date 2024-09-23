@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.edit.adapter
+package com.errortek.notes.ui.edit.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 

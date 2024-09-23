@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.utils
+package com.errortek.notes.utils
 
 import android.content.res.Resources
 import android.icu.text.RelativeDateTimeFormatter
 import android.text.format.DateUtils
-import com.maltaisn.notes.R
-import com.maltaisn.notes.setToStartOfDay
+import com.errortek.notes.R
+import com.errortek.notes.setToStartOfDay
 import java.text.DateFormat
 import java.util.Calendar
 

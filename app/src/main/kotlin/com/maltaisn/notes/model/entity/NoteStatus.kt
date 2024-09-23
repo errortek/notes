@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model.entity
+package com.errortek.notes.model.entity
 
-import com.maltaisn.notes.model.ValueEnum
-import com.maltaisn.notes.model.findValueEnum
+import com.errortek.notes.model.ValueEnum
+import com.errortek.notes.model.findValueEnum
 
 enum class NoteStatus(override val value: Int) : ValueEnum<Int> {
     ACTIVE(0),

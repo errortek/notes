@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.labels.adapter
+package com.errortek.notes.ui.labels.adapter
 
-import com.maltaisn.notes.model.entity.Label
+import com.errortek.notes.model.entity.Label
 
 data class LabelListItem(
     val id: Long,

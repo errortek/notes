@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.sort
+package com.errortek.notes.ui.sort
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.maltaisn.notes.model.PrefsManager
-import com.maltaisn.notes.model.SortDirection
-import com.maltaisn.notes.model.SortField
-import com.maltaisn.notes.ui.Event
-import com.maltaisn.notes.ui.send
+import com.errortek.notes.model.PrefsManager
+import com.errortek.notes.model.SortDirection
+import com.errortek.notes.model.SortField
+import com.errortek.notes.ui.Event
+import com.errortek.notes.ui.send
 import javax.inject.Inject
 
 class SortViewModel @Inject constructor(

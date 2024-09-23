@@ -16,17 +16,17 @@
 
 @file:Suppress("LongParameterList")
 
-package com.maltaisn.notesshared
+package com.errortek.notesshared
 
-import com.maltaisn.notes.model.entity.BlankNoteMetadata
-import com.maltaisn.notes.model.entity.ListNoteItem
-import com.maltaisn.notes.model.entity.ListNoteMetadata
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.model.entity.NoteMetadata
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.NoteType
-import com.maltaisn.notes.model.entity.PinnedStatus
-import com.maltaisn.notes.model.entity.Reminder
+import com.errortek.notes.model.entity.BlankNoteMetadata
+import com.errortek.notes.model.entity.ListNoteItem
+import com.errortek.notes.model.entity.ListNoteMetadata
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.model.entity.NoteMetadata
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.NoteType
+import com.errortek.notes.model.entity.PinnedStatus
+import com.errortek.notes.model.entity.Reminder
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import java.util.Date

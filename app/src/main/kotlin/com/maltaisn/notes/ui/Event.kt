@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui
+package com.errortek.notes.ui
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData

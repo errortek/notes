@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.home
+package com.errortek.notes.ui.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
-import com.maltaisn.notes.model.PrefsManager
-import com.maltaisn.notes.model.ReminderAlarmManager
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.LabelRef
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.PinnedStatus
-import com.maltaisn.notes.ui.MockAlarmCallback
-import com.maltaisn.notes.ui.getOrAwaitValue
-import com.maltaisn.notes.ui.navigation.HomeDestination
-import com.maltaisn.notes.ui.note.NoteItemFactory
-import com.maltaisn.notes.ui.note.NoteViewModel
-import com.maltaisn.notes.ui.note.SwipeAction
-import com.maltaisn.notes.ui.note.adapter.NoteAdapter
-import com.maltaisn.notes.ui.note.adapter.NoteItem
-import com.maltaisn.notes.ui.note.adapter.NoteListLayoutMode
-import com.maltaisn.notesshared.MainCoroutineRule
-import com.maltaisn.notesshared.model.MockLabelsRepository
-import com.maltaisn.notesshared.model.MockNotesRepository
-import com.maltaisn.notesshared.testNote
+import com.errortek.notes.model.PrefsManager
+import com.errortek.notes.model.ReminderAlarmManager
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.LabelRef
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.PinnedStatus
+import com.errortek.notes.ui.MockAlarmCallback
+import com.errortek.notes.ui.getOrAwaitValue
+import com.errortek.notes.ui.navigation.HomeDestination
+import com.errortek.notes.ui.note.NoteItemFactory
+import com.errortek.notes.ui.note.NoteViewModel
+import com.errortek.notes.ui.note.SwipeAction
+import com.errortek.notes.ui.note.adapter.NoteAdapter
+import com.errortek.notes.ui.note.adapter.NoteItem
+import com.errortek.notes.ui.note.adapter.NoteListLayoutMode
+import com.errortek.notesshared.MainCoroutineRule
+import com.errortek.notesshared.model.MockLabelsRepository
+import com.errortek.notesshared.model.MockNotesRepository
+import com.errortek.notesshared.testNote
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule

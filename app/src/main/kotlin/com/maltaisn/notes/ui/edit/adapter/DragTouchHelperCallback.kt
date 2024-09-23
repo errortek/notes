@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.edit.adapter
+package com.errortek.notes.ui.edit.adapter
 
 import android.content.Context
 import android.graphics.Canvas
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.maltaisn.notes.R
+import com.errortek.notes.R
 
 /**
  * Item touch helper callback for dragging items. Dragged item elevation is changed.

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model.converter
+package com.errortek.notes.model.converter
 
 import androidx.room.TypeConverter
-import com.maltaisn.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.NoteStatus
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor

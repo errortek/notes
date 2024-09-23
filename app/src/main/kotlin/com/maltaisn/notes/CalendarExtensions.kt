@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes
+package com.errortek.notes
 
 import java.util.Calendar
 

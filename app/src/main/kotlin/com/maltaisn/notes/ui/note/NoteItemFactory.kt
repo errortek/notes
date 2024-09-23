@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.note
+package com.errortek.notes.ui.note
 
-import com.maltaisn.notes.model.PrefsManager
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.ListNoteItem
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.model.entity.NoteType
-import com.maltaisn.notes.ui.note.adapter.NoteItemList
-import com.maltaisn.notes.ui.note.adapter.NoteItemText
-import com.maltaisn.notes.ui.note.adapter.NoteListLayoutMode
+import com.errortek.notes.model.PrefsManager
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.ListNoteItem
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.model.entity.NoteType
+import com.errortek.notes.ui.note.adapter.NoteItemList
+import com.errortek.notes.ui.note.adapter.NoteItemText
+import com.errortek.notes.ui.note.adapter.NoteListLayoutMode
 import javax.inject.Inject
 
 /**

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.edit
+package com.errortek.notes.ui.edit
 
 import android.text.Editable
 import android.text.TextWatcher
-import com.maltaisn.notes.model.entity.Note
+import com.errortek.notes.model.entity.Note
 
 /**
  * A [TextWatcher] used for adding new bullet points to a text list when user inserts a line break.

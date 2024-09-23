@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.labels
+package com.errortek.notes.ui.labels
 
 import android.app.Dialog
 import android.content.DialogInterface
@@ -24,16 +24,16 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.maltaisn.notes.App
-import com.maltaisn.notes.R
-import com.maltaisn.notes.databinding.DialogLabelEditBinding
-import com.maltaisn.notes.hideCursorInAllViews
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.setTitleIfEnoughSpace
-import com.maltaisn.notes.ui.SharedViewModel
-import com.maltaisn.notes.ui.navGraphViewModel
-import com.maltaisn.notes.ui.observeEvent
-import com.maltaisn.notes.ui.viewModel
+import com.errortek.notes.App
+import com.errortek.notes.R
+import com.errortek.notes.databinding.DialogLabelEditBinding
+import com.errortek.notes.hideCursorInAllViews
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.setTitleIfEnoughSpace
+import com.errortek.notes.ui.SharedViewModel
+import com.errortek.notes.ui.navGraphViewModel
+import com.errortek.notes.ui.observeEvent
+import com.errortek.notes.ui.viewModel
 import debugCheck
 import javax.inject.Inject
 import javax.inject.Provider

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model.converter
+package com.errortek.notes.model.converter
 
-import com.maltaisn.notes.model.entity.BlankNoteMetadata
-import com.maltaisn.notes.model.entity.ListNoteMetadata
+import com.errortek.notes.model.entity.BlankNoteMetadata
+import com.errortek.notes.model.entity.ListNoteMetadata
 import org.junit.Test
 import kotlin.test.assertEquals
 

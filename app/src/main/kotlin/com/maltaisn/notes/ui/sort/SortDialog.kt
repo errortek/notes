@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.sort
+package com.errortek.notes.ui.sort
 
 import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.maltaisn.notes.App
-import com.maltaisn.notes.R
-import com.maltaisn.notes.databinding.DialogSortBinding
-import com.maltaisn.notes.model.SortDirection
-import com.maltaisn.notes.model.SortField
-import com.maltaisn.notes.model.SortSettings
-import com.maltaisn.notes.ui.SharedViewModel
-import com.maltaisn.notes.ui.navGraphViewModel
-import com.maltaisn.notes.ui.observeEvent
-import com.maltaisn.notes.ui.viewModel
+import com.errortek.notes.App
+import com.errortek.notes.R
+import com.errortek.notes.databinding.DialogSortBinding
+import com.errortek.notes.model.SortDirection
+import com.errortek.notes.model.SortField
+import com.errortek.notes.model.SortSettings
+import com.errortek.notes.ui.SharedViewModel
+import com.errortek.notes.ui.navGraphViewModel
+import com.errortek.notes.ui.observeEvent
+import com.errortek.notes.ui.viewModel
 import debugCheck
 import javax.inject.Inject
 import javax.inject.Provider

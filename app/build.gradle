@@ -12,10 +12,10 @@ plugins {
 }
 
 android {
-    namespace "com.maltaisn.notes"
+    namespace "com.errortek.notes"
 
     defaultConfig {
-        applicationId "com.maltaisn.notes"
+        applicationId "com.errortek.notes"
         minSdkVersion 21
         compileSdk 34
         buildToolsVersion = "34.0.0"
@@ -76,7 +76,7 @@ android {
                     takingScreenshots == null ? "true" : (!takingScreenshots.toBoolean()).toString()
         }
         release {
-            // Using legacy package name 'com.maltaisn.notes.sync' which was used at the time where
+            // Using legacy package name 'com.errortek.notes.sync' which was used at the time where
             // there was a sync flavor. Package can't be changed on Play Store so it was kept.
             applicationIdSuffix ".sync"
 
@@ -170,7 +170,7 @@ tasks.named("build") {
 }
 
 allOpen {
-    annotation "com.maltaisn.notes.OpenClass"
+    annotation "com.errortek.notes.OpenClass"
 }
 
 play {

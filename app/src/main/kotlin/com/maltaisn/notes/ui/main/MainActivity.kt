@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.main
+package com.errortek.notes.ui.main
 
 import android.content.Intent
 import android.net.Uri
@@ -38,24 +38,24 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.color.DynamicColors
-import com.maltaisn.notes.App
-import com.maltaisn.notes.NavGraphMainDirections
-import com.maltaisn.notes.R
-import com.maltaisn.notes.TAG
-import com.maltaisn.notes.databinding.ActivityMainBinding
-import com.maltaisn.notes.model.PrefsManager
-import com.maltaisn.notes.model.converter.NoteTypeConverter
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.NoteType
-import com.maltaisn.notes.navigateSafe
-import com.maltaisn.notes.receiver.AlarmReceiver
-import com.maltaisn.notes.ui.SharedViewModel
-import com.maltaisn.notes.ui.main.MainViewModel.NewNoteData
-import com.maltaisn.notes.ui.navGraphViewModel
-import com.maltaisn.notes.ui.navigation.HomeDestination
-import com.maltaisn.notes.ui.observeEvent
-import com.maltaisn.notes.ui.viewModel
+import com.errortek.notes.App
+import com.errortek.notes.NavGraphMainDirections
+import com.errortek.notes.R
+import com.errortek.notes.TAG
+import com.errortek.notes.databinding.ActivityMainBinding
+import com.errortek.notes.model.PrefsManager
+import com.errortek.notes.model.converter.NoteTypeConverter
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.NoteType
+import com.errortek.notes.navigateSafe
+import com.errortek.notes.receiver.AlarmReceiver
+import com.errortek.notes.ui.SharedViewModel
+import com.errortek.notes.ui.main.MainViewModel.NewNoteData
+import com.errortek.notes.ui.navGraphViewModel
+import com.errortek.notes.ui.navigation.HomeDestination
+import com.errortek.notes.ui.observeEvent
+import com.errortek.notes.ui.viewModel
 import java.io.IOException
 import java.io.InputStreamReader
 import javax.inject.Inject
@@ -324,12 +324,12 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     }
 
     companion object {
-        private const val KEY_INTENT_HANDLED = "com.maltaisn.notes.INTENT_HANDLED"
+        private const val KEY_INTENT_HANDLED = "com.errortek.notes.INTENT_HANDLED"
 
-        const val EXTRA_NOTE_TYPE = "com.maltaisn.notes.NOTE_TYPE"
+        const val EXTRA_NOTE_TYPE = "com.errortek.notes.NOTE_TYPE"
 
-        const val INTENT_ACTION_CREATE = "com.maltaisn.notes.CREATE"
-        const val INTENT_ACTION_EDIT = "com.maltaisn.notes.EDIT"
-        const val INTENT_ACTION_SHOW_REMINDERS = "com.maltaisn.notes.SHOW_REMINDERS"
+        const val INTENT_ACTION_CREATE = "com.errortek.notes.CREATE"
+        const val INTENT_ACTION_EDIT = "com.errortek.notes.EDIT"
+        const val INTENT_ACTION_SHOW_REMINDERS = "com.errortek.notes.SHOW_REMINDERS"
     }
 }

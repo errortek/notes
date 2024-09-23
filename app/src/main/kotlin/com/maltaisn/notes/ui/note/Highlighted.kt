@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.note
+package com.errortek.notes.ui.note
 
 /**
  * Text with a list of highlighted ranges.

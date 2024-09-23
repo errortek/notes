@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.edit
+package com.errortek.notes.ui.edit
 
 import android.text.Editable
 import android.text.InputFilter

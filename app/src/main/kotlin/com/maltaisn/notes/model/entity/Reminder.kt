@@ -16,10 +16,10 @@
 
 @file:UseSerializers(DateTimeConverter::class, RecurrenceConverter::class)
 
-package com.maltaisn.notes.model.entity
+package com.errortek.notes.model.entity
 
-import com.maltaisn.notes.model.converter.DateTimeConverter
-import com.maltaisn.notes.model.converter.RecurrenceConverter
+import com.errortek.notes.model.converter.DateTimeConverter
+import com.errortek.notes.model.converter.RecurrenceConverter
 import com.maltaisn.recurpicker.Recurrence
 import com.maltaisn.recurpicker.RecurrenceFinder
 import kotlinx.serialization.SerialName

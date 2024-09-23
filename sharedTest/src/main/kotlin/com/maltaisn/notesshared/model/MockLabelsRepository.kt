@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notesshared.model
+package com.errortek.notesshared.model
 
-import com.maltaisn.notes.model.LabelsRepository
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.LabelRef
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.model.entity.NoteWithLabels
+import com.errortek.notes.model.LabelsRepository
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.LabelRef
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.model.entity.NoteWithLabels
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 

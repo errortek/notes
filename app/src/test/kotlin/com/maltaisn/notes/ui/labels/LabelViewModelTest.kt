@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.labels
+package com.errortek.notes.ui.labels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.LabelRef
-import com.maltaisn.notes.ui.assertLiveDataEventSent
-import com.maltaisn.notes.ui.getOrAwaitValue
-import com.maltaisn.notes.ui.labels.adapter.LabelListItem
-import com.maltaisn.notesshared.MainCoroutineRule
-import com.maltaisn.notesshared.model.MockLabelsRepository
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.LabelRef
+import com.errortek.notes.ui.assertLiveDataEventSent
+import com.errortek.notes.ui.getOrAwaitValue
+import com.errortek.notes.ui.labels.adapter.LabelListItem
+import com.errortek.notesshared.MainCoroutineRule
+import com.errortek.notesshared.model.MockLabelsRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.note.adapter
+package com.errortek.notes.ui.note.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Canvas
@@ -25,9 +25,9 @@ import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import com.maltaisn.notes.R
-import com.maltaisn.notes.ui.note.SwipeAction
-import com.maltaisn.notes.ui.note.adapter.NoteAdapter.SwipeDirection
+import com.errortek.notes.R
+import com.errortek.notes.ui.note.SwipeAction
+import com.errortek.notes.ui.note.adapter.NoteAdapter.SwipeDirection
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 

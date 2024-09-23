@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes
+package com.errortek.notes
 
 /**
  * For debugging, provides a log tag in every class.

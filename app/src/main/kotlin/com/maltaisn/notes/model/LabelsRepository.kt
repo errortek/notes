@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model
+package com.errortek.notes.model
 
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.LabelRef
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.LabelRef
 import kotlinx.coroutines.flow.Flow
 
 interface LabelsRepository {

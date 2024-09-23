@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.home
+package com.errortek.notes.ui.home
 
 import javax.inject.Inject
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model
+package com.errortek.notes.model
 
 /**
  * Enum with a value, so that it can be stored in future-proof manner

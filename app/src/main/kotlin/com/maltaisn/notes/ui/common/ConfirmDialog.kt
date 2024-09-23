@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.common
+package com.errortek.notes.ui.common
 
 import android.app.Dialog
 import android.content.DialogInterface
@@ -23,7 +23,7 @@ import androidx.annotation.StringRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.maltaisn.notes.R
+import com.errortek.notes.R
 
 /**
  * Simple dialog with a callback to ask user for confirmation.

@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.search
+package com.errortek.notes.ui.search
 
 import android.database.sqlite.SQLiteException
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.maltaisn.notes.R
-import com.maltaisn.notes.model.LabelsRepository
-import com.maltaisn.notes.model.NotesRepository
-import com.maltaisn.notes.model.PrefsManager
-import com.maltaisn.notes.model.ReminderAlarmManager
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.NoteWithLabels
-import com.maltaisn.notes.ui.AssistedSavedStateViewModelFactory
-import com.maltaisn.notes.ui.note.NoteItemFactory
-import com.maltaisn.notes.ui.note.NoteViewModel
-import com.maltaisn.notes.ui.note.PlaceholderData
-import com.maltaisn.notes.ui.note.adapter.HeaderItem
-import com.maltaisn.notes.ui.note.adapter.NoteAdapter
+import com.errortek.notes.R
+import com.errortek.notes.model.LabelsRepository
+import com.errortek.notes.model.NotesRepository
+import com.errortek.notes.model.PrefsManager
+import com.errortek.notes.model.ReminderAlarmManager
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.NoteWithLabels
+import com.errortek.notes.ui.AssistedSavedStateViewModelFactory
+import com.errortek.notes.ui.note.NoteItemFactory
+import com.errortek.notes.ui.note.NoteViewModel
+import com.errortek.notes.ui.note.PlaceholderData
+import com.errortek.notes.ui.note.adapter.HeaderItem
+import com.errortek.notes.ui.note.adapter.NoteAdapter
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

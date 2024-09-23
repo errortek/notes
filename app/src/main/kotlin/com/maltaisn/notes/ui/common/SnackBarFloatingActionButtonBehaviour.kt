@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.common
+package com.errortek.notes.ui.common
 
 import android.content.Context
 import android.util.AttributeSet

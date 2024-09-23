@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.edit.adapter
+package com.errortek.notes.ui.edit.adapter
 
 import android.text.Editable
 import android.text.format.DateUtils
@@ -26,22 +26,22 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
-import com.maltaisn.notes.R
-import com.maltaisn.notes.databinding.ItemEditContentBinding
-import com.maltaisn.notes.databinding.ItemEditDateBinding
-import com.maltaisn.notes.databinding.ItemEditHeaderBinding
-import com.maltaisn.notes.databinding.ItemEditItemAddBinding
-import com.maltaisn.notes.databinding.ItemEditItemBinding
-import com.maltaisn.notes.databinding.ItemEditLabelsBinding
-import com.maltaisn.notes.databinding.ItemEditTitleBinding
-import com.maltaisn.notes.hideKeyboard
-import com.maltaisn.notes.model.PrefsManager
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.Reminder
-import com.maltaisn.notes.showKeyboard
-import com.maltaisn.notes.strikethroughText
-import com.maltaisn.notes.ui.edit.BulletTextWatcher
-import com.maltaisn.notes.utils.RelativeDateFormatter
+import com.errortek.notes.R
+import com.errortek.notes.databinding.ItemEditContentBinding
+import com.errortek.notes.databinding.ItemEditDateBinding
+import com.errortek.notes.databinding.ItemEditHeaderBinding
+import com.errortek.notes.databinding.ItemEditItemAddBinding
+import com.errortek.notes.databinding.ItemEditItemBinding
+import com.errortek.notes.databinding.ItemEditLabelsBinding
+import com.errortek.notes.databinding.ItemEditTitleBinding
+import com.errortek.notes.hideKeyboard
+import com.errortek.notes.model.PrefsManager
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.Reminder
+import com.errortek.notes.showKeyboard
+import com.errortek.notes.strikethroughText
+import com.errortek.notes.ui.edit.BulletTextWatcher
+import com.errortek.notes.utils.RelativeDateFormatter
 import java.text.DateFormat
 
 /**

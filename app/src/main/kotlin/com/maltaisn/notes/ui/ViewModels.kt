@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui
+package com.errortek.notes.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -29,7 +29,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.savedstate.SavedStateRegistryOwner
-import com.maltaisn.notes.R
+import com.errortek.notes.R
 import kotlin.reflect.KClass
 
 @MainThread

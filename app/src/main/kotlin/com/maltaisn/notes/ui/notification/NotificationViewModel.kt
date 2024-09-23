@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.notification
+package com.errortek.notes.ui.notification
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.maltaisn.notes.model.NotesRepository
-import com.maltaisn.notes.model.ReminderAlarmManager
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.ui.AssistedSavedStateViewModelFactory
-import com.maltaisn.notes.ui.Event
-import com.maltaisn.notes.ui.send
+import com.errortek.notes.model.NotesRepository
+import com.errortek.notes.model.ReminderAlarmManager
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.ui.AssistedSavedStateViewModelFactory
+import com.errortek.notes.ui.Event
+import com.errortek.notes.ui.send
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

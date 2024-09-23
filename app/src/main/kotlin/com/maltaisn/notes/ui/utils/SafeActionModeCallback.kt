@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.utils
+package com.errortek.notes.ui.utils
 
 import android.view.ActionMode
 import android.view.Menu

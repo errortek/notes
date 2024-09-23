@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model
+package com.errortek.notes.model
 
 import androidx.annotation.OpenForTesting
-import com.maltaisn.notes.model.entity.Note
+import com.errortek.notes.model.entity.Note
 import com.maltaisn.recurpicker.RecurrenceFinder
 import kotlinx.coroutines.flow.first
 import java.util.Date

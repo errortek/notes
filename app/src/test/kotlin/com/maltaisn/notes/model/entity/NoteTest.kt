@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model.entity
+package com.errortek.notes.model.entity
 
-import com.maltaisn.notesshared.assertNoteEquals
-import com.maltaisn.notesshared.dateFor
-import com.maltaisn.notesshared.listNote
-import com.maltaisn.notesshared.testNote
+import com.errortek.notesshared.assertNoteEquals
+import com.errortek.notesshared.dateFor
+import com.errortek.notesshared.listNote
+import com.errortek.notesshared.testNote
 import com.maltaisn.recurpicker.Recurrence
 import com.maltaisn.recurpicker.RecurrenceFinder
 import org.junit.Test

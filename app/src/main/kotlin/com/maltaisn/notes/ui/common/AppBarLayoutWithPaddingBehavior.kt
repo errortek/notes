@@ -1,4 +1,4 @@
-package com.maltaisn.notes.ui.common
+package com.errortek.notes.ui.common
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,7 +7,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
-import com.maltaisn.notes.R
+import com.errortek.notes.R
 
 class AppBarLayoutWithPaddingBehavior(context: Context?, attrs: AttributeSet?) : AppBarLayout.Behavior(context, attrs) {
 

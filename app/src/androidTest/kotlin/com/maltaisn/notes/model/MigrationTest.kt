@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model
+package com.errortek.notes.model
 
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getLongOrNull

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.settings
+package com.errortek.notes.ui.settings
 
 import android.os.Bundle
 import android.view.View
@@ -22,7 +22,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.transition.MaterialElevationScale
-import com.maltaisn.notes.databinding.FragmentSettingsBinding
+import com.errortek.notes.databinding.FragmentSettingsBinding
 import com.google.android.material.R as RMaterial
 
 /**

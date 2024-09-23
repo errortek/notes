@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.edit.adapter
+package com.errortek.notes.ui.edit.adapter
 
-import com.maltaisn.notes.ui.edit.adapter.EditAdapter.ViewType
+import com.errortek.notes.ui.edit.adapter.EditAdapter.ViewType
 
 sealed class EditListItem {
     abstract val type: ViewType

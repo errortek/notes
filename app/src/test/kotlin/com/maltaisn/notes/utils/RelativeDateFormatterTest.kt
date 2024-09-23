@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.utils
+package com.errortek.notes.utils
 
 import android.content.res.Resources
-import com.maltaisn.notes.R
-import com.maltaisn.notesshared.dateFor
+import com.errortek.notes.R
+import com.errortek.notesshared.dateFor
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt

@@ -1,12 +1,12 @@
-package com.maltaisn.notes.ui.settings
+package com.errortek.notes.ui.settings
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.maltaisn.notes.ui.AssistedSavedStateViewModelFactory
-import com.maltaisn.notes.ui.Event
-import com.maltaisn.notes.ui.send
+import com.errortek.notes.ui.AssistedSavedStateViewModelFactory
+import com.errortek.notes.ui.Event
+import com.errortek.notes.ui.send
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

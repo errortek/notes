@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes
+package com.errortek.notes
 
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
-import com.maltaisn.notes.di.DaggerAppComponent
-import com.maltaisn.notes.model.NotesDatabase
-import com.maltaisn.notes.model.PrefsManager
-import com.maltaisn.notes.ui.AppTheme
+import com.errortek.notes.di.DaggerAppComponent
+import com.errortek.notes.model.NotesDatabase
+import com.errortek.notes.model.PrefsManager
+import com.errortek.notes.ui.AppTheme
 import javax.inject.Inject
 
 class App : Application() {

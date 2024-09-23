@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model
+package com.errortek.notes.model
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -22,8 +22,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.LabelRef
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.LabelRef
 import kotlinx.coroutines.flow.Flow
 
 @Dao

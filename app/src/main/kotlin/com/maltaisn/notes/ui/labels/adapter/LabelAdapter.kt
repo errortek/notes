@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.labels.adapter
+package com.errortek.notes.ui.labels.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.maltaisn.notes.databinding.ItemLabelBinding
+import com.errortek.notes.databinding.ItemLabelBinding
 
 class LabelAdapter(
     val context: Context,

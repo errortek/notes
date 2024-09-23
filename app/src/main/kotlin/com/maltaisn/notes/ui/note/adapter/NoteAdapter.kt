@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.note.adapter
+package com.errortek.notes.ui.note.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -24,15 +24,15 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.maltaisn.notes.R
-import com.maltaisn.notes.databinding.ItemHeaderBinding
-import com.maltaisn.notes.databinding.ItemMessageBinding
-import com.maltaisn.notes.databinding.ItemNoteLabelBinding
-import com.maltaisn.notes.databinding.ItemNoteListBinding
-import com.maltaisn.notes.databinding.ItemNoteListItemBinding
-import com.maltaisn.notes.databinding.ItemNoteTextBinding
-import com.maltaisn.notes.model.PrefsManager
-import com.maltaisn.notes.ui.note.SwipeAction
+import com.errortek.notes.R
+import com.errortek.notes.databinding.ItemHeaderBinding
+import com.errortek.notes.databinding.ItemMessageBinding
+import com.errortek.notes.databinding.ItemNoteLabelBinding
+import com.errortek.notes.databinding.ItemNoteListBinding
+import com.errortek.notes.databinding.ItemNoteListItemBinding
+import com.errortek.notes.databinding.ItemNoteTextBinding
+import com.errortek.notes.model.PrefsManager
+import com.errortek.notes.ui.note.SwipeAction
 
 class NoteAdapter(
     val context: Context,

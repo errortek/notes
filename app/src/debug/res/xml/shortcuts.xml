@@ -30,12 +30,12 @@
         android:enabled="true"
         >
         <intent
-            android:action="com.maltaisn.notes.CREATE"
-            android:targetClass="com.maltaisn.notes.ui.main.MainActivity"
-            android:targetPackage="com.maltaisn.notes.sync.debug"
+            android:action="com.errortek.notes.CREATE"
+            android:targetClass="com.errortek.notes.ui.main.MainActivity"
+            android:targetPackage="com.errortek.notes.sync.debug"
             >
             <extra
-                android:name="com.maltaisn.notes.NOTE_TYPE"
+                android:name="com.errortek.notes.NOTE_TYPE"
                 android:value="0"
                 />
         </intent>
@@ -49,12 +49,12 @@
         android:enabled="true"
         >
         <intent
-            android:action="com.maltaisn.notes.CREATE"
-            android:targetClass="com.maltaisn.notes.ui.main.MainActivity"
-            android:targetPackage="com.maltaisn.notes.sync.debug"
+            android:action="com.errortek.notes.CREATE"
+            android:targetClass="com.errortek.notes.ui.main.MainActivity"
+            android:targetPackage="com.errortek.notes.sync.debug"
             >
             <extra
-                android:name="com.maltaisn.notes.NOTE_TYPE"
+                android:name="com.errortek.notes.NOTE_TYPE"
                 android:value="1"
                 />
         </intent>
@@ -68,9 +68,9 @@
         android:enabled="true"
         >
         <intent
-            android:action="com.maltaisn.notes.SHOW_REMINDERS"
-            android:targetClass="com.maltaisn.notes.ui.main.MainActivity"
-            android:targetPackage="com.maltaisn.notes.sync.debug"
+            android:action="com.errortek.notes.SHOW_REMINDERS"
+            android:targetClass="com.errortek.notes.ui.main.MainActivity"
+            android:targetPackage="com.errortek.notes.sync.debug"
             />
     </shortcut>
 

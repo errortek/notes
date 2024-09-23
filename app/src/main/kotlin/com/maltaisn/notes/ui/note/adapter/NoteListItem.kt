@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.note.adapter
+package com.errortek.notes.ui.note.adapter
 
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.ui.note.Highlighted
-import com.maltaisn.notes.ui.note.adapter.NoteAdapter.ViewType
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.ui.note.Highlighted
+import com.errortek.notes.ui.note.adapter.NoteAdapter.ViewType
 
 sealed interface NoteListItem {
     val id: Long

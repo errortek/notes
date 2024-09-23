@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui
+package com.errortek.notes.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.maltaisn.notes.R
-import com.maltaisn.notes.model.NotesRepository
-import com.maltaisn.notes.model.ReminderAlarmManager
-import com.maltaisn.notes.model.SortSettings
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.Reminder
-import com.maltaisn.notes.ui.navigation.HomeDestination
+import com.errortek.notes.R
+import com.errortek.notes.model.NotesRepository
+import com.errortek.notes.model.ReminderAlarmManager
+import com.errortek.notes.model.SortSettings
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.Reminder
+import com.errortek.notes.ui.navigation.HomeDestination
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

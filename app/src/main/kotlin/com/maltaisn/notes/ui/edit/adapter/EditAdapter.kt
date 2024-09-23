@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.edit.adapter
+package com.errortek.notes.ui.edit.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -25,15 +25,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.maltaisn.notes.databinding.ItemEditContentBinding
-import com.maltaisn.notes.databinding.ItemEditDateBinding
-import com.maltaisn.notes.databinding.ItemEditHeaderBinding
-import com.maltaisn.notes.databinding.ItemEditItemAddBinding
-import com.maltaisn.notes.databinding.ItemEditItemBinding
-import com.maltaisn.notes.databinding.ItemEditLabelsBinding
-import com.maltaisn.notes.databinding.ItemEditTitleBinding
-import com.maltaisn.notes.hideKeyboard
-import com.maltaisn.notes.ui.edit.EditViewModel
+import com.errortek.notes.databinding.ItemEditContentBinding
+import com.errortek.notes.databinding.ItemEditDateBinding
+import com.errortek.notes.databinding.ItemEditHeaderBinding
+import com.errortek.notes.databinding.ItemEditItemAddBinding
+import com.errortek.notes.databinding.ItemEditItemBinding
+import com.errortek.notes.databinding.ItemEditLabelsBinding
+import com.errortek.notes.databinding.ItemEditTitleBinding
+import com.errortek.notes.hideKeyboard
+import com.errortek.notes.ui.edit.EditViewModel
 
 class EditAdapter(val context: Context, val callback: Callback) :
     ListAdapter<EditListItem, RecyclerView.ViewHolder>(EditDiffCallback()) {

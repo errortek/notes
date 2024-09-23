@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.di
+package com.errortek.notes.di
 
-import com.maltaisn.notes.ui.home.BuildTypeBehavior
-import com.maltaisn.notes.ui.home.ReleaseBuildTypeBehavior
+import com.errortek.notes.ui.home.BuildTypeBehavior
+import com.errortek.notes.ui.home.ReleaseBuildTypeBehavior
 import dagger.Binds
 import dagger.Module
 

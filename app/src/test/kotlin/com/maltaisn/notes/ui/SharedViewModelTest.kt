@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui
+package com.errortek.notes.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.maltaisn.notes.model.ReminderAlarmManager
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.PinnedStatus
-import com.maltaisn.notes.model.entity.Reminder
-import com.maltaisn.notesshared.MainCoroutineRule
-import com.maltaisn.notesshared.model.MockLabelsRepository
-import com.maltaisn.notesshared.model.MockNotesRepository
-import com.maltaisn.notesshared.testNote
+import com.errortek.notes.model.ReminderAlarmManager
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.PinnedStatus
+import com.errortek.notes.model.entity.Reminder
+import com.errortek.notesshared.MainCoroutineRule
+import com.errortek.notesshared.model.MockLabelsRepository
+import com.errortek.notesshared.model.MockNotesRepository
+import com.errortek.notesshared.testNote
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule

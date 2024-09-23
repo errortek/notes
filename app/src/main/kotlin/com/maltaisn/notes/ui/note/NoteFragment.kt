@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.note
+package com.errortek.notes.ui.note
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
@@ -48,23 +48,23 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialElevationScale
-import com.maltaisn.notes.NavGraphMainDirections
-import com.maltaisn.notes.R
-import com.maltaisn.notes.databinding.FragmentNoteBinding
-import com.maltaisn.notes.model.PrefsManager
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.PinnedStatus
-import com.maltaisn.notes.navigateSafe
-import com.maltaisn.notes.ui.SharedViewModel
-import com.maltaisn.notes.ui.StatusChange
-import com.maltaisn.notes.ui.common.ConfirmDialog
-import com.maltaisn.notes.ui.main.MainActivity
-import com.maltaisn.notes.ui.navGraphViewModel
-import com.maltaisn.notes.ui.note.adapter.NoteAdapter
-import com.maltaisn.notes.ui.note.adapter.NoteListLayoutMode
-import com.maltaisn.notes.ui.observeEvent
-import com.maltaisn.notes.ui.startSharingData
-import com.maltaisn.notes.ui.utils.startSafeActionMode
+import com.errortek.notes.NavGraphMainDirections
+import com.errortek.notes.R
+import com.errortek.notes.databinding.FragmentNoteBinding
+import com.errortek.notes.model.PrefsManager
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.PinnedStatus
+import com.errortek.notes.navigateSafe
+import com.errortek.notes.ui.SharedViewModel
+import com.errortek.notes.ui.StatusChange
+import com.errortek.notes.ui.common.ConfirmDialog
+import com.errortek.notes.ui.main.MainActivity
+import com.errortek.notes.ui.navGraphViewModel
+import com.errortek.notes.ui.note.adapter.NoteAdapter
+import com.errortek.notes.ui.note.adapter.NoteListLayoutMode
+import com.errortek.notes.ui.observeEvent
+import com.errortek.notes.ui.startSharingData
+import com.errortek.notes.ui.utils.startSafeActionMode
 import java.text.NumberFormat
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit

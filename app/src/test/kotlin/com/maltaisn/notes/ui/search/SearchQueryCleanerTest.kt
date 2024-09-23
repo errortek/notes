@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.search
+package com.errortek.notes.ui.search
 
 import org.junit.Test
 import kotlin.test.assertEquals

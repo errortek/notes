@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.reminder
+package com.errortek.notes.ui.reminder
 
 import android.app.Dialog
 import android.content.DialogInterface
@@ -29,16 +29,16 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import com.maltaisn.notes.App
-import com.maltaisn.notes.R
-import com.maltaisn.notes.contains
-import com.maltaisn.notes.databinding.DialogReminderBinding
-import com.maltaisn.notes.setMaxWidth
-import com.maltaisn.notes.ui.SharedViewModel
-import com.maltaisn.notes.ui.common.ConfirmDialog
-import com.maltaisn.notes.ui.navGraphViewModel
-import com.maltaisn.notes.ui.notification.NotificationPermission
-import com.maltaisn.notes.ui.observeEvent
+import com.errortek.notes.App
+import com.errortek.notes.R
+import com.errortek.notes.contains
+import com.errortek.notes.databinding.DialogReminderBinding
+import com.errortek.notes.setMaxWidth
+import com.errortek.notes.ui.SharedViewModel
+import com.errortek.notes.ui.common.ConfirmDialog
+import com.errortek.notes.ui.navGraphViewModel
+import com.errortek.notes.ui.notification.NotificationPermission
+import com.errortek.notes.ui.observeEvent
 import com.maltaisn.recurpicker.Recurrence
 import com.maltaisn.recurpicker.RecurrencePickerSettings
 import com.maltaisn.recurpicker.format.RecurrenceFormatter

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.edit.adapter
+package com.errortek.notes.ui.edit.adapter
 
 import android.content.Context
 import android.text.style.CharacterStyle
@@ -30,9 +30,9 @@ import androidx.core.content.res.use
 import androidx.core.text.getSpans
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.widget.doAfterTextChanged
-import com.maltaisn.notes.R
-import com.maltaisn.notes.ui.edit.EditFragment
-import com.maltaisn.notes.ui.edit.LinkArrowKeyMovementMethod
+import com.errortek.notes.R
+import com.errortek.notes.ui.edit.EditFragment
+import com.errortek.notes.ui.edit.LinkArrowKeyMovementMethod
 
 /**
  * Custom [EditText] class used for all fields of the [EditFragment].

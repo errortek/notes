@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.di
+package com.errortek.notes.di
 
 import android.content.Context
 import androidx.room.Room
-import com.maltaisn.notes.model.NotesDatabase
+import com.errortek.notes.model.NotesDatabase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

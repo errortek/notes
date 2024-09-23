@@ -50,7 +50,7 @@
         android:minWidth="0dp"
         />
 
-    <com.maltaisn.notes.ui.edit.adapter.EditEditText
+    <com.errortek.notes.ui.edit.adapter.EditEditText
         android:id="@+id/content_edt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

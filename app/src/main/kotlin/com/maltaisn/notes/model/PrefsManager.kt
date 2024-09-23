@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.model
+package com.errortek.notes.model
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.OpenForTesting
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import com.maltaisn.notes.R
-import com.maltaisn.notes.model.entity.NoteType
-import com.maltaisn.notes.ui.AppTheme
-import com.maltaisn.notes.ui.note.DeletedNotesTimeoutField
-import com.maltaisn.notes.ui.note.ShownDateField
-import com.maltaisn.notes.ui.note.SwipeAction
-import com.maltaisn.notes.ui.note.adapter.NoteListLayoutMode
+import com.errortek.notes.R
+import com.errortek.notes.model.entity.NoteType
+import com.errortek.notes.ui.AppTheme
+import com.errortek.notes.ui.note.DeletedNotesTimeoutField
+import com.errortek.notes.ui.note.ShownDateField
+import com.errortek.notes.ui.note.SwipeAction
+import com.errortek.notes.ui.note.adapter.NoteListLayoutMode
 import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
 import kotlin.properties.ReadWriteProperty

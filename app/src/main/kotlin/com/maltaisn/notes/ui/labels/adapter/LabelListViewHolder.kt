@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.labels.adapter
+package com.errortek.notes.ui.labels.adapter
 
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
-import com.maltaisn.notes.BuildConfig
-import com.maltaisn.notes.R
-import com.maltaisn.notes.databinding.ItemLabelBinding
+import com.errortek.notes.BuildConfig
+import com.errortek.notes.R
+import com.errortek.notes.databinding.ItemLabelBinding
 
 class LabelListViewHolder(val binding: ItemLabelBinding) : RecyclerView.ViewHolder(binding.root) {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.edit
+package com.errortek.notes.ui.edit
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
@@ -45,25 +45,25 @@ import androidx.transition.Transition
 import androidx.transition.TransitionListenerAdapter
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
-import com.maltaisn.notes.App
-import com.maltaisn.notes.NavGraphMainDirections
-import com.maltaisn.notes.R
-import com.maltaisn.notes.databinding.FragmentEditBinding
-import com.maltaisn.notes.hideKeyboard
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.model.entity.NoteType
-import com.maltaisn.notes.model.entity.PinnedStatus
-import com.maltaisn.notes.model.entity.Reminder
-import com.maltaisn.notes.navigateSafe
-import com.maltaisn.notes.showKeyboard
-import com.maltaisn.notes.ui.SharedViewModel
-import com.maltaisn.notes.ui.common.ConfirmDialog
-import com.maltaisn.notes.ui.edit.adapter.EditAdapter
-import com.maltaisn.notes.ui.navGraphViewModel
-import com.maltaisn.notes.ui.observeEvent
-import com.maltaisn.notes.ui.startSharingData
-import com.maltaisn.notes.ui.viewModel
+import com.errortek.notes.App
+import com.errortek.notes.NavGraphMainDirections
+import com.errortek.notes.R
+import com.errortek.notes.databinding.FragmentEditBinding
+import com.errortek.notes.hideKeyboard
+import com.errortek.notes.model.entity.Note
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.model.entity.NoteType
+import com.errortek.notes.model.entity.PinnedStatus
+import com.errortek.notes.model.entity.Reminder
+import com.errortek.notes.navigateSafe
+import com.errortek.notes.showKeyboard
+import com.errortek.notes.ui.SharedViewModel
+import com.errortek.notes.ui.common.ConfirmDialog
+import com.errortek.notes.ui.edit.adapter.EditAdapter
+import com.errortek.notes.ui.navGraphViewModel
+import com.errortek.notes.ui.observeEvent
+import com.errortek.notes.ui.startSharingData
+import com.errortek.notes.ui.viewModel
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 import javax.inject.Provider

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.navigation
+package com.errortek.notes.ui.navigation
 
 import android.os.Parcelable
 import androidx.navigation.NavDirections
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.NoteStatus
-import com.maltaisn.notes.ui.home.HomeFragment
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.NoteStatus
+import com.errortek.notes.ui.home.HomeFragment
 import kotlinx.parcelize.Parcelize
 
 /**

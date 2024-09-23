@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.reminder
+package com.errortek.notes.ui.reminder
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.maltaisn.notes.model.NotesRepository
-import com.maltaisn.notes.model.ReminderAlarmManager
-import com.maltaisn.notes.model.entity.Reminder
-import com.maltaisn.notes.setToStartOfDay
-import com.maltaisn.notes.ui.AssistedSavedStateViewModelFactory
-import com.maltaisn.notes.ui.Event
-import com.maltaisn.notes.ui.send
+import com.errortek.notes.model.NotesRepository
+import com.errortek.notes.model.ReminderAlarmManager
+import com.errortek.notes.model.entity.Reminder
+import com.errortek.notes.setToStartOfDay
+import com.errortek.notes.ui.AssistedSavedStateViewModelFactory
+import com.errortek.notes.ui.Event
+import com.errortek.notes.ui.send
 import com.maltaisn.recurpicker.Recurrence
 import com.maltaisn.recurpicker.RecurrenceFinder
 import dagger.assisted.Assisted

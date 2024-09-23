@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.ui.labels
+package com.errortek.notes.ui.labels
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
@@ -37,17 +37,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.transition.MaterialElevationScale
-import com.maltaisn.notes.App
-import com.maltaisn.notes.R
-import com.maltaisn.notes.databinding.FragmentLabelBinding
-import com.maltaisn.notes.navigateSafe
-import com.maltaisn.notes.ui.SharedViewModel
-import com.maltaisn.notes.ui.common.ConfirmDialog
-import com.maltaisn.notes.ui.labels.adapter.LabelAdapter
-import com.maltaisn.notes.ui.navGraphViewModel
-import com.maltaisn.notes.ui.observeEvent
-import com.maltaisn.notes.ui.utils.startSafeActionMode
-import com.maltaisn.notes.ui.viewModel
+import com.errortek.notes.App
+import com.errortek.notes.R
+import com.errortek.notes.databinding.FragmentLabelBinding
+import com.errortek.notes.navigateSafe
+import com.errortek.notes.ui.SharedViewModel
+import com.errortek.notes.ui.common.ConfirmDialog
+import com.errortek.notes.ui.labels.adapter.LabelAdapter
+import com.errortek.notes.ui.navGraphViewModel
+import com.errortek.notes.ui.observeEvent
+import com.errortek.notes.ui.utils.startSafeActionMode
+import com.errortek.notes.ui.viewModel
 import java.text.NumberFormat
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit

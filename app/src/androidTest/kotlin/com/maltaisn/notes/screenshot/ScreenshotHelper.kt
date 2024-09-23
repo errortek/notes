@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.notes.screenshot
+package com.errortek.notes.screenshot
 
 import android.content.ContentValues
 import android.content.Intent
@@ -25,11 +25,11 @@ import android.os.Environment
 import android.os.LocaleList
 import android.provider.MediaStore
 import androidx.test.platform.app.InstrumentationRegistry
-import com.maltaisn.notes.model.entity.Label
-import com.maltaisn.notes.model.entity.ListNoteItem
-import com.maltaisn.notes.model.entity.Note
-import com.maltaisn.notesshared.listNote
-import com.maltaisn.notesshared.testNote
+import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.ListNoteItem
+import com.errortek.notes.model.entity.Note
+import com.errortek.notesshared.listNote
+import com.errortek.notesshared.testNote
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
