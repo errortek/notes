@@ -1,6 +1,6 @@
 # Privacy Policy
 
-Another Notes App is an open source app developped by Nicolas Maltais, who
+Notes is an open source app developped by Nicolas Maltais, who
 shall be referred as "the developer" in this text. This SERVICE is provided by
 the developer at no cost and is intended for use as is.
 

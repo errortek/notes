@@ -1,4 +1,4 @@
-Another notes app, like there have been tens of thousands before.
+Notes app, like there have been tens of thousands before.
 
 This app doesn't strive to innovate, it strives to provide a simple way to 
 take notes. Material design is used to create a visually attractive interface.
