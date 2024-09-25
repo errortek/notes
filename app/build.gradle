@@ -78,7 +78,7 @@ android {
         release {
             // Using legacy package name 'com.errortek.notes.sync' which was used at the time where
             // there was a sync flavor. Package can't be changed on Play Store so it was kept.
-            applicationIdSuffix ".sync"
+            //applicationIdSuffix ".sync"
 
             minifyEnabled true
             shrinkResources true
