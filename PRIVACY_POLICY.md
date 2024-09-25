@@ -33,4 +33,4 @@ hesitate to contact me on the app's [issue tracker][issue-tracker].
 
 
 [google-play-services-privacy]: https://www.google.com/policies/privacy/
-[issue-tracker]: https://github.com/maltaisn/another-notes-app/issues
+[issue-tracker]: https://github.com/jpbandroid/notes/issues

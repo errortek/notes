@@ -18,6 +18,6 @@
 
     <string name="action_extra" translatable="false">Do extra action</string>
 
-    <string name="view_source_url" translatable="false">https://github.com/maltaisn/another-notes-app</string>
+    <string name="view_source_url" translatable="false">https://github.com/jpbandroid/notes</string>
 
 </resources>
