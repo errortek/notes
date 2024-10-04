@@ -61,7 +61,7 @@ See [this section](#-building-the-code).
 Ensure you have following components:
 
 - [Git](https://git-scm.com/)
-- [Android Studio](https://developer.android.com/studip) with the following installed:
+- [Android Studio](https://developer.android.com/studio) with the following installed:
   - Android SDK
   - Android SDK Build-Tools 35.0.2
 - Any operating system supported by Android Studio (Windows, macOS, Linux, ChromeOS)

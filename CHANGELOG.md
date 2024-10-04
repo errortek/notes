@@ -1,3 +1,6 @@
+## v1.5.5 (2024-09-26)
+- First release under jpb Notes/ErrorTek Notes branding
+
 ## v1.5.4 (2023-12-28)
 - Ask for notification permission on Android 13 when importing data with reminders.
 - Added option to change trash auto-delete delay (#118, @dd-dreams).
