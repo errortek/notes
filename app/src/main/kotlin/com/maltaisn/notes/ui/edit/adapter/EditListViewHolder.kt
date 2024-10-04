@@ -16,6 +16,7 @@
 
 package com.errortek.notes.ui.edit.adapter
 
+import android.content.res.ColorStateList
 import android.text.Editable
 import android.text.format.DateUtils
 import android.view.KeyEvent
@@ -275,6 +276,7 @@ class EditItemLabelsViewHolder(binding: ItemEditLabelsBinding, callback: EditAda
                         false) as Chip
                     chipGroup.addView(view)
                     view.text = chip.name
+                    view.chipBackgroundColor = ColorStateList.valueOf(chip.color)
                     view.setOnClickListener(labelClickListener)
                 }
 

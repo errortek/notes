@@ -37,6 +37,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         tools:ignore="AllowBackup"
+        tools:replace="android:allowBackup"
         >
         <activity
             android:name="com.errortek.notes.ui.main.MainActivity"

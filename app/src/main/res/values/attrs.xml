@@ -21,5 +21,16 @@
     <declare-styleable name="EditEditText">
         <attr name="autoLink" format="boolean"/>
     </declare-styleable>
+    <declare-styleable name="ColorSeekBar">
+        <attr name="colorSeeds" format="reference" />
+        <attr name="barHeight" format="dimension" />
+        <attr name="progress" format="integer" />
+        <attr name="radius" format="dimension" />
+        <attr name="maxProgress" format="integer" />
+        <attr name="vertical" format="boolean" />
+        <attr name="showThumb" format="boolean" />
+        <attr name="borderColor" format="color" />
+        <attr name="borderSize" format="dimension" />
+    </declare-styleable>
 
 </resources>

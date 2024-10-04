@@ -227,7 +227,7 @@ class DefaultJsonManager @Inject constructor(
                 }
                 oldNote.note.addedDate == newNote.addedDate &&
                         oldNote.note.lastModifiedDate == newNote.lastModifiedDate -> {
-                    // existing note has same added and modified date as the data, assume this is the same
+                    // existing note has same added and modified date as the data, assume this is the
                     // same that was exported in the first place, unmodified since.
                     // changing the reminder or labels doesn't affect last modified date so merge them explicitly.
                     val mergedNote = mergeNotes(oldNote.note, newNote)

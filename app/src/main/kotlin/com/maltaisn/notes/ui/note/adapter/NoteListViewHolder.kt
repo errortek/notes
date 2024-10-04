@@ -16,6 +16,7 @@
 
 package com.errortek.notes.ui.note.adapter
 
+import android.content.res.ColorStateList
 import android.text.SpannableString
 import android.text.format.DateUtils
 import android.text.style.BackgroundColorSpan
@@ -315,6 +316,7 @@ class LabelChipViewHolder(val binding: ItemNoteLabelBinding) {
 
     fun bind(label: Label) {
         binding.labelChip.text = label.name
+        binding.labelChip.chipBackgroundColor = ColorStateList.valueOf(label.color)
     }
 }
 

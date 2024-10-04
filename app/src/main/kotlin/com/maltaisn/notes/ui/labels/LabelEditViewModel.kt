@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.errortek.notes.model.LabelsRepository
 import com.errortek.notes.model.entity.Label
+import com.errortek.notes.model.entity.Label.Companion.NO_COLOR
 import com.errortek.notes.ui.AssistedSavedStateViewModelFactory
 import com.errortek.notes.ui.Event
 import com.errortek.notes.ui.send
@@ -62,10 +63,16 @@ class LabelEditViewModel @AssistedInject constructor(
             savedStateHandle[KEY_HIDDEN] = value
         }
 
+    private var color = savedStateHandle[KEY_COLOR] ?: NO_COLOR
+        set(value) {
+            field = value
+            savedStateHandle[KEY_COLOR] = value
+        }
+
     fun start(labelId: Long) {
         this.labelId = labelId
         if (KEY_NAME in savedStateHandle) {
-            _setLabelEvent.send(Label(labelId, labelName, hidden))
+            _setLabelEvent.send(Label(labelId, labelName, hidden, color))
             updateError()
         } else {
             viewModelScope.launch {
@@ -74,11 +81,13 @@ class LabelEditViewModel @AssistedInject constructor(
                     // Edit label, set name initially
                     labelName = label.name
                     hidden = label.hidden
+                    color = label.color
                     _setLabelEvent.send(label)
                 } else {
                     labelName = ""
                     hidden = false
-                    _setLabelEvent.send(Label(Label.NO_ID, "", false))
+                    color = NO_COLOR
+                    _setLabelEvent.send(Label(Label.NO_ID, "", false, NO_COLOR))
                 }
                 updateError()
             }
@@ -94,8 +103,12 @@ class LabelEditViewModel @AssistedInject constructor(
         this.hidden = hidden
     }
 
+    fun onColorChanged(color: Int) {
+        this.color = color
+    }
+
     fun addLabel() {
-        var label = Label(labelId, labelName, hidden)
+        var label = Label(labelId, labelName, hidden, color)
         viewModelScope.launch {
             if (labelId == Label.NO_ID) {
                 val id = labelsRepository.insertLabel(label)
@@ -139,5 +152,6 @@ class LabelEditViewModel @AssistedInject constructor(
     companion object {
         private const val KEY_NAME = "name"
         private const val KEY_HIDDEN = "hidden"
+        private const val KEY_COLOR = "color"
     }
 }

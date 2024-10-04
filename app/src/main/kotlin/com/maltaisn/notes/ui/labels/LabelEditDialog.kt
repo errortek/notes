@@ -65,6 +65,7 @@ class LabelEditDialog : DialogFragment() {
         val nameInput = binding.labelInput
         val nameInputLayout = binding.labelInputLayout
         val hiddenCheck = binding.labelHiddenChk
+        val colorInput = binding.colorSeekBar
 
         val builder = MaterialAlertDialogBuilder(context)
             .setView(binding.root)
@@ -97,6 +98,10 @@ class LabelEditDialog : DialogFragment() {
             viewModel.onHiddenChanged(isChecked)
         }
 
+        colorInput.setOnColorChangeListener { _, color ->
+            viewModel.onColorChanged(color)
+        }
+
         nameInput.isCursorVisible = true
         nameInput.doAfterTextChanged {
             viewModel.onNameChanged(it?.toString() ?: "")
@@ -106,6 +111,7 @@ class LabelEditDialog : DialogFragment() {
             nameInput.setText(label.name)
             nameInput.setSelection(label.name.length)  // put cursor at the end
             hiddenCheck.isChecked = label.hidden
+            colorInput.color = label.color
         }
 
         viewModel.labelAddEvent.observeEvent(this, sharedViewModel::onLabelAdd)

@@ -35,6 +35,7 @@ class LabelListViewHolder(val binding: ItemLabelBinding) : RecyclerView.ViewHold
 
         val view = binding.root
 
+        binding.labelImv.setColorFilter(item.label.color)
         if (adapter.callback.shouldHighlightCheckedItems) {
             view.isActivated = item.checked
         } else {

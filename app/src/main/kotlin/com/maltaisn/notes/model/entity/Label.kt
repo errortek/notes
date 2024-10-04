@@ -16,6 +16,7 @@
 
 package com.errortek.notes.model.entity
 
+import android.graphics.Color
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -51,10 +52,18 @@ data class Label(
      */
     @ColumnInfo(name = "hidden")
     val hidden: Boolean = false,
-) : Parcelable {
+
+    /**
+     * Color of the label.
+     */
+    @ColumnInfo(name = "color")
+    val color: Int = NO_COLOR,
+
+    ) : Parcelable {
 
     companion object {
         const val NO_ID = 0L
+        const val NO_COLOR = Color.GRAY
     }
 }
 
