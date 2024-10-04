@@ -5,14 +5,14 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$androidGradlePluginVersion"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
-        classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion"
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"
-        classpath "com.github.triplet.gradle:play-publisher:$gppVersion"
-        classpath "com.github.breadmoirai:github-release:$githubReleasePluginVersion"
-        classpath "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:$aboutLibrariesVersion"
+        classpath "com.android.tools.build:gradle:8.6.1"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.20"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:2.0.20"
+        classpath "org.jetbrains.kotlin:kotlin-allopen:2.0.20"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.8.2"
+        classpath "com.github.triplet.gradle:play-publisher:3.8.4"
+        classpath "com.github.breadmoirai:github-release:2.4.1"
+        classpath "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:11.2.3"
     }
 }
 
